@@ -1,0 +1,27 @@
+{
+  "version": 2,
+  "dgSpecHash": "SmlRYTA6mS5hn+5OsSKcbyItse2pk1udiWiiyYPrqclzfDNleKKloTMw9DKlFKHzaJmvapCSC/ka35bxHzlALQ==",
+  "success": true,
+  "projectFilePath": "C:\\Code\\Gareth064\\EtsyApiSharp\\src\\EtsyApiSharp\\EtsyApiSharp.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\garet\\.nuget\\packages\\microsoft.extensions.configuration.abstractions\\6.0.0-rc.1.21451.13\\microsoft.extensions.configuration.abstractions.6.0.0-rc.1.21451.13.nupkg.sha512",
+    "C:\\Users\\garet\\.nuget\\packages\\microsoft.extensions.configuration.binder\\6.0.0-rc.1.21451.13\\microsoft.extensions.configuration.binder.6.0.0-rc.1.21451.13.nupkg.sha512",
+    "C:\\Users\\garet\\.nuget\\packages\\microsoft.extensions.dependencyinjection\\6.0.0-rc.1.21451.13\\microsoft.extensions.dependencyinjection.6.0.0-rc.1.21451.13.nupkg.sha512",
+    "C:\\Users\\garet\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\6.0.0-rc.1.21451.13\\microsoft.extensions.dependencyinjection.abstractions.6.0.0-rc.1.21451.13.nupkg.sha512",
+    "C:\\Users\\garet\\.nuget\\packages\\microsoft.extensions.http\\6.0.0-rc.1.21451.13\\microsoft.extensions.http.6.0.0-rc.1.21451.13.nupkg.sha512",
+    "C:\\Users\\garet\\.nuget\\packages\\microsoft.extensions.logging\\6.0.0-rc.1.21451.13\\microsoft.extensions.logging.6.0.0-rc.1.21451.13.nupkg.sha512",
+    "C:\\Users\\garet\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\6.0.0-rc.1.21451.13\\microsoft.extensions.logging.abstractions.6.0.0-rc.1.21451.13.nupkg.sha512",
+    "C:\\Users\\garet\\.nuget\\packages\\microsoft.extensions.options\\6.0.0-rc.1.21451.13\\microsoft.extensions.options.6.0.0-rc.1.21451.13.nupkg.sha512",
+    "C:\\Users\\garet\\.nuget\\packages\\microsoft.extensions.options.configurationextensions\\6.0.0-rc.1.21451.13\\microsoft.extensions.options.configurationextensions.6.0.0-rc.1.21451.13.nupkg.sha512",
+    "C:\\Users\\garet\\.nuget\\packages\\microsoft.extensions.primitives\\6.0.0-rc.1.21451.13\\microsoft.extensions.primitives.6.0.0-rc.1.21451.13.nupkg.sha512",
+    "C:\\Users\\garet\\.nuget\\packages\\newtonsoft.json\\13.0.1\\newtonsoft.json.13.0.1.nupkg.sha512",
+    "C:\\Users\\garet\\.nuget\\packages\\system.buffers\\4.5.1\\system.buffers.4.5.1.nupkg.sha512",
+    "C:\\Users\\garet\\.nuget\\packages\\system.diagnostics.diagnosticsource\\6.0.0-rc.1.21451.13\\system.diagnostics.diagnosticsource.6.0.0-rc.1.21451.13.nupkg.sha512",
+    "C:\\Users\\garet\\.nuget\\packages\\system.memory\\4.5.4\\system.memory.4.5.4.nupkg.sha512",
+    "C:\\Users\\garet\\.nuget\\packages\\system.net.http.json\\6.0.0-rc.1.21451.13\\system.net.http.json.6.0.0-rc.1.21451.13.nupkg.sha512",
+    "C:\\Users\\garet\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\6.0.0-rc.1.21451.13\\system.runtime.compilerservices.unsafe.6.0.0-rc.1.21451.13.nupkg.sha512",
+    "C:\\Users\\garet\\.nuget\\packages\\system.text.encodings.web\\6.0.0-rc.1.21451.13\\system.text.encodings.web.6.0.0-rc.1.21451.13.nupkg.sha512",
+    "C:\\Users\\garet\\.nuget\\packages\\system.text.json\\6.0.0-rc.1.21451.13\\system.text.json.6.0.0-rc.1.21451.13.nupkg.sha512"
+  ],
+  "logs": []
+}
