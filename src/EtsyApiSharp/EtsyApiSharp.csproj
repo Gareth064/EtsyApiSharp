@@ -23,7 +23,6 @@
     <Folder Include="Services\ShopManagements\" />
     <Folder Include="Services\ShippingManagements\" />
     <Folder Include="Services\ReviewManagements\" />
-    <Folder Include="Services\ReceiptManagements\" />
     <Folder Include="Services\PaymentManagements\" />
   </ItemGroup>
 

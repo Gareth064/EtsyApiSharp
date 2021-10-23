@@ -1,0 +1,190 @@
+using System.Text.Json.Serialization;
+
+
+namespace EtsyApiSharp.Models
+{
+    //A shop created by an Etsy user.
+    public class Shop
+    {
+        [JsonPropertyName("shop_id")]
+        public int ShopId { get; set; }
+
+
+        [JsonPropertyName("user_id")]
+        public int UserId { get; set; }
+
+
+        [JsonPropertyName("shop_name")]
+        public string ShopName { get; set; }
+
+
+        [JsonPropertyName("create_date")]
+        public int CreateDate { get; set; }
+
+
+        [JsonPropertyName("title")]
+        public string Title { get; set; }
+
+
+        [JsonPropertyName("announcement")]
+        public string Announcement { get; set; }
+
+
+        [JsonPropertyName("currency_code")]
+        public string CurrencyCode { get; set; }
+
+
+        [JsonPropertyName("is_vacation")]
+        public bool IsVacation { get; set; }
+
+
+        [JsonPropertyName("vacation_message")]
+        public string VacationMessage { get; set; }
+
+
+        [JsonPropertyName("sale_message")]
+        public string SaleMessage { get; set; }
+
+
+        [JsonPropertyName("digital_sale_message")]
+        public string DigitalSaleMessage { get; set; }
+
+
+        [JsonPropertyName("update_date")]
+        public int UpdateDate { get; set; }
+
+
+        [JsonPropertyName("listing_active_count")]
+        public int ListingActiveCount { get; set; }
+
+
+        [JsonPropertyName("digital_listing_count")]
+        public int DigitalListingCount { get; set; }
+
+
+        [JsonPropertyName("login_name")]
+        public string LoginName { get; set; }
+
+
+        [JsonPropertyName("accepts_custom_requests")]
+        public bool AcceptsCustomRequests { get; set; }
+
+
+        [JsonPropertyName("policy_welcome")]
+        public string PolicyWelcome { get; set; }
+
+
+        [JsonPropertyName("policy_payment")]
+        public string PolicyPayment { get; set; }
+
+
+        [JsonPropertyName("policy_shipping")]
+        public string PolicyShipping { get; set; }
+
+
+        [JsonPropertyName("policy_refunds")]
+        public string PolicyRefunds { get; set; }
+
+
+        [JsonPropertyName("policy_additional")]
+        public string PolicyAdditional { get; set; }
+
+
+        [JsonPropertyName("policy_seller_info")]
+        public string PolicySellerInfo { get; set; }
+
+
+        [JsonPropertyName("policy_update_date")]
+        public int PolicyUpdateDate { get; set; }
+
+
+        [JsonPropertyName("policy_has_private_receipt_info")]
+        public bool PolicyHasPrivateReceiptInfo { get; set; }
+
+
+        [JsonPropertyName("has_unstructured_policies")]
+        public bool HasUnstructuredPolicies { get; set; }
+
+
+        [JsonPropertyName("policy_privacy")]
+        public string PolicyPrivacy { get; set; }
+
+
+        [JsonPropertyName("vacation_autoreply")]
+        public string VacationAutoreply { get; set; }
+
+
+        [JsonPropertyName("url")]
+        public string Url { get; set; }
+
+
+        [JsonPropertyName("image_url_760x100")]
+        public string ImageUrl760X100 { get; set; }
+
+
+        [JsonPropertyName("num_favorers")]
+        public int NumFavorers { get; set; }
+
+
+        [JsonPropertyName("languages")]
+        public string[] Languages { get; set; }
+
+
+        [JsonPropertyName("icon_url_fullxfull")]
+        public string IconUrlFullxfull { get; set; }
+
+
+        [JsonPropertyName("is_using_structured_policies")]
+        public bool IsUsingStructuredPolicies { get; set; }
+
+
+        [JsonPropertyName("has_onboarded_structured_policies")]
+        public bool HasOnboardedStructuredPolicies { get; set; }
+
+
+        [JsonPropertyName("include_dispute_form_link")]
+        public bool IncludeDisputeFormLink { get; set; }
+
+
+        [JsonPropertyName("is_direct_checkout_onboarded")]
+        public bool IsDirectCheckoutOnboarded { get; set; }
+
+
+        [JsonPropertyName("is_etsy_payments_onboarded")]
+        public bool IsEtsyPaymentsOnboarded { get; set; }
+
+
+        [JsonPropertyName("is_calculated_eligible")]
+        public bool IsCalculatedEligible { get; set; }
+
+
+        [JsonPropertyName("is_opted_in_to_buyer_promise")]
+        public bool IsOptedInToBuyerPromise { get; set; }
+
+
+        [JsonPropertyName("is_shop_us_based")]
+        public bool IsShopUsBased { get; set; }
+
+
+        [JsonPropertyName("transaction_sold_count")]
+        public int TransactionSoldCount { get; set; }
+
+
+        [JsonPropertyName("shipping_from_country_iso")]
+        public string ShippingFromCountryIso { get; set; }
+
+
+        [JsonPropertyName("shop_location_country_iso")]
+        public string ShopLocationCountryIso { get; set; }
+
+
+        [JsonPropertyName("review_count")]
+        public int ReviewCount { get; set; }
+
+
+        [JsonPropertyName("review_average")]
+        public float ReviewAverage { get; set; }
+
+
+    }
+}

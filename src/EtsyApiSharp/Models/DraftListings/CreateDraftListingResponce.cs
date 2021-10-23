@@ -1,20 +1,8 @@
 ﻿using Newtonsoft.Json;
 
-namespace EtsyApiSharp.Models.CreateDraftListings
+namespace EtsyApiSharp.Models.DraftListings
 {
     // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse); 
-    public class Price
-    {
-        [JsonProperty("amount")]
-        public int Amount { get; set; }
-
-        [JsonProperty("divisor")]
-        public int Divisor { get; set; }
-
-        [JsonProperty("currency_code")]
-        public string CurrencyCode { get; set; }
-    }
-
     public class CreateDraftListingResponce
     {
         [JsonProperty("listing_id")]
@@ -153,6 +141,16 @@ namespace EtsyApiSharp.Models.CreateDraftListings
         public int TaxonomyId { get; set; }
     }
 
+    public class Price
+    {
+        [JsonProperty("amount")]
+        public int Amount { get; set; }
 
+        [JsonProperty("divisor")]
+        public int Divisor { get; set; }
+
+        [JsonProperty("currency_code")]
+        public string CurrencyCode { get; set; }
+    }
 
 }

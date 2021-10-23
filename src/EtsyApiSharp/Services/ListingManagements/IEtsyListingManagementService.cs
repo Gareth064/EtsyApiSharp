@@ -2,6 +2,6 @@
 {
     public interface IEtsyListingManagementService
     {
-
+        void GetListing();
     }
 }
