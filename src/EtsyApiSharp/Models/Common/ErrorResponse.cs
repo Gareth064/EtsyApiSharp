@@ -7,7 +7,5 @@ namespace EtsyApiSharp.Models
     {
         [JsonPropertyName("error")]
         public string Error { get; set; }
-
-
     }
 }

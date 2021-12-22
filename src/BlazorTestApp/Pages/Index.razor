@@ -1,0 +1,42 @@
+﻿@page "/"
+@using EtsyApiSharp.Models
+@using EtsyApiSharp.Services.ReceiptManagements
+@inject NavigationManager Navigation
+@inject IEtsyAuthService AuthService
+@inject IEtsyReceiptManagementService ReceiptService
+
+
+<h1>Etsy OAuth2 Test</h1>
+
+<button @onclick="Authorise">Get Authorization Code</button>
+<br />
+<label>Authorization Code: </label><label>@State.AuthorizationCode</label>
+<br />
+<br />
+<br />
+<button @onclick="GetAccessToken">Get Access Token</button>
+<br />
+<label>Access Token: </label><label>@State.TokenResponse</label>
+<br />
+
+@code {
+    List<Scope> scopes = new List<Scope> { Scope.shops_r, Scope.shops_w, Scope.cart_r, Scope.listings_w, Scope.listings_r, Scope.email_r, Scope.transactions_r };
+
+    private void Authorise()
+    {
+        Console.WriteLine("starting");
+        State.CodeVerifier = "test";
+        var authUri = AuthService.BuildAuthorizationUrl(State.CodeVerifier);
+        Console.WriteLine(authUri);
+        Navigation.NavigateTo(authUri);
+    }
+
+    private async Task GetAccessToken()
+    {
+        var service = new EtsyOAuth2Service("gss0u2qxjyv991mbjbwn2208", "https://localhost:5001/secret/callback", scopes);
+        EtsyToken token = await service.GetAccessToken(State.AuthorizationCode,State.CodeVerifier);
+         State.OnChange += StateHasChanged;
+        State.TokenResponse = token.access_token;
+        State.OnChange -= StateHasChanged;
+    }
+}

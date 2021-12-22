@@ -8,15 +8,9 @@ namespace EtsyApiSharp.Models
     {
         [JsonPropertyName("amount")]
         public int Amount { get; set; }
-
-
         [JsonPropertyName("divisor")]
         public int Divisor { get; set; }
-
-
         [JsonPropertyName("currency_code")]
         public string CurrencyCode { get; set; }
-
-
     }
 }

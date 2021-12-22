@@ -8,25 +8,23 @@ namespace EtsyApiSharp.Services.ReceiptManagements
     public class EtsyReceiptManagementService : IEtsyReceiptManagementService
     {
         private readonly HttpClient _httpClient;
-        private readonly string _apiToken;
 
-        public EtsyReceiptManagementService(string apiToken)
+        public EtsyReceiptManagementService()
         {
             _httpClient = new HttpClient { BaseAddress = new Uri(Url.baseApiUrl) };
-            _apiToken = apiToken;
         }
-        public async Task<ShopReceipt> CreateReceiptShipmentAsync(long shopId, ShopReceiptShipment shopReceiptShipment)
+        public async Task<ApiResponse<ShopReceipt>> CreateReceiptShipmentAsync(long shopId, ShopReceiptShipment shopReceiptShipment)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<ApiResponse> GetShopReceiptAsync(long shopId, long receiptid)
+        public async Task<ApiResponse<ShopReceipt>> GetShopReceiptAsync(string apiToken, long shopId, long receiptid)
         {
             try
             {
                 string responseBody = await _httpClient.GetStringAsync($"/v3/application/shops/{shopId}/receipts/{receiptid}");
                 var reciept = JsonConvert.DeserializeObject<ShopReceipt>(responseBody);
-                var result = new ApiResponse
+                var result = new ApiResponse<ShopReceipt>
                 {
                     ResponseCode = 200,
                     Success = true,
@@ -37,24 +35,23 @@ namespace EtsyApiSharp.Services.ReceiptManagements
             }
             catch (HttpRequestException ex)
             {
-                var result = new ApiResponse
+                var result = new ApiResponse<ShopReceipt>
                 {
                     ResponseCode = 500,
                     Success = false,
                     Data = null,
                     Message = $"{ex.Message}"
                 };
-
-            return result;
+                return result;
             }
         }
 
-        public Task<ShopReceipts> GetShopReceiptsAsync(long shopId, GetShopReceiptsRequest queryParams)
+        public Task<ApiListResponse<ShopReceipts>> GetShopReceiptsAsync(long shopId, GetShopReceiptsRequest queryParams)
         {
             throw new NotImplementedException();
         }
 
-        public Task<ShopReceiptTransactions> GetShopReceiptTransactionsByListingAsync(long shopId, long listingId)
+        public Task<ApiListResponse<ShopReceiptTransactions>> GetShopReceiptTransactionsByListingAsync(long shopId, long listingId)
         {
             throw new NotImplementedException();
         }

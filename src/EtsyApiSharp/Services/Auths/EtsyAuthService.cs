@@ -9,15 +9,17 @@ namespace EtsyApiSharp.Services
     {
         private readonly string clientId;
         private readonly string redirectUrl;
+        private readonly List<Scope> scopes;
         private readonly string state = "superstate";
 
-        public EtsyAuthService(string clientId, string redirectUrl)
+        public EtsyAuthService(string clientId, string redirectUrl, List<Scope> scopes)
         {
             this.clientId = clientId;
             this.redirectUrl = redirectUrl;
+            this.scopes=scopes;
         }
 
-        public string BuildAuthorizationUrl(string codeVerifier, List<Scope>? scopes = null)
+        public string BuildAuthorizationUrl(string codeVerifier)
         {
             StringBuilder sbUri = new StringBuilder(Url.baseAuthUrl);
             sbUri.Append("?response_type=" + "code");
