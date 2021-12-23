@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
+﻿using System.Text.Json.Serialization;
 
-namespace EtsyApiSharp.Models.ShopReceipts
+namespace EtsyApiSharp.Models
 {
     // Root myDeserializedClass = JsonSerializer.Deserialize<Root>(myJsonResponse);
     public class Grandtotal

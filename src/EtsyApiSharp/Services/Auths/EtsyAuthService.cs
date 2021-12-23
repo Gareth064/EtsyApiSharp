@@ -3,7 +3,7 @@ using EtsyApiSharp.Models;
 using Newtonsoft.Json;
 using System.Text;
 
-namespace EtsyApiSharp.Services
+namespace EtsyApiSharp.Services.Auths
 {
     public class EtsyAuthService : IEtsyAuthService
     {

@@ -195,7 +195,7 @@ namespace EtsyApiSharp.Models
 
 
         [JsonPropertyName("images")]
-        public List<ListingImage>Images { get; set; }
+        public List<ListingImage> Images { get; set; }
 
 
         [JsonPropertyName("production_partners")]

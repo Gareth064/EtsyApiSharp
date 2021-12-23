@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace EtsyApiSharp.Models.ShopReceipts
+namespace EtsyApiSharp.Models
 {
     public class TransactionVariations
     {

@@ -2,11 +2,11 @@
 
 namespace BlazorTestApp.Data
 {
-    public class AppState
+    public static class AppState
     {
-        public string CodeVerifier { get; set; }
-        private string _accessToken;
-        public string TokenResponse
+        public static string CodeVerifier { get; set; }
+        private static string _accessToken;
+        public static string TokenResponse
         {
             get => _accessToken;
             set
@@ -16,9 +16,9 @@ namespace BlazorTestApp.Data
             }
         }
 
-        private string _authorizationCode;
+        private static string _authorizationCode;
 
-        public string AuthorizationCode
+        public static string AuthorizationCode
         {
             get => _authorizationCode;
             set
@@ -28,8 +28,8 @@ namespace BlazorTestApp.Data
             }
         }
 
-        public event Action OnChange;
-        private void NotifyStateHasChanged()
+        public static event Action OnChange;
+        private static void NotifyStateHasChanged()
         {
             OnChange?.Invoke();
         }

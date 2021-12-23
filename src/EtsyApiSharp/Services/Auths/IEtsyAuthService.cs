@@ -1,8 +1,8 @@
 ﻿using EtsyApiSharp.Models;
 
-namespace EtsyApiSharp.Services
+namespace EtsyApiSharp.Services.Auths
 {
-    internal interface IEtsyAuthService
+    public interface IEtsyAuthService
     {
         public string BuildAuthorizationUrl(string codeVerifier);
         public Task<EtsyTokenResponse> GetFirstAccessTokenAsync(string authCode, string codeVerifier);

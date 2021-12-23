@@ -1,6 +1,11 @@
 ﻿@page "/"
+@using BlazorTestApp.Data
 @using EtsyApiSharp.Models
+@using EtsyApiSharp.Models.Requests
 @using EtsyApiSharp.Services.ReceiptManagements
+@using EtsyApiSharp.Services.Auths
+@using Newtonsoft.Json
+@using System.Text.Json
 @inject NavigationManager Navigation
 @inject IEtsyAuthService AuthService
 @inject IEtsyReceiptManagementService ReceiptService
@@ -10,33 +15,75 @@
 
 <button @onclick="Authorise">Get Authorization Code</button>
 <br />
-<label>Authorization Code: </label><label>@State.AuthorizationCode</label>
+<label>Authorization Code: </label><label>@AppState.AuthorizationCode</label>
 <br />
 <br />
 <br />
 <button @onclick="GetAccessToken">Get Access Token</button>
 <br />
-<label>Access Token: </label><label>@State.TokenResponse</label>
+<label>Access Token: </label><label>@AppState.TokenResponse</label>
 <br />
+<br />
+<br />
+<input @bind="recieptId" />
+<button @onclick="GetReciept">Get Reciept</button>
+<br />
+<br />
+<br />
+<button @onclick="GetReciepts">Get Reciepts</button>
+<br />
+<br />
+<br />
+@recieptString
 
 @code {
     List<Scope> scopes = new List<Scope> { Scope.shops_r, Scope.shops_w, Scope.cart_r, Scope.listings_w, Scope.listings_r, Scope.email_r, Scope.transactions_r };
+    string recieptId = string.Empty;
+    string recieptString = string.Empty;
 
     private void Authorise()
     {
         Console.WriteLine("starting");
-        State.CodeVerifier = "test";
-        var authUri = AuthService.BuildAuthorizationUrl(State.CodeVerifier);
+        AppState.CodeVerifier = "test";
+        var authUri = AuthService.BuildAuthorizationUrl(AppState.CodeVerifier);
         Console.WriteLine(authUri);
         Navigation.NavigateTo(authUri);
     }
 
     private async Task GetAccessToken()
     {
-        var service = new EtsyOAuth2Service("gss0u2qxjyv991mbjbwn2208", "https://localhost:5001/secret/callback", scopes);
-        EtsyToken token = await service.GetAccessToken(State.AuthorizationCode,State.CodeVerifier);
-         State.OnChange += StateHasChanged;
-        State.TokenResponse = token.access_token;
-        State.OnChange -= StateHasChanged;
+        var token = await AuthService.GetFirstAccessTokenAsync(AppState.AuthorizationCode, AppState.CodeVerifier);
+        AppState.OnChange += StateHasChanged;
+        AppState.TokenResponse = token.AccessToken;
+        AppState.OnChange -= StateHasChanged;
+    }
+
+    private async Task GetReciept()
+    {
+        var result = await ReceiptService.GetShopReceiptAsync(AppState.TokenResponse,
+            Convert.ToInt64("17255024"),Convert.ToInt64(recieptId));
+
+        var tempString = JsonConvert.SerializeObject(result);
+        var jDoc = JsonDocument.Parse(tempString);
+
+        recieptString = System.Text.Json.JsonSerializer.Serialize(jDoc,
+            new JsonSerializerOptions { WriteIndented = true });
+
+        Console.WriteLine(recieptString);
+    }
+
+        private async Task GetReciepts()
+    {
+        var paramss = new GetShopReceiptsRequest();
+        var result = await ReceiptService.GetShopReceiptsAsync(AppState.TokenResponse,
+            Convert.ToInt64("17255024"),paramss);
+
+        var tempString = JsonConvert.SerializeObject(result);
+        var jDoc = JsonDocument.Parse(tempString);
+
+        recieptString = System.Text.Json.JsonSerializer.Serialize(jDoc,
+            new JsonSerializerOptions { WriteIndented = true });
+
+        Console.WriteLine(recieptString);
     }
 }

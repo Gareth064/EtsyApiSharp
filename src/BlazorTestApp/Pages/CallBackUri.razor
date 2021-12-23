@@ -1,0 +1,25 @@
+﻿@page "/secret/callback/"
+@using BlazorTestApp.Data
+@inject NavigationManager Navigation
+
+<h3>CallBackUri</h3>
+
+@code {
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string code { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string state { get; set; }
+
+    protected override async void OnParametersSet()
+    {
+        Console.WriteLine($"code: {code}");
+        Console.WriteLine($"state: {state}");
+        AppState.OnChange += StateHasChanged;
+        AppState.AuthorizationCode = code;
+        AppState.OnChange -= StateHasChanged;
+        Navigation.NavigateTo("/",forceLoad:true);
+    }
+}

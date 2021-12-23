@@ -2,6 +2,7 @@
 using EtsyApiSharp.Models.Common;
 using EtsyApiSharp.Models.Requests;
 using Newtonsoft.Json;
+using System.Net.Http.Headers;
 
 namespace EtsyApiSharp.Services.ReceiptManagements
 {
@@ -13,6 +14,7 @@ namespace EtsyApiSharp.Services.ReceiptManagements
         {
             _httpClient = new HttpClient { BaseAddress = new Uri(Url.baseApiUrl) };
         }
+
         public async Task<ApiResponse<ShopReceipt>> CreateReceiptShipmentAsync(long shopId, ShopReceiptShipment shopReceiptShipment)
         {
             throw new NotImplementedException();
@@ -22,6 +24,8 @@ namespace EtsyApiSharp.Services.ReceiptManagements
         {
             try
             {
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
+                _httpClient.DefaultRequestHeaders.Add("x-api-key", "gss0u2qxjyv991mbjbwn2208");
                 string responseBody = await _httpClient.GetStringAsync($"/v3/application/shops/{shopId}/receipts/{receiptid}");
                 var reciept = JsonConvert.DeserializeObject<ShopReceipt>(responseBody);
                 var result = new ApiResponse<ShopReceipt>
@@ -46,9 +50,34 @@ namespace EtsyApiSharp.Services.ReceiptManagements
             }
         }
 
-        public Task<ApiListResponse<ShopReceipts>> GetShopReceiptsAsync(long shopId, GetShopReceiptsRequest queryParams)
+        public async Task<ApiResponse<ShopReceipts>> GetShopReceiptsAsync(string apiToken, long shopId, GetShopReceiptsRequest queryParams)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
+                _httpClient.DefaultRequestHeaders.Add("x-api-key", "gss0u2qxjyv991mbjbwn2208");
+                string responseBody = await _httpClient.GetStringAsync($"/v3/application/shops/{shopId}/receipts");
+                var reciept = JsonConvert.DeserializeObject<ShopReceipts>(responseBody);
+                var result = new ApiResponse<ShopReceipts>
+                {
+                    ResponseCode = 200,
+                    Success = true,
+                    Data = reciept,
+                    Message = null
+                };
+                return result;
+            }
+            catch (HttpRequestException ex)
+            {
+                var result = new ApiResponse<ShopReceipts>
+                {
+                    ResponseCode = 500,
+                    Success = false,
+                    Data = null,
+                    Message = $"{ex.Message}"
+                };
+                return result;
+            }
         }
 
         public Task<ApiListResponse<ShopReceiptTransactions>> GetShopReceiptTransactionsByListingAsync(long shopId, long listingId)
