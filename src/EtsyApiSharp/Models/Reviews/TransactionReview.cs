@@ -1,6 +1,5 @@
 using System.Text.Json.Serialization;
 
-
 namespace EtsyApiSharp.Models
 {
     //A transaction review record left by a User.

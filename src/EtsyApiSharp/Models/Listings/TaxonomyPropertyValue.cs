@@ -1,6 +1,5 @@
 using System.Text.Json.Serialization;
 
-
 namespace EtsyApiSharp.Models
 {
     //A property value for a specific product property, which may also employ a specific scale.

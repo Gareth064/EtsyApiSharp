@@ -1,27 +1,27 @@
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace EtsyApiSharp.Models
 {
     //Represents the translation data for a Listing.
     public class ListingTranslation
     {
-        [JsonProperty("listing_id")]
+        [JsonPropertyName("listing_id")]
         public long ListingId { get; set; }
 
 
-        [JsonProperty("language")]
+        [JsonPropertyName("language")]
         public string Language { get; set; }
 
 
-        [JsonProperty("title")]
+        [JsonPropertyName("title")]
         public string Title { get; set; }
 
 
-        [JsonProperty("description")]
+        [JsonPropertyName("description")]
         public string Description { get; set; }
 
 
-        [JsonProperty("tags")]
+        [JsonPropertyName("tags")]
         public string[] Tags { get; set; }
 
 

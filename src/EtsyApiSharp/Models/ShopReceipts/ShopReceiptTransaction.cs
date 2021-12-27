@@ -1,6 +1,5 @@
 using System.Text.Json.Serialization;
 
-
 namespace EtsyApiSharp.Models
 {
     //A transaction object associated with a shop receipt. Etsy generates one transaction per listing purchased as recorded on the order receipt.

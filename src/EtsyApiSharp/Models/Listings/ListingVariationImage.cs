@@ -1,6 +1,5 @@
 using System.Text.Json.Serialization;
 
-
 namespace EtsyApiSharp.Models
 {
     //A representation of the associations of variations and images on a listing.

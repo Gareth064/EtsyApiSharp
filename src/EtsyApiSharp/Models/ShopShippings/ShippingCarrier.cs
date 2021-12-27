@@ -1,6 +1,5 @@
 using System.Text.Json.Serialization;
 
-
 namespace EtsyApiSharp.Models
 {
     //A supported shipping carrier, which is used to calculate an Estimated Delivery Date.

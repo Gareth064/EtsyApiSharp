@@ -1,10 +1,9 @@
 ﻿@page "/"
 @using BlazorTestApp.Data
 @using EtsyApiSharp.Models
-@using EtsyApiSharp.Models.Requests
+@using EtsyApiSharp.Models.Filters
 @using EtsyApiSharp.Services.ReceiptManagements
 @using EtsyApiSharp.Services.Auths
-@using Newtonsoft.Json
 @using System.Text.Json
 @inject NavigationManager Navigation
 @inject IEtsyAuthService AuthService
@@ -63,25 +62,28 @@
         var result = await ReceiptService.GetShopReceiptAsync(AppState.TokenResponse,
             Convert.ToInt64("17255024"),Convert.ToInt64(recieptId));
 
-        var tempString = JsonConvert.SerializeObject(result);
+        var tempString = JsonSerializer.Serialize(result);
         var jDoc = JsonDocument.Parse(tempString);
 
-        recieptString = System.Text.Json.JsonSerializer.Serialize(jDoc,
+        recieptString = JsonSerializer.Serialize(jDoc,
             new JsonSerializerOptions { WriteIndented = true });
 
         Console.WriteLine(recieptString);
     }
 
-        private async Task GetReciepts()
+    private async Task GetReciepts()
     {
-        var paramss = new GetShopReceiptsRequest();
+        var paramss = new GetShopReceiptsFilter();
+
+        paramss.MinLastModified=1637161723;
+
         var result = await ReceiptService.GetShopReceiptsAsync(AppState.TokenResponse,
             Convert.ToInt64("17255024"),paramss);
 
-        var tempString = JsonConvert.SerializeObject(result);
+        var tempString = JsonSerializer.Serialize(result);
         var jDoc = JsonDocument.Parse(tempString);
 
-        recieptString = System.Text.Json.JsonSerializer.Serialize(jDoc,
+        recieptString = JsonSerializer.Serialize(jDoc,
             new JsonSerializerOptions { WriteIndented = true });
 
         Console.WriteLine(recieptString);

@@ -1,23 +1,23 @@
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace EtsyApiSharp.Models
 {
     //The record of one shipment event for a ShopReceipt. A receipt may have many ShopReceiptShipment records.
     public class ShopReceiptShipment
     {
-        [JsonProperty("receipt_shipping_id")]
+        [JsonPropertyName("receipt_shipping_id")]
         public long ReceiptShippingId { get; set; }
 
 
-        [JsonProperty("shipment_notification_timestamp")]
+        [JsonPropertyName("shipment_notification_timestamp")]
         public int ShipmentNotificationTimestamp { get; set; }
 
 
-        [JsonProperty("carrier_name")]
+        [JsonPropertyName("carrier_name")]
         public string CarrierName { get; set; }
 
 
-        [JsonProperty("tracking_code")]
+        [JsonPropertyName("tracking_code")]
         public string TrackingCode { get; set; }
 
 

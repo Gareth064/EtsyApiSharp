@@ -1,155 +1,155 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace EtsyApiSharp.Models.DraftListings
 {
     // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse); 
     public class CreateDraftListingResponce
     {
-        [JsonProperty("listing_id")]
+        [JsonPropertyName("listing_id")]
         public int ListingId { get; set; }
 
-        [JsonProperty("user_id")]
+        [JsonPropertyName("user_id")]
         public int UserId { get; set; }
 
-        [JsonProperty("shop_id")]
+        [JsonPropertyName("shop_id")]
         public int ShopId { get; set; }
 
-        [JsonProperty("title")]
+        [JsonPropertyName("title")]
         public string Title { get; set; }
 
-        [JsonProperty("description")]
+        [JsonPropertyName("description")]
         public string Description { get; set; }
 
-        [JsonProperty("state")]
+        [JsonPropertyName("state")]
         public string State { get; set; }
 
-        [JsonProperty("creation_timestamp")]
+        [JsonPropertyName("creation_timestamp")]
         public int CreationTimestamp { get; set; }
 
-        [JsonProperty("ending_timestamp")]
+        [JsonPropertyName("ending_timestamp")]
         public int EndingTimestamp { get; set; }
 
-        [JsonProperty("original_creation_timestamp")]
+        [JsonPropertyName("original_creation_timestamp")]
         public int OriginalCreationTimestamp { get; set; }
 
-        [JsonProperty("last_modified_timestamp")]
+        [JsonPropertyName("last_modified_timestamp")]
         public int LastModifiedTimestamp { get; set; }
 
-        [JsonProperty("state_timestamp")]
+        [JsonPropertyName("state_timestamp")]
         public int StateTimestamp { get; set; }
 
-        [JsonProperty("quantity")]
+        [JsonPropertyName("quantity")]
         public int Quantity { get; set; }
 
-        [JsonProperty("shop_section_id")]
+        [JsonPropertyName("shop_section_id")]
         public int ShopSectionId { get; set; }
 
-        [JsonProperty("featured_rank")]
+        [JsonPropertyName("featured_rank")]
         public int FeaturedRank { get; set; }
 
-        [JsonProperty("url")]
+        [JsonPropertyName("url")]
         public string Url { get; set; }
 
-        [JsonProperty("num_favorers")]
+        [JsonPropertyName("num_favorers")]
         public int NumFavorers { get; set; }
 
-        [JsonProperty("non_taxable")]
+        [JsonPropertyName("non_taxable")]
         public bool NonTaxable { get; set; }
 
-        [JsonProperty("is_customizable")]
+        [JsonPropertyName("is_customizable")]
         public bool IsCustomizable { get; set; }
 
-        [JsonProperty("is_personalizable")]
+        [JsonPropertyName("is_personalizable")]
         public bool IsPersonalizable { get; set; }
 
-        [JsonProperty("personalization_is_required")]
+        [JsonPropertyName("personalization_is_required")]
         public bool PersonalizationIsRequired { get; set; }
 
-        [JsonProperty("personalization_char_count_max")]
+        [JsonPropertyName("personalization_char_count_max")]
         public int PersonalizationCharCountMax { get; set; }
 
-        [JsonProperty("personalization_instructions")]
+        [JsonPropertyName("personalization_instructions")]
         public string PersonalizationInstructions { get; set; }
 
-        [JsonProperty("listing_type")]
+        [JsonPropertyName("listing_type")]
         public bool ListingType { get; set; }
 
-        [JsonProperty("tags")]
+        [JsonPropertyName("tags")]
         public List<string> Tags { get; set; }
 
-        [JsonProperty("materials")]
+        [JsonPropertyName("materials")]
         public List<string> Materials { get; set; }
 
-        [JsonProperty("shipping_profile_id")]
+        [JsonPropertyName("shipping_profile_id")]
         public int ShippingProfileId { get; set; }
 
-        [JsonProperty("processing_min")]
+        [JsonPropertyName("processing_min")]
         public int ProcessingMin { get; set; }
 
-        [JsonProperty("processing_max")]
+        [JsonPropertyName("processing_max")]
         public int ProcessingMax { get; set; }
 
-        [JsonProperty("who_made")]
+        [JsonPropertyName("who_made")]
         public string WhoMade { get; set; }
 
-        [JsonProperty("when_made")]
+        [JsonPropertyName("when_made")]
         public string WhenMade { get; set; }
 
-        [JsonProperty("is_supply")]
+        [JsonPropertyName("is_supply")]
         public bool IsSupply { get; set; }
 
-        [JsonProperty("item_weight")]
+        [JsonPropertyName("item_weight")]
         public int ItemWeight { get; set; }
 
-        [JsonProperty("item_weight_unit")]
+        [JsonPropertyName("item_weight_unit")]
         public string ItemWeightUnit { get; set; }
 
-        [JsonProperty("item_length")]
+        [JsonPropertyName("item_length")]
         public int ItemLength { get; set; }
 
-        [JsonProperty("item_width")]
+        [JsonPropertyName("item_width")]
         public int ItemWidth { get; set; }
 
-        [JsonProperty("item_height")]
+        [JsonPropertyName("item_height")]
         public int ItemHeight { get; set; }
 
-        [JsonProperty("item_dimensions_unit")]
+        [JsonPropertyName("item_dimensions_unit")]
         public string ItemDimensionsUnit { get; set; }
 
-        [JsonProperty("is_private")]
+        [JsonPropertyName("is_private")]
         public bool IsPrivate { get; set; }
 
-        [JsonProperty("style")]
+        [JsonPropertyName("style")]
         public List<string> Style { get; set; }
 
-        [JsonProperty("file_data")]
+        [JsonPropertyName("file_data")]
         public string FileData { get; set; }
 
-        [JsonProperty("has_variations")]
+        [JsonPropertyName("has_variations")]
         public bool HasVariations { get; set; }
 
-        [JsonProperty("should_auto_renew")]
+        [JsonPropertyName("should_auto_renew")]
         public bool ShouldAutoRenew { get; set; }
 
-        [JsonProperty("language")]
+        [JsonPropertyName("language")]
         public string Language { get; set; }
 
-        [JsonProperty("price")]
+        [JsonPropertyName("price")]
         public Price Price { get; set; }
 
-        [JsonProperty("taxonomy_id")]
+        [JsonPropertyName("taxonomy_id")]
         public int TaxonomyId { get; set; }
     }
 
     public class Price
     {
-        [JsonProperty("amount")]
+        [JsonPropertyName("amount")]
         public int Amount { get; set; }
 
-        [JsonProperty("divisor")]
+        [JsonPropertyName("divisor")]
         public int Divisor { get; set; }
 
-        [JsonProperty("currency_code")]
+        [JsonPropertyName("currency_code")]
         public string CurrencyCode { get; set; }
     }
 

@@ -1,6 +1,5 @@
 using System.Text.Json.Serialization;
 
-
 namespace EtsyApiSharp.Models
 {
     //Represents a list of listing image resources, each of which contains the reference URLs and metadata for an image.

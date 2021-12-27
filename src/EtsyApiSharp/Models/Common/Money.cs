@@ -1,15 +1,15 @@
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace EtsyApiSharp.Models
 {
     //A representation of an amount of money.
     public class Money
     {
-        [JsonProperty("amount")]
+        [JsonPropertyName("amount")]
         public int Amount { get; set; }
-        [JsonProperty("divisor")]
+        [JsonPropertyName("divisor")]
         public int Divisor { get; set; }
-        [JsonProperty("currency_code")]
+        [JsonPropertyName("currency_code")]
         public string CurrencyCode { get; set; }
     }
 }

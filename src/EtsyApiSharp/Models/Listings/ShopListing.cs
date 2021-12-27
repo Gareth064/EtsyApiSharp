@@ -1,6 +1,5 @@
 using System.Text.Json.Serialization;
 
-
 namespace EtsyApiSharp.Models
 {
     //A listing from a shop, which contains a product quantity, title, description, price, etc.

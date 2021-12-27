@@ -1,148 +1,147 @@
-using Newtonsoft.Json;
-
+using System.Text.Json.Serialization;
 
 namespace EtsyApiSharp.Models
 {
     //The record of a purchase from a shop. Shop receipts display monetary values using the shop's currency.
     public class ShopReceipt
     {
-        [JsonProperty("receipt_id")]
+        [JsonPropertyName("receipt_id")]
         public long ReceiptId { get; set; }
 
 
-        [JsonProperty("receipt_type")]
+        [JsonPropertyName("receipt_type")]
         public long ReceiptType { get; set; }
 
 
-        [JsonProperty("seller_user_id")]
+        [JsonPropertyName("seller_user_id")]
         public long SellerUserId { get; set; }
 
 
-        [JsonProperty("seller_email")]
+        [JsonPropertyName("seller_email")]
         public string SellerEmail { get; set; }
 
 
-        [JsonProperty("buyer_user_id")]
+        [JsonPropertyName("buyer_user_id")]
         public long BuyerUserId { get; set; }
 
 
-        [JsonProperty("buyer_email")]
+        [JsonPropertyName("buyer_email")]
         public string BuyerEmail { get; set; }
 
 
-        [JsonProperty("name")]
+        [JsonPropertyName("name")]
         public string Name { get; set; }
 
 
-        [JsonProperty("first_line")]
+        [JsonPropertyName("first_line")]
         public string FirstLine { get; set; }
 
 
-        [JsonProperty("second_line")]
+        [JsonPropertyName("second_line")]
         public string SecondLine { get; set; }
 
 
-        [JsonProperty("city")]
+        [JsonPropertyName("city")]
         public string City { get; set; }
 
 
-        [JsonProperty("state")]
+        [JsonPropertyName("state")]
         public string State { get; set; }
 
 
-        [JsonProperty("zip")]
+        [JsonPropertyName("zip")]
         public string Zip { get; set; }
 
 
-        [JsonProperty("status")]
+        [JsonPropertyName("status")]
         public string Status { get; set; }
 
 
-        [JsonProperty("formatted_address")]
+        [JsonPropertyName("formatted_address")]
         public string FormattedAddress { get; set; }
 
 
-        [JsonProperty("country_iso")]
+        [JsonPropertyName("country_iso")]
         public string CountryIso { get; set; }
 
 
-        [JsonProperty("payment_method")]
+        [JsonPropertyName("payment_method")]
         public string PaymentMethod { get; set; }
 
 
-        [JsonProperty("payment_email")]
+        [JsonPropertyName("payment_email")]
         public string PaymentEmail { get; set; }
 
 
-        [JsonProperty("message_from_seller")]
+        [JsonPropertyName("message_from_seller")]
         public string MessageFromSeller { get; set; }
 
 
-        [JsonProperty("message_from_buyer")]
+        [JsonPropertyName("message_from_buyer")]
         public string MessageFromBuyer { get; set; }
 
 
-        [JsonProperty("message_from_payment")]
+        [JsonPropertyName("message_from_payment")]
         public string MessageFromPayment { get; set; }
 
 
-        [JsonProperty("is_paid")]
+        [JsonPropertyName("is_paid")]
         public bool IsPaid { get; set; }
 
 
-        [JsonProperty("is_shipped")]
+        [JsonPropertyName("is_shipped")]
         public bool IsShipped { get; set; }
 
 
-        [JsonProperty("create_timestamp")]
+        [JsonPropertyName("create_timestamp")]
         public long CreateTimestamp { get; set; }
 
 
-        [JsonProperty("update_timestamp")]
+        [JsonPropertyName("update_timestamp")]
         public long UpdateTimestamp { get; set; }
 
 
-        [JsonProperty("gift_message")]
+        [JsonPropertyName("gift_message")]
         public string GiftMessage { get; set; }
 
 
-        [JsonProperty("grandtotal")]
+        [JsonPropertyName("grandtotal")]
         public Money Grandtotal { get; set; }
 
 
-        [JsonProperty("subtotal")]
+        [JsonPropertyName("subtotal")]
         public Money Subtotal { get; set; }
 
 
-        [JsonProperty("total_price")]
+        [JsonPropertyName("total_price")]
         public Money TotalPrice { get; set; }
 
 
-        [JsonProperty("total_shipping_cost")]
+        [JsonPropertyName("total_shipping_cost")]
         public Money TotalShippingCost { get; set; }
 
 
-        [JsonProperty("total_tax_cost")]
+        [JsonPropertyName("total_tax_cost")]
         public Money TotalTaxCost { get; set; }
 
 
-        [JsonProperty("total_vat_cost")]
+        [JsonPropertyName("total_vat_cost")]
         public Money TotalVatCost { get; set; }
 
 
-        [JsonProperty("discount_amt")]
+        [JsonPropertyName("discount_amt")]
         public Money DiscountAmt { get; set; }
 
 
-        [JsonProperty("gift_wrap_price")]
+        [JsonPropertyName("gift_wrap_price")]
         public Money GiftWrapPrice { get; set; }
 
 
-        [JsonProperty("shipments")]
+        [JsonPropertyName("shipments")]
         public List<ShopReceiptShipment> Shipments { get; set; }
 
 
-        [JsonProperty("transactions")]
+        [JsonPropertyName("transactions")]
         public List<ListingTranslation> Transactions { get; set; }
 
 

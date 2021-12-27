@@ -1,7 +1,7 @@
 ﻿using EtsyApiSharp.Helpers;
 using EtsyApiSharp.Models;
-using Newtonsoft.Json;
 using System.Text;
+using System.Text.Json;
 
 namespace EtsyApiSharp.Services.Auths
 {
@@ -55,7 +55,7 @@ namespace EtsyApiSharp.Services.Auths
                     if (response.StatusCode == System.Net.HttpStatusCode.OK)
                     {
                         string responseString = await response.Content.ReadAsStringAsync();
-                        token = JsonConvert.DeserializeObject<EtsyTokenResponse>(responseString);
+                        token = JsonSerializer.Deserialize<EtsyTokenResponse>(responseString);
                     }
                 }
             }
@@ -83,7 +83,7 @@ namespace EtsyApiSharp.Services.Auths
                     if (response.StatusCode == System.Net.HttpStatusCode.OK)
                     {
                         string responseString = await response.Content.ReadAsStringAsync();
-                        token = JsonConvert.DeserializeObject<EtsyTokenResponse>(responseString);
+                        token = JsonSerializer.Deserialize<EtsyTokenResponse>(responseString);
                     }
                 }
             }

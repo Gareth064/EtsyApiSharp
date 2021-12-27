@@ -1,6 +1,5 @@
 using System.Text.Json.Serialization;
 
-
 namespace EtsyApiSharp.Models
 {
     //Represents several payments made with Etsy Payments. All monetary amounts are in USD pennies unless otherwise specified.
