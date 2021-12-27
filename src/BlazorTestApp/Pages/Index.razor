@@ -75,7 +75,8 @@
     {
         var paramss = new GetShopReceiptsFilter();
 
-        paramss.MinLastModified=1637161723;
+        //paramss.MinLastModified=1637161723;
+        paramss.WasPaid = false;
 
         var result = await ReceiptService.GetShopReceiptsAsync(AppState.TokenResponse,
             Convert.ToInt64("17255024"),paramss);

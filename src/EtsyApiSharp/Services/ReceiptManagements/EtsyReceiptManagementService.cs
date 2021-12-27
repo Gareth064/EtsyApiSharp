@@ -113,7 +113,7 @@ namespace EtsyApiSharp.Services.ReceiptManagements
             }
         }
 
-        public Task<ApiListResponse<ShopReceiptTransactions>> GetShopReceiptTransactionsByListingAsync(long shopId, long listingId)
+        public Task<ApiListResponse<EtsyListResponse<ShopReceiptTransaction>>> GetShopReceiptTransactionsByListingAsync(long shopId, long listingId)
         {
             throw new NotImplementedException();
         }
