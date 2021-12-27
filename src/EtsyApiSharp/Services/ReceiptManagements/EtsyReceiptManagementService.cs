@@ -11,12 +11,13 @@ namespace EtsyApiSharp.Services.ReceiptManagements
     {
         private readonly HttpClient _httpClient;
 
-        public EtsyReceiptManagementService()
+        public EtsyReceiptManagementService(string clientId)
         {
             _httpClient = new HttpClient { BaseAddress = new Uri(Url.baseApiUrl) };
+            _httpClient.DefaultRequestHeaders.Add("x-api-key", clientId);
         }
 
-        public async Task<ApiResponse<ShopReceipt>> CreateReceiptShipmentAsync(long shopId, ShopReceiptShipment shopReceiptShipment)
+        public async Task<ApiResponse<ShopReceipt>> CreateReceiptShipmentAsync(string apiToken, long shopId, ShopReceiptShipment shopReceiptShipment)
         {
             throw new NotImplementedException();
         }
@@ -26,7 +27,7 @@ namespace EtsyApiSharp.Services.ReceiptManagements
             try
             {
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
-                _httpClient.DefaultRequestHeaders.Add("x-api-key", "gss0u2qxjyv991mbjbwn2208");
+
                 string responseBody = await _httpClient.GetStringAsync($"/v3/application/shops/{shopId}/receipts/{receiptid}");
                 var reciept = JsonSerializer.Deserialize<ShopReceipt>(responseBody);
                 var result = new ApiResponse<ShopReceipt>
@@ -56,7 +57,6 @@ namespace EtsyApiSharp.Services.ReceiptManagements
             try
             {
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
-                _httpClient.DefaultRequestHeaders.Add("x-api-key", "gss0u2qxjyv991mbjbwn2208");
 
                 UriBuilder baseUri = new UriBuilder($"{_httpClient.BaseAddress}/v3/application/shops/{shopId}/receipts");
 
@@ -113,7 +113,7 @@ namespace EtsyApiSharp.Services.ReceiptManagements
             }
         }
 
-        public Task<ApiListResponse<EtsyListResponse<ShopReceiptTransaction>>> GetShopReceiptTransactionsByListingAsync(long shopId, long listingId)
+        public Task<ApiListResponse<EtsyListResponse<ShopReceiptTransaction>>> GetShopReceiptTransactionsByListingAsync( string apiToken, long shopId, long listingId)
         {
             throw new NotImplementedException();
         }

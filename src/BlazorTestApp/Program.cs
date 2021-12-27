@@ -15,8 +15,9 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddHttpClient();
-builder.Services.AddEtsyAuthSingleton("gss0u2qxjyv991mbjbwn2208", "https://localhost:5001/secret/callback",scopes);
-builder.Services.AddTransient<IEtsyReceiptManagementService, EtsyReceiptManagementService>();
+builder.Services.AddEtsyAuthServiceSingleton("gss0u2qxjyv991mbjbwn2208", "https://localhost:5001/secret/callback",scopes);
+builder.Services.AddEtsyReceiptManagementServiceTransient("gss0u2qxjyv991mbjbwn2208");
+
 
 var app = builder.Build();
 
