@@ -142,5 +142,35 @@ namespace EtsyApiSharp.Services.ReceiptManagements
                 return result;
             }
         }
+
+        public async Task<ApiResponse<EtsyListResponse<ShopReceiptTransaction>>> GetShopReceiptTransactionsByReceiptAsync(string apiToken, long shopId, long receiptid)
+        {
+            try
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
+
+                string responseBody = await _httpClient.GetStringAsync($"/v3/application/shops/{shopId}/receipts/{receiptid}/transactions");
+                var reciept = JsonSerializer.Deserialize<EtsyListResponse<ShopReceiptTransaction>>(responseBody);
+                var result = new ApiResponse<EtsyListResponse<ShopReceiptTransaction>>
+                {
+                    ResponseCode = 200,
+                    Success = true,
+                    Data = reciept,
+                    Message = null
+                };
+                return result;
+            }
+            catch (HttpRequestException ex)
+            {
+                var result = new ApiResponse<EtsyListResponse<ShopReceiptTransaction>>
+                {
+                    ResponseCode = 500,
+                    Success = false,
+                    Data = null,
+                    Message = $"{ex.Message}"
+                };
+                return result;
+            }
+        }
     }
 }

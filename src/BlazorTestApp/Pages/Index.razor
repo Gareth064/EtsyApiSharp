@@ -26,6 +26,7 @@
 <br />
 <input @bind="recieptId" />
 <button @onclick="GetReciept">Get Reciept</button>
+<button @onclick="GetRecieptTransactionsByRecieptId">Get Transactions by Reciept Id</button>
 <br />
 <br />
 <br />
@@ -34,7 +35,7 @@
 <br />
 <br />
 <input @bind="listingId" />
-<button @onclick="GetRecieptByListingId">Get Reciept by Listing Id</button>
+<button @onclick="GetRecieptTransactionsByListingId">Get Transactions by Listing Id</button>
 <br />
 <br />
 <br />
@@ -43,8 +44,8 @@
 
 @code {
     List<Scope> scopes = new List<Scope> { Scope.shops_r, Scope.shops_w, Scope.cart_r, Scope.listings_w, Scope.listings_r, Scope.email_r, Scope.transactions_r };
-    string recieptId = string.Empty;
-    string listingId = string.Empty;
+    string recieptId = "2256218026";
+    string listingId = "867662080";
     string recieptString = string.Empty;
 
     private void Authorise()
@@ -67,7 +68,7 @@
     private async Task GetReciept()
     {
         var result = await ReceiptService.GetShopReceiptAsync(AppState.TokenResponse,
-            Convert.ToInt64("17255024"),Convert.ToInt64(recieptId));
+            Convert.ToInt64("17255024"), Convert.ToInt64(recieptId));
 
         var tempString = JsonSerializer.Serialize(result);
         var jDoc = JsonDocument.Parse(tempString);
@@ -86,7 +87,7 @@
         paramss.WasPaid = false;
 
         var result = await ReceiptService.GetShopReceiptsAsync(AppState.TokenResponse,
-            Convert.ToInt64("17255024"),paramss);
+            Convert.ToInt64("17255024"), paramss);
 
         var tempString = JsonSerializer.Serialize(result);
         var jDoc = JsonDocument.Parse(tempString);
@@ -97,12 +98,28 @@
         Console.WriteLine(recieptString);
     }
 
-        private async Task GetRecieptByListingId()
+    private async Task GetRecieptTransactionsByListingId()
     {
         var result = await ReceiptService.GetShopReceiptTransactionsByListingAsync(
             apiToken: AppState.TokenResponse,
             shopId: Convert.ToInt64("17255024"),
             listingId: Convert.ToInt64(listingId));
+
+        var tempString = JsonSerializer.Serialize(result);
+        var jDoc = JsonDocument.Parse(tempString);
+
+        recieptString = JsonSerializer.Serialize(jDoc,
+            new JsonSerializerOptions { WriteIndented = true });
+
+        Console.WriteLine(recieptString);
+    }
+    
+    private async Task GetRecieptTransactionsByRecieptId()
+    {
+        var result = await ReceiptService.GetShopReceiptTransactionsByReceiptAsync(
+            apiToken: AppState.TokenResponse,
+            shopId: Convert.ToInt64("17255024"),
+            receiptid: Convert.ToInt64(recieptId));
 
         var tempString = JsonSerializer.Serialize(result);
         var jDoc = JsonDocument.Parse(tempString);
