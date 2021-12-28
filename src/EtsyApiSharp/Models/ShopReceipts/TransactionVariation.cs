@@ -6,11 +6,11 @@ namespace EtsyApiSharp.Models
     public class TransactionVariation
     {
         [JsonPropertyName("property_id")]
-        public int PropertyId { get; set; }
+        public long PropertyId { get; set; }
 
 
         [JsonPropertyName("value_id")]
-        public int ValueId { get; set; }
+        public long ValueId { get; set; }
 
 
         [JsonPropertyName("formatted_name")]

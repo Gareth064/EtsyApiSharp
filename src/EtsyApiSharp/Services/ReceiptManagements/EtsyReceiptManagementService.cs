@@ -113,9 +113,34 @@ namespace EtsyApiSharp.Services.ReceiptManagements
             }
         }
 
-        public Task<ApiListResponse<EtsyListResponse<ShopReceiptTransaction>>> GetShopReceiptTransactionsByListingAsync( string apiToken, long shopId, long listingId)
+        public async Task<ApiResponse<EtsyListResponse<ShopReceiptTransaction>>> GetShopReceiptTransactionsByListingAsync(string apiToken, long shopId, long listingId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
+
+                string responseBody = await _httpClient.GetStringAsync($"/v3/application/shops/{shopId}/listings/{listingId}/transactions");
+                var reciept = JsonSerializer.Deserialize<EtsyListResponse<ShopReceiptTransaction>>(responseBody);
+                var result = new ApiResponse<EtsyListResponse<ShopReceiptTransaction>>
+                {
+                    ResponseCode = 200,
+                    Success = true,
+                    Data = reciept,
+                    Message = null
+                };
+                return result;
+            }
+            catch (HttpRequestException ex)
+            {
+                var result = new ApiResponse<EtsyListResponse<ShopReceiptTransaction>>
+                {
+                    ResponseCode = 500,
+                    Success = false,
+                    Data = null,
+                    Message = $"{ex.Message}"
+                };
+                return result;
+            }
         }
     }
 }

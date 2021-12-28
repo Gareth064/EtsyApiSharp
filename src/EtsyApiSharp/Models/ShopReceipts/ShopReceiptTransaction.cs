@@ -6,7 +6,7 @@ namespace EtsyApiSharp.Models
     public class ShopReceiptTransaction
     {
         [JsonPropertyName("transaction_id")]
-        public int TransactionId { get; set; }
+        public long TransactionId { get; set; }
 
 
         [JsonPropertyName("title")]
@@ -18,23 +18,23 @@ namespace EtsyApiSharp.Models
 
 
         [JsonPropertyName("seller_user_id")]
-        public int SellerUserId { get; set; }
+        public long SellerUserId { get; set; }
 
 
         [JsonPropertyName("buyer_user_id")]
-        public int BuyerUserId { get; set; }
+        public long BuyerUserId { get; set; }
 
 
         [JsonPropertyName("create_timestamp")]
-        public int CreateTimestamp { get; set; }
+        public long CreateTimestamp { get; set; }
 
 
         [JsonPropertyName("paid_timestamp")]
-        public int PaidTimestamp { get; set; }
+        public long PaidTimestamp { get; set; }
 
 
         [JsonPropertyName("shipped_timestamp")]
-        public int ShippedTimestamp { get; set; }
+        public long ShippedTimestamp { get; set; }
 
 
         [JsonPropertyName("quantity")]
@@ -42,11 +42,11 @@ namespace EtsyApiSharp.Models
 
 
         [JsonPropertyName("listing_image_id")]
-        public int ListingImageId { get; set; }
+        public long ListingImageId { get; set; }
 
 
         [JsonPropertyName("receipt_id")]
-        public int ReceiptId { get; set; }
+        public long ReceiptId { get; set; }
 
 
         [JsonPropertyName("is_digital")]
@@ -58,7 +58,7 @@ namespace EtsyApiSharp.Models
 
 
         [JsonPropertyName("listing_id")]
-        public int ListingId { get; set; }
+        public long ListingId { get; set; }
 
 
         [JsonPropertyName("transaction_type")]
@@ -66,7 +66,7 @@ namespace EtsyApiSharp.Models
 
 
         [JsonPropertyName("product_id")]
-        public int ProductId { get; set; }
+        public long ProductId { get; set; }
 
 
         [JsonPropertyName("sku")]
@@ -86,15 +86,15 @@ namespace EtsyApiSharp.Models
 
 
         [JsonPropertyName("shipping_profile_id")]
-        public int ShippingProfileId { get; set; }
+        public long ShippingProfileId { get; set; }
 
 
         [JsonPropertyName("min_processing_days")]
-        public int MinProcessingDays { get; set; }
+        public int? MinProcessingDays { get; set; }
 
 
         [JsonPropertyName("max_processing_days")]
-        public int MaxProcessingDays { get; set; }
+        public int? MaxProcessingDays { get; set; }
 
 
         [JsonPropertyName("shipping_method")]
@@ -106,7 +106,7 @@ namespace EtsyApiSharp.Models
 
 
         [JsonPropertyName("expected_ship_date")]
-        public int ExpectedShipDate { get; set; }
+        public long ExpectedShipDate { get; set; }
 
 
     }

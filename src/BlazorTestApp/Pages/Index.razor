@@ -33,11 +33,18 @@
 <br />
 <br />
 <br />
+<input @bind="listingId" />
+<button @onclick="GetRecieptByListingId">Get Reciept by Listing Id</button>
+<br />
+<br />
+<br />
+
 @recieptString
 
 @code {
     List<Scope> scopes = new List<Scope> { Scope.shops_r, Scope.shops_w, Scope.cart_r, Scope.listings_w, Scope.listings_r, Scope.email_r, Scope.transactions_r };
     string recieptId = string.Empty;
+    string listingId = string.Empty;
     string recieptString = string.Empty;
 
     private void Authorise()
@@ -80,6 +87,22 @@
 
         var result = await ReceiptService.GetShopReceiptsAsync(AppState.TokenResponse,
             Convert.ToInt64("17255024"),paramss);
+
+        var tempString = JsonSerializer.Serialize(result);
+        var jDoc = JsonDocument.Parse(tempString);
+
+        recieptString = JsonSerializer.Serialize(jDoc,
+            new JsonSerializerOptions { WriteIndented = true });
+
+        Console.WriteLine(recieptString);
+    }
+
+        private async Task GetRecieptByListingId()
+    {
+        var result = await ReceiptService.GetShopReceiptTransactionsByListingAsync(
+            apiToken: AppState.TokenResponse,
+            shopId: Convert.ToInt64("17255024"),
+            listingId: Convert.ToInt64(listingId));
 
         var tempString = JsonSerializer.Serialize(result);
         var jDoc = JsonDocument.Parse(tempString);

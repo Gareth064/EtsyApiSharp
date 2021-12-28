@@ -9,6 +9,6 @@ namespace EtsyApiSharp.Services.ReceiptManagements
         Task<ApiResponse<ShopReceipt>> GetShopReceiptAsync(string apiToken, long shopId, long receiptid);
         Task<ApiResponse<EtsyListResponse<ShopReceipt>>> GetShopReceiptsAsync(string apiToken, long shopId, GetShopReceiptsFilter queryParams);
         Task<ApiResponse<ShopReceipt>> CreateReceiptShipmentAsync(string apiToken, long shopId, ShopReceiptShipment shopReceiptShipment);
-        Task<ApiListResponse<EtsyListResponse<ShopReceiptTransaction>>> GetShopReceiptTransactionsByListingAsync(string apiToken, long shopId, long listingId);
+        Task<ApiResponse<EtsyListResponse<ShopReceiptTransaction>>> GetShopReceiptTransactionsByListingAsync(string apiToken, long shopId, long listingId);
     }
 }
