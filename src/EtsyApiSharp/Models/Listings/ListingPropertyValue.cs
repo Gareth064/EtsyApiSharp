@@ -2,32 +2,46 @@ using System.Text.Json.Serialization;
 
 namespace EtsyApiSharp.Models
 {
-    //A representation of structured data values.
+    /// <summary>
+    /// A representation of structured data values.
+    /// </summary>
     public class ListingPropertyValue
     {
+        /// <summary>
+        /// The numeric ID of the Property.
+        /// </summary>
         [JsonPropertyName("property_id")]
-        public int PropertyId { get; set; }
+        public long PropertyId { get; set; }
 
-
+        /// <summary>
+        /// The name of the Property.
+        /// </summary>
         [JsonPropertyName("property_name")]
         public string PropertyName { get; set; }
 
-
+        /// <summary>
+        /// The numeric ID of the scale (if any).
+        /// </summary>
         [JsonPropertyName("scale_id")]
-        public int ScaleId { get; set; }
+        public long? ScaleId { get; set; }
 
-
+        /// <summary>
+        /// The label used to describe the chosen scale (if any).
+        /// </summary>
         [JsonPropertyName("scale_name")]
         public string ScaleName { get; set; }
 
-
+        /// <summary>
+        /// The numeric IDs of the Property values
+        /// </summary>
         [JsonPropertyName("value_ids")]
-        public List<long> ValueIds { get; set; }
+        public string[] ValueIds { get; set; }
 
-
+        /// <summary>
+        /// The Property values
+        /// </summary>
         [JsonPropertyName("values")]
         public string[] Values { get; set; }
-
 
     }
 }
