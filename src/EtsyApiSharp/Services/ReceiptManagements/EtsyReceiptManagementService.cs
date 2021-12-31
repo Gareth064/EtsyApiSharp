@@ -123,7 +123,8 @@ namespace EtsyApiSharp.Services.ReceiptManagements
             }
         }
 
-        public async Task<ApiResponse<ShopReceiptTransaction>> GetShopReceiptTransactionAsync(string apiToken,
+        public async Task<ApiResponse<ShopReceiptTransaction>> GetShopReceiptTransactionAsync(
+            string apiToken,
             long shopId,
             long transactionId)
         {

@@ -2,13 +2,17 @@ using System.Text.Json.Serialization;
 
 namespace EtsyApiSharp.Models
 {
-    //Represents an entry in a shop's ledger.
+    /// <summary>
+    /// Represents an entry in a shop's ledger.
+    /// </summary>
     public class PaymentAccountLedgerEntry
     {
         [JsonPropertyName("entry_id")]
         public int EntryId { get; set; }
 
-
+        /// <summary>
+        /// Ledger ID
+        /// </summary>
         [JsonPropertyName("ledger_id")]
         public int LedgerId { get; set; }
 
