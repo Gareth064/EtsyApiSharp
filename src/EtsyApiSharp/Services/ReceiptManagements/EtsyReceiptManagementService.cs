@@ -13,7 +13,7 @@ namespace EtsyApiSharp.Services.ReceiptManagements
 
         public EtsyReceiptManagementService(string clientId)
         {
-            _httpClient = new HttpClient { BaseAddress = new Uri(Url.baseApiUrl) };
+            _httpClient = new HttpClient { BaseAddress = new Uri(Url.AuthUrls.BaseApiUrl) };
             _httpClient.DefaultRequestHeaders.Add("x-api-key", clientId);
         }
 
@@ -28,12 +28,12 @@ namespace EtsyApiSharp.Services.ReceiptManagements
         public async Task<ApiResponse<ShopReceipt>> GetShopReceiptAsync(
             string apiToken,
             long shopId,
-            long receiptid)
+            long receiptId)
         {
             try
             {
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
-                string responseBody = await _httpClient.GetStringAsync($"/v3/application/shops/{shopId}/receipts/{receiptid}");
+                string responseBody = await _httpClient.GetStringAsync(Url.ReceiptUrls.GetShopReceipt(shopId: shopId, receiptId: receiptId));
                 var reciept = JsonSerializer.Deserialize<ShopReceipt>(responseBody);
 
                 var result = new ApiResponse<ShopReceipt>
@@ -68,7 +68,7 @@ namespace EtsyApiSharp.Services.ReceiptManagements
             try
             {
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
-                UriBuilder baseUri = new UriBuilder($"{_httpClient.BaseAddress}/v3/application/shops/{shopId}/receipts");
+                UriBuilder baseUri = new UriBuilder($"{_httpClient.BaseAddress}{Url.ReceiptUrls.GetShopReceipts(shopId: shopId)}");
 
                 if (filter.Limit is not 25)
                     baseUri.AddQueryParam("limit", filter.Limit.ToString());
@@ -131,7 +131,10 @@ namespace EtsyApiSharp.Services.ReceiptManagements
             try
             {
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
-                string responseBody = await _httpClient.GetStringAsync($"/v3/application/shops/{shopId}/transactions/{transactionId}");
+
+                string responseBody = await _httpClient.GetStringAsync(
+                    Url.ReceiptUrls.GetShopReceiptTransaction(shopId: shopId, transactionId: transactionId));
+
                 var reciept = JsonSerializer.Deserialize<ShopReceiptTransaction>(responseBody);
 
                 var result = new ApiResponse<ShopReceiptTransaction>
@@ -166,7 +169,10 @@ namespace EtsyApiSharp.Services.ReceiptManagements
             try
             {
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
-                string responseBody = await _httpClient.GetStringAsync($"/v3/application/shops/{shopId}/listings/{listingId}/transactions");
+
+                string responseBody = await _httpClient.GetStringAsync(
+                    Url.ReceiptUrls.GetShopReceiptTransactionsByListing(shopId: shopId, listingId: listingId));
+
                 var reciept = JsonSerializer.Deserialize<EtsyListResponse<ShopReceiptTransaction>>(responseBody);
 
                 var result = new ApiResponse<EtsyListResponse<ShopReceiptTransaction>>
@@ -196,12 +202,15 @@ namespace EtsyApiSharp.Services.ReceiptManagements
         public async Task<ApiResponse<EtsyListResponse<ShopReceiptTransaction>>> GetShopReceiptTransactionsByReceiptAsync(
             string apiToken,
             long shopId,
-            long receiptid)
+            long receiptId)
         {
             try
             {
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(scheme: "Bearer", parameter: apiToken);
-                string responseBody = await _httpClient.GetStringAsync($"/v3/application/shops/{shopId}/receipts/{receiptid}/transactions");
+
+                string responseBody = await _httpClient.GetStringAsync(
+                    Url.ReceiptUrls.GetShopReceiptTransactionsByReceipt(shopId: shopId, receiptId: receiptId));
+
                 var reciept = JsonSerializer.Deserialize<EtsyListResponse<ShopReceiptTransaction>>(json: responseBody);
 
                 var result = new ApiResponse<EtsyListResponse<ShopReceiptTransaction>>

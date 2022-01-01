@@ -21,7 +21,7 @@ namespace EtsyApiSharp.Services.Auths
 
         public string BuildAuthorizationUrl(string codeVerifier)
         {
-            StringBuilder sbUri = new StringBuilder(Url.baseAuthUrl);
+            StringBuilder sbUri = new StringBuilder(Url.AuthUrls.BaseAuthUrl);
             sbUri.Append("?response_type=" + "code");
             sbUri.Append("&redirect_uri=" + redirectUrl);
             sbUri.Append("&scope=" + PermissionsScopes(scopes));
@@ -45,7 +45,7 @@ namespace EtsyApiSharp.Services.Auths
 
             using (var httpClient = new HttpClient())
             {
-                var req = new HttpRequestMessage(HttpMethod.Post, Url.baseTokenUrl)
+                var req = new HttpRequestMessage(HttpMethod.Post, Url.AuthUrls.BaseTokenUrl)
                 {
                     Content = new FormUrlEncodedContent(formData)
                 };
@@ -73,7 +73,7 @@ namespace EtsyApiSharp.Services.Auths
 
             using (var httpClient = new HttpClient())
             {
-                var req = new HttpRequestMessage(HttpMethod.Post, Url.baseTokenUrl)
+                var req = new HttpRequestMessage(HttpMethod.Post, Url.AuthUrls.BaseTokenUrl)
                 {
                     Content = new FormUrlEncodedContent(formData)
                 };
