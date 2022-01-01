@@ -29,13 +29,13 @@ namespace EtsyApiSharp.Models
         /// A list of product offering entries for this product.
         /// </summary>
         [JsonPropertyName("offerings")]
-        public string[] Offerings { get; set; }
+        public List<ListingInventoryProductOffering> Offerings { get; set; }
 
         /// <summary>
         /// A list of property value entries for this product.
         /// </summary>
         [JsonPropertyName("property_values")]
-        public string[] PropertyValues { get; set; }
+        public List<ListingPropertyValue> PropertyValues { get; set; }
 
     }
 }

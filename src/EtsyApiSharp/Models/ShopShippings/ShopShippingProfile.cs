@@ -59,13 +59,13 @@ namespace EtsyApiSharp.Models
         /// A list of [shipping profile destinations](/documentation/reference#operation/createListingShippingProfileDestination) available for this shipping profile.
         /// </summary>
         [JsonPropertyName("shipping_profile_destinations")]
-        public string[] ShippingProfileDestinations { get; set; }
+        public List<ShopShippingProfileDestination> ShippingProfileDestinations { get; set; }
 
         /// <summary>
         /// A list of [shipping profile upgrades](/documentation/reference#operation/createListingShippingProfileUpgrade) available for this shipping profile.
         /// </summary>
         [JsonPropertyName("shipping_profile_upgrades")]
-        public string[] ShippingProfileUpgrades { get; set; }
+        public List<ShopShippingProfileUpgrade> ShippingProfileUpgrades { get; set; }
 
         /// <summary>
         /// The postal code string (not necessarily a number) for the location from which the listing ships.

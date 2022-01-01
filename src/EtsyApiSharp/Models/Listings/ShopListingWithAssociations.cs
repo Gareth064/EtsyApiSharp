@@ -149,13 +149,13 @@ namespace EtsyApiSharp.Models
         /// A list of tag strings for the listing. Valid tag strings contain only letters, numbers, whitespace characters, -, ', ™, ©, and ®. (regex: /[^\\p{L}\\p{Nd}\\p{Zs}\\-'™©®]/u) Default value is null.
         /// </summary>
         [JsonPropertyName("tags")]
-        public string[] Tags { get; set; }
+        public List<string> Tags { get; set; }
 
         /// <summary>
         /// A list of material strings for materials used in the product. Valid materials strings contain only letters, numbers, and whitespace characters. (regex: /[^\\p{L}\\p{Nd}\\p{Zs}]/u) Default value is null.
         /// </summary>
         [JsonPropertyName("materials")]
-        public string[] Materials { get; set; }
+        public List<string> Materials { get; set; }
 
         /// <summary>
         /// The numeric ID of the [shipping profile](/documentation/reference#tag/ShopListing-ShippingProfile) associated with the listing. Required when listing type=physical.
@@ -239,7 +239,7 @@ namespace EtsyApiSharp.Models
         /// An array of style strings for this listing, each of which is free-form text string such as \"Formal\", or \"Steampunk\". A Listing may have up to two styles. Valid style strings contain only letters, numbers, and whitespace characters. (regex: /[^\\p{L}\\p{Nd}\\p{Zs}]/u) Default value is null.
         /// </summary>
         [JsonPropertyName("style")]
-        public string[] Style { get; set; }
+        public List<string> Style { get; set; }
 
         /// <summary>
         /// A string describing the files attached to a digital listing.
@@ -299,19 +299,19 @@ namespace EtsyApiSharp.Models
         /// Represents a list of listing image resources, each of which contains the reference URLs and metadata for an image
         /// </summary>
         [JsonPropertyName("images")]
-        public string[] Images { get; set; }
+        public List<ListingImage> Images { get; set; }
 
         /// <summary>
         /// Represents a list of production partners for a shop.
         /// </summary>
         [JsonPropertyName("production_partners")]
-        public string[] ProductionPartners { get; set; }
+        public List<ShopProductionPartner> ProductionPartners { get; set; }
 
         /// <summary>
         /// A list of SKU strings for the listing. SKUs will only appear if the requesting user owns the shop.
         /// </summary>
         [JsonPropertyName("skus")]
-        public string[]? Skus { get; set; }
+        public List<string>? Skus { get; set; }
 
     }
 }

@@ -191,7 +191,7 @@ namespace EtsyApiSharp.Models
         /// A list of language strings for the shop's enrolled languages.
         /// </summary>
         [JsonPropertyName("languages")]
-        public string[] Languages { get; set; }
+        public List<string> Languages { get; set; }
 
         /// <summary>
         /// The URL string for this shop's icon image.

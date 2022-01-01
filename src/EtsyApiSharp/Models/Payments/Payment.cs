@@ -149,7 +149,7 @@ namespace EtsyApiSharp.Models
         /// List of refund objects on an Etsy Payments transaction. All monetary amounts are in USD pennies unless otherwise specified.
         /// </summary>
         [JsonPropertyName("payment_adjustments")]
-        public string[] PaymentAdjustments { get; set; }
+        public List<PaymentAdjustment> PaymentAdjustments { get; set; }
 
     }
 }

@@ -23,13 +23,13 @@ namespace EtsyApiSharp.Models
         /// Set of domestic mail classes of this shipping carrier.
         /// </summary>
         [JsonPropertyName("domestic_classes")]
-        public string[] DomesticClasses { get; set; }
+        public List<ShippingCarrierMailClass> DomesticClasses { get; set; }
 
         /// <summary>
         /// Set of international mail classes of this shipping carrier.
         /// </summary>
         [JsonPropertyName("international_classes")]
-        public string[] InternationalClasses { get; set; }
+        public List<ShippingCarrierMailClass> InternationalClasses { get; set; }
 
     }
 }

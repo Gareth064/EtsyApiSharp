@@ -125,7 +125,7 @@ namespace EtsyApiSharp.Models
         /// Array of variations and personalizations the buyer chose.
         /// </summary>
         [JsonPropertyName("variations")]
-        public string[] Variations { get; set; }
+        public List<TransactionVariation> Variations { get; set; }
 
         /// <summary>
         /// The ID of the shipping profile selected for this listing.

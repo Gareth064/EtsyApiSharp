@@ -29,7 +29,7 @@ namespace EtsyApiSharp.Models
         /// A list of available scales.
         /// </summary>
         [JsonPropertyName("scales")]
-        public string[] Scales { get; set; }
+        public List<TaxonomyPropertyScale> Scales { get; set; }
 
         /// <summary>
         /// When true, listings assigned eligible taxonomy IDs require this property.
@@ -59,13 +59,13 @@ namespace EtsyApiSharp.Models
         /// A list of supported property value strings for this property.
         /// </summary>
         [JsonPropertyName("possible_values")]
-        public string[] PossibleValues { get; set; }
+        public List<TaxonomyPropertyValue> PossibleValues { get; set; }
 
         /// <summary>
         /// A list of property value strings automatically and always selected for the given property.
         /// </summary>
         [JsonPropertyName("selected_values")]
-        public string[] SelectedValues { get; set; }
+        public List<TaxonomyPropertyValue> SelectedValues { get; set; }
 
     }
 }

@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace EtsyApiSharp.Models
 {
-/// <summary>
+    /// <summary>
     /// A variation chosen by the buyer during checkout.
     /// </summary>
     public class TransactionVariation

@@ -35,7 +35,7 @@ namespace EtsyApiSharp.Models
         /// The tags of the Listing of this Translation.
         /// </summary>
         [JsonPropertyName("tags")]
-        public string[] Tags { get; set; }
+        public List<string> Tags { get; set; }
 
     }
 }

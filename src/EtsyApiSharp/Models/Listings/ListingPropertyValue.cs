@@ -35,13 +35,13 @@ namespace EtsyApiSharp.Models
         /// The numeric IDs of the Property values
         /// </summary>
         [JsonPropertyName("value_ids")]
-        public string[] ValueIds { get; set; }
+        public List<int> ValueIds { get; set; }
 
         /// <summary>
         /// The Property values
         /// </summary>
         [JsonPropertyName("values")]
-        public string[] Values { get; set; }
+        public List<string> Values { get; set; }
 
     }
 }

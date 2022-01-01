@@ -29,7 +29,7 @@ namespace EtsyApiSharp.Models
         /// A list of numeric property value IDs this property value is equal to (if any).
         /// </summary>
         [JsonPropertyName("equal_to")]
-        public string[] EqualTo { get; set; }
+        public List<int> EqualTo { get; set; }
 
     }
 }

@@ -215,13 +215,13 @@ namespace EtsyApiSharp.Models
         /// A list of shipment statements for this receipt.
         /// </summary>
         [JsonPropertyName("shipments")]
-        public string[] Shipments { get; set; }
+        public List<ShopReceiptShipment> Shipments { get; set; }
 
         /// <summary>
         /// Array of transactions for the receipt.
         /// </summary>
         [JsonPropertyName("transactions")]
-        public string[] Transactions { get; set; }
+        public List<ShopReceiptTransaction> Transactions { get; set; }
 
     }
 }

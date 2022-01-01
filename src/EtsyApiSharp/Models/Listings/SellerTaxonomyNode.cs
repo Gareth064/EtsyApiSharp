@@ -35,13 +35,13 @@ namespace EtsyApiSharp.Models
         /// An array of taxonomy nodes for all the direct children of this taxonomy node in the seller taxanomy tree.
         /// </summary>
         [JsonPropertyName("children")]
-        public string[] Children { get; set; }
+        public List<SellerTaxonomyNode> Children { get; set; }
 
         /// <summary>
         /// An array of `taxonomy_id`s including this node and all of its direct parents in the seller taxonomy tree up to a root node. They are listed in order from root to leaf.
         /// </summary>
         [JsonPropertyName("full_path_taxonomy_ids")]
-        public string[] FullPathTaxonomyIds { get; set; }
+        public List<int> FullPathTaxonomyIds { get; set; }
 
     }
 }
