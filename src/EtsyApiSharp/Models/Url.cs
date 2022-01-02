@@ -25,6 +25,9 @@
 
             public static string GetShopReceiptTransactionsByReceipt(long shopId, long receiptId) =>
                 $"/v3/application/shops/{shopId}/receipts/{receiptId}/transactions";
+
+            public static string GetShopReceiptTransactionsByShop(long shopId) =>
+                $"/v3/application/shops/{shopId}/transactions";
         }
 
     }

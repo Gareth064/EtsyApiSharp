@@ -44,6 +44,10 @@
 <br />
 <br />
 <br />
+<button @onclick="GetTransactionsByShop">Get Transactions by Shop</button>
+<br />
+<br />
+<br />
 
 @resultToDisplay
 
@@ -140,6 +144,22 @@
     {
         var result = await ReceiptService.GetShopReceiptTransactionAsync(apiToken: AppState.TokenResponse,
             shopId: Convert.ToInt64("17255024"), transactionId: Convert.ToInt64(transactionId));
+
+        var tempString = JsonSerializer.Serialize(result);
+        var jDoc = JsonDocument.Parse(tempString);
+
+        resultToDisplay = JsonSerializer.Serialize(jDoc,
+            new JsonSerializerOptions { WriteIndented = true });
+
+        Console.WriteLine(resultToDisplay);
+    }
+
+    private async Task GetTransactionsByShop()
+    {
+        var paramss = new GetShopReceiptTransactionsByShopFilter();
+
+        var result = await ReceiptService.GetShopReceiptTransactionsByShopAsync(AppState.TokenResponse,
+            Convert.ToInt64("17255024"), paramss);
 
         var tempString = JsonSerializer.Serialize(result);
         var jDoc = JsonDocument.Parse(tempString);

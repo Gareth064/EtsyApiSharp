@@ -236,5 +236,53 @@ namespace EtsyApiSharp.Services.ReceiptManagements
                 return result;
             }
         }
+
+        public async Task<ApiResponse<EtsyListResponse<ShopReceiptTransaction>>> GetShopReceiptTransactionsByShopAsync(
+            string apiToken,
+            long shopId,
+            GetShopReceiptTransactionsByShopFilter filter)
+        {
+            try
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
+
+                UriBuilder baseUri = new UriBuilder(
+                    $"{_httpClient.BaseAddress}{Url.ReceiptUrls.GetShopReceiptTransactionsByShop(shopId: shopId)}");
+
+                if (filter.Limit is not 25)
+                    baseUri.AddQueryParam("limit", filter.Limit.ToString());
+
+                if (filter.Offset is not 0)
+                    baseUri.AddQueryParam("offset", filter.Offset.ToString());
+
+                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, baseUri.Uri);
+                var response = _httpClient.SendAsync(request);
+                var bodyContent = await response.Result.Content.ReadAsStringAsync();
+                var transactions = JsonSerializer.Deserialize<EtsyListResponse<ShopReceiptTransaction>>(bodyContent);
+
+                var result = new ApiResponse<EtsyListResponse<ShopReceiptTransaction>>
+                {
+                    ResponseCode = 200,
+                    Success = true,
+                    Data = transactions,
+                    Message = null
+                };
+
+                return result;
+            }
+            catch (HttpRequestException ex)
+            {
+                var result = new ApiResponse<EtsyListResponse<ShopReceiptTransaction>>
+                {
+                    ResponseCode = (int)ex.StatusCode,
+                    Success = false,
+                    Data = null,
+                    Message = $"{ex.Message}"
+                };
+
+                return result;
+            }
+        }
+
     }
 }

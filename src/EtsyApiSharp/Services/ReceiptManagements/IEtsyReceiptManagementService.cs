@@ -29,5 +29,10 @@ namespace EtsyApiSharp.Services.ReceiptManagements
             string apiToken,
             long shopId,
             long receiptid);
+
+        Task<ApiResponse<EtsyListResponse<ShopReceiptTransaction>>> GetShopReceiptTransactionsByShopAsync(
+            string apiToken,
+            long shopId,
+            GetShopReceiptTransactionsByShopFilter filter);
     }
 }
