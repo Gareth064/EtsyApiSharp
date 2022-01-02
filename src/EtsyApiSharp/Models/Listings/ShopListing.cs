@@ -1,3 +1,4 @@
+using EtsyApiSharp.Models.Listings.Enums;
 using System.Text.Json.Serialization;
 
 namespace EtsyApiSharp.Models
@@ -41,7 +42,7 @@ namespace EtsyApiSharp.Models
         /// An enumerated string from any of: active or inactive. Note: Setting a draft listing to active will also publish the listing on etsy.com. Setting a sold out listing to active will update the quantity to 1 and renew the listing on etsy.com.
         /// </summary>
         [JsonPropertyName("state")]
-        public string State { get; set; }
+        public ListingState State { get; set; }
 
         /// <summary>
         /// The listing\'s creation time, in epoch seconds.
