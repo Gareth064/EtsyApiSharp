@@ -30,5 +30,10 @@
                 $"/v3/application/shops/{shopId}/transactions";
         }
 
+        public static class ListingUrls
+        {
+            public static string GetListing(long listingId) =>
+                $"/v3/application/listings/{listingId}";
+        }
     }
 }

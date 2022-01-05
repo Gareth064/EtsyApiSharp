@@ -1,10 +1,6 @@
 using BlazorTestApp.Data;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
 using EtsyApiSharp;
 using EtsyApiSharp.Models;
-using EtsyApiSharp.Services;
-using EtsyApiSharp.Services.ReceiptManagements;
 
 List<Scope> scopes = new List<Scope> { Scope.shops_r, Scope.shops_w, Scope.cart_r, Scope.listings_w, Scope.listings_r, Scope.email_r, Scope.transactions_r };
 
@@ -15,8 +11,9 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddHttpClient();
-builder.Services.AddEtsyAuthServiceSingleton("gss0u2qxjyv991mbjbwn2208", "https://localhost:5001/secret/callback",scopes);
+builder.Services.AddEtsyAuthServiceSingleton("gss0u2qxjyv991mbjbwn2208", "https://localhost:5001/secret/callback", scopes);
 builder.Services.AddEtsyReceiptManagementServiceTransient("gss0u2qxjyv991mbjbwn2208");
+builder.Services.AddEtsyListingManagementServiceTransient("gss0u2qxjyv991mbjbwn2208");
 
 
 var app = builder.Build();

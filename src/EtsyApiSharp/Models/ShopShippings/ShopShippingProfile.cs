@@ -1,3 +1,5 @@
+using EtsyApiSharp.Helpers.Converters;
+using EtsyApiSharp.Models.ShopShippings.Enums;
 using System.Text.Json.Serialization;
 
 namespace EtsyApiSharp.Models
@@ -73,8 +75,9 @@ namespace EtsyApiSharp.Models
         [JsonPropertyName("origin_postal_code")]
         public string OriginPostalCode { get; set; }
 
+        [JsonConverter(typeof(JsonNullableEnumInt32Converter<ShippingProfileType>))]
         [JsonPropertyName("profile_type")]
-        public string ProfileType { get; set; }
+        public ShippingProfileType ProfileType { get; set; }
 
     }
 }

@@ -1,3 +1,5 @@
+using EtsyApiSharp.Helpers.Converters;
+using EtsyApiSharp.Models.Listings.Enums;
 using System.Text.Json.Serialization;
 
 namespace EtsyApiSharp.Models
@@ -40,8 +42,9 @@ namespace EtsyApiSharp.Models
         /// <summary>
         /// An enumerated string from any of: active or inactive. Note: Setting a draft listing to active will also publish the listing on etsy.com. Setting a sold out listing to active will update the quantity to 1 and renew the listing on etsy.com.
         /// </summary>
+        [JsonConverter(typeof(JsonNullableEnumStringConverter<ListingState>))]
         [JsonPropertyName("state")]
-        public string State { get; set; }
+        public ListingState State { get; set; }
 
         /// <summary>
         /// The listing\'s creation time, in epoch seconds.
@@ -142,8 +145,9 @@ namespace EtsyApiSharp.Models
         /// <summary>
         /// An enumerated type string that indicates whether the listing is physical or a digital download.
         /// </summary>
+        [JsonConverter(typeof(JsonNullableEnumInt32Converter<ListingType>))]
         [JsonPropertyName("listing_type")]
-        public bool ListingType { get; set; }
+        public ListingType ListingType { get; set; }
 
         /// <summary>
         /// A list of tag strings for the listing. Valid tag strings contain only letters, numbers, whitespace characters, -, ', ™, ©, and ®. (regex: /[^\\p{L}\\p{Nd}\\p{Zs}\\-'™©®]/u) Default value is null.

@@ -3,7 +3,7 @@ using EtsyApiSharp.Models.Common;
 using EtsyApiSharp.Models.Filters;
 using EtsyApiSharp.Models.Listings.Enums;
 
-namespace EtsyApiSharp.Services
+namespace EtsyApiSharp.Services.ListingManagements
 {
     public interface IEtsyListingManagementService
     {
@@ -28,7 +28,7 @@ namespace EtsyApiSharp.Services
             long shopId,
             GetListingsByShopFilter? filter = null);
 
-        Task<ApiResponse<ShopListing>> GetListingAsync(
+        Task<ApiResponse<ShopListingWithAssociations>> GetListingAsync(
             string apiToken,
             long listingId,
             List<ListingInclude>? includes = null);

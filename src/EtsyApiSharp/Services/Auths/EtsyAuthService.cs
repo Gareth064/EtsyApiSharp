@@ -57,6 +57,7 @@ namespace EtsyApiSharp.Services.Auths
                         string responseString = await response.Content.ReadAsStringAsync();
                         token = JsonSerializer.Deserialize<EtsyTokenResponse>(responseString);
                     }
+                    //TODO: Handle if response fails when getting a token.
                 }
             }
             return token;
