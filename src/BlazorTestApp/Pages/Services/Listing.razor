@@ -1,0 +1,97 @@
+﻿@page "/services/listing"
+@using BlazorTestApp.Components
+@using BlazorTestApp.Data
+@using EtsyApiSharp.Models.Filters
+@using EtsyApiSharp.Models.Listings.Enums
+@using System.Text.Json
+@using EtsyApiSharp.Services.ListingManagements
+@inject IEtsyListingManagementService ListingService
+
+<ServiceTemplate ServiceTitle="Listing Services" ShowResultsPane="true" ResultsToDisplay=@resultToDisplay>
+    <input @bind="listingId" />
+    <button @onclick="GetListing">Get Listing</button>
+    <br />
+    <br />
+    <input @bind="shopId" />
+    <button @onclick="GetFeaturedListingsByShopAsync">Featured Listings By Shop</button>
+        <br />
+    <br />
+    <button @onclick="FindAllListingsActiveAsync">All Active Listings</button>
+</ServiceTemplate>
+
+@code {
+    string resultToDisplay = string.Empty;
+    string listingId = "867662080"; //templaterunner
+                                    //string transactionId = "2808047732"; //lavendereight
+    string shopId;
+
+    private async Task GetListing()
+    {
+        var includes = new List<ListingInclude>();
+        includes.Add(ListingInclude.Images);
+        includes.Add(ListingInclude.Shipping);
+        includes.Add(ListingInclude.Shop);
+        includes.Add(ListingInclude.User);
+
+        var result = await ListingService.GetListingAsync(
+            AppState.TokenResponse,
+            Convert.ToInt64(listingId),
+            includes
+        );
+
+        var tempString = JsonSerializer.Serialize(result);
+        var jDoc = JsonDocument.Parse(tempString);
+
+        resultToDisplay = JsonSerializer.Serialize(jDoc,
+            new JsonSerializerOptions { WriteIndented = true });
+
+        Console.WriteLine(resultToDisplay);
+    }
+
+    private async Task GetFeaturedListingsByShopAsync()
+    {
+        var filter = new GetFeaturedListingsByShopFilter();
+        filter.Limit = 1;
+
+        if (String.IsNullOrEmpty(shopId))
+        {
+            shopId = AppState.ShopId.ToString();
+        }
+
+        var result = await ListingService.GetFeaturedListingsByShopAsync(
+            AppState.TokenResponse,
+            Convert.ToInt64(shopId),
+            filter);
+
+        var tempString = JsonSerializer.Serialize(result);
+        var jDoc = JsonDocument.Parse(tempString);
+
+        resultToDisplay = JsonSerializer.Serialize(jDoc,
+            new JsonSerializerOptions { WriteIndented = true });
+
+        Console.WriteLine(resultToDisplay);
+    }
+
+    private async Task FindAllListingsActiveAsync()
+    {
+        var filter = new FindAllListingsActiveFilter();
+        filter.Limit = 1;
+
+        if (String.IsNullOrEmpty(shopId))
+        {
+            shopId = AppState.ShopId.ToString();
+        }
+
+        var result = await ListingService.FindAllListingsActiveAsync(
+            AppState.TokenResponse,
+            filter);
+
+        var tempString = JsonSerializer.Serialize(result);
+        var jDoc = JsonDocument.Parse(tempString);
+
+        resultToDisplay = JsonSerializer.Serialize(jDoc,
+            new JsonSerializerOptions { WriteIndented = true });
+
+        Console.WriteLine(resultToDisplay);
+    }
+}

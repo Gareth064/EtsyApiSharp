@@ -7,7 +7,6 @@ namespace EtsyApiSharp.Models.Common
         [JsonPropertyName("count")]
         public int Count { get; set; }
 
-
         [JsonPropertyName("results")]
         public List<T> Results { get; set; }
     }

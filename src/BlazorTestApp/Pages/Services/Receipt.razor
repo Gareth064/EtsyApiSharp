@@ -1,0 +1,134 @@
+﻿@page "/services/receipt"
+@using BlazorTestApp.Components
+@using BlazorTestApp.Data
+@using EtsyApiSharp.Models.Filters
+@using EtsyApiSharp.Services.ReceiptManagements
+@using System.Text.Json
+@inject IEtsyReceiptManagementService ReceiptService
+
+<ServiceTemplate ServiceTitle="Receipt Services" ShowResultsPane="true" ResultsToDisplay=@resultToDisplay>
+    <input @bind="recieptId" />
+    <button @onclick="GetReciept">Get Reciept</button>
+    <button @onclick="GetRecieptTransactionsByRecieptId">Get Transactions by Reciept Id</button>
+    <br />
+    <br />
+    <button @onclick="GetReciepts">Get Reciepts</button>
+    <br />
+    <br />
+    <input @bind="listingId" />
+    <button @onclick="GetRecieptTransactionsByListingId">Get Transactions by Listing Id</button>
+    <br />
+    <br />
+    <input @bind="transactionId" />
+    <button @onclick="GetTransaction">Get Transaction by Id</button>
+    <br />
+    <br />
+    <button @onclick="GetTransactionsByShop">Get Transactions by Shop</button>
+</ServiceTemplate>
+
+@code {
+    string resultToDisplay = "";
+    //string recieptId = "2323578867"; //lavendereight
+    string recieptId = "2256218026"; //templaterunner
+                                     //string listingId = "672800727"; //lavendereight
+    string listingId = "867662080"; //templaterunner
+                                    //string transactionId = "2808047732"; //lavendereight
+    string transactionId = "2721211423"; //templaterunner
+
+    private async Task GetReciept()
+    {
+        var result = await ReceiptService.GetShopReceiptAsync(AppState.TokenResponse,
+            AppState.ShopId, Convert.ToInt64(recieptId));
+
+        var tempString = JsonSerializer.Serialize(result);
+        var jDoc = JsonDocument.Parse(tempString);
+
+        resultToDisplay = JsonSerializer.Serialize(
+            jDoc,
+            new JsonSerializerOptions { WriteIndented = true });
+
+        this.StateHasChanged();
+        Console.WriteLine(resultToDisplay);
+    }
+
+    private async Task GetReciepts()
+    {
+        var paramss = new GetShopReceiptsFilter();
+
+        //paramss.MinLastModified=1637161723;
+        paramss.WasPaid = true;
+
+        var result = await ReceiptService.GetShopReceiptsAsync(AppState.TokenResponse,
+            AppState.ShopId, paramss);
+
+        var tempString = JsonSerializer.Serialize(result);
+        var jDoc = JsonDocument.Parse(tempString);
+
+        resultToDisplay = JsonSerializer.Serialize(jDoc,
+            new JsonSerializerOptions { WriteIndented = true });
+
+        Console.WriteLine(resultToDisplay);
+    }
+
+    private async Task GetRecieptTransactionsByListingId()
+    {
+        var result = await ReceiptService.GetShopReceiptTransactionsByListingAsync(
+            apiToken: AppState.TokenResponse,
+            shopId: AppState.ShopId,
+            listingId: Convert.ToInt64(listingId));
+
+        var tempString = JsonSerializer.Serialize(result);
+        var jDoc = JsonDocument.Parse(tempString);
+
+        resultToDisplay = JsonSerializer.Serialize(jDoc,
+            new JsonSerializerOptions { WriteIndented = true });
+
+        Console.WriteLine(resultToDisplay);
+    }
+
+    private async Task GetRecieptTransactionsByRecieptId()
+    {
+        var result = await ReceiptService.GetShopReceiptTransactionsByReceiptAsync(
+            apiToken: AppState.TokenResponse,
+            shopId: AppState.ShopId,
+            receiptid: Convert.ToInt64(recieptId));
+
+        var tempString = JsonSerializer.Serialize(result);
+        var jDoc = JsonDocument.Parse(tempString);
+
+        resultToDisplay = JsonSerializer.Serialize(jDoc,
+            new JsonSerializerOptions { WriteIndented = true });
+
+        Console.WriteLine(resultToDisplay);
+    }
+
+    private async Task GetTransaction()
+    {
+        var result = await ReceiptService.GetShopReceiptTransactionAsync(apiToken: AppState.TokenResponse,
+            shopId: AppState.ShopId, transactionId: Convert.ToInt64(transactionId));
+
+        var tempString = JsonSerializer.Serialize(result);
+        var jDoc = JsonDocument.Parse(tempString);
+
+        resultToDisplay = JsonSerializer.Serialize(jDoc,
+            new JsonSerializerOptions { WriteIndented = true });
+
+        Console.WriteLine(resultToDisplay);
+    }
+
+    private async Task GetTransactionsByShop()
+    {
+        var paramss = new GetShopReceiptTransactionsByShopFilter();
+
+        var result = await ReceiptService.GetShopReceiptTransactionsByShopAsync(AppState.TokenResponse,
+            AppState.ShopId, paramss);
+
+        var tempString = JsonSerializer.Serialize(result);
+        var jDoc = JsonDocument.Parse(tempString);
+
+        resultToDisplay = JsonSerializer.Serialize(jDoc,
+            new JsonSerializerOptions { WriteIndented = true });
+
+        Console.WriteLine(resultToDisplay);
+    }
+}

@@ -1,4 +1,5 @@
 ﻿@page "/"
+@using BlazorTestApp.Components
 @using BlazorTestApp.Data
 @using EtsyApiSharp.Models
 @using EtsyApiSharp.Models.Filters
@@ -9,17 +10,8 @@
 @using System.Text.Json
 @inject NavigationManager Navigation
 @inject IEtsyAuthService AuthService
-@inject IEtsyReceiptManagementService ReceiptService
-@inject IEtsyListingManagementService ListingService
 
-
-<h1>Etsy OAuth2 Test</h1>
-<br />
-lavendereight = 10919014
-<br />
-templaterunner = 17255024
-<br />
-<br />
+<ServiceTemplate ServiceTitle="Auth Services" ShowResultsPane="false" ResultsToDisplay="">
 <button @onclick="Authorise">Get Authorization Code</button>
 <br />
 <label>Authorization Code: </label><label>@AppState.AuthorizationCode</label>
@@ -29,56 +21,11 @@ templaterunner = 17255024
 <button @onclick="GetAccessToken">Get Access Token</button>
 <br />
 <label>Access Token: </label><label>@AppState.TokenResponse</label>
-<br />
-<br />
-<br />
-<input @bind="recieptId" />
-<button @onclick="GetReciept">Get Reciept</button>
-<button @onclick="GetRecieptTransactionsByRecieptId">Get Transactions by Reciept Id</button>
-<br />
-<br />
-<br />
-<button @onclick="GetReciepts">Get Reciepts</button>
-<br />
-<br />
-<br />
-<input @bind="listingId" />
-<button @onclick="GetRecieptTransactionsByListingId">Get Transactions by Listing Id</button>
-<br />
-<br />
-<br />
-<input @bind="transactionId" />
-<button @onclick="GetTransaction">Get Transaction by Id</button>
-<br />
-<br />
-<br />
-<button @onclick="GetTransactionsByShop">Get Transactions by Shop</button>
-<br />
-<br />
-<br />
-<input @bind="listingId" />
-<button @onclick="GetListing">Get by Listing Id</button>
-<br />
-<br />
-<br />
-<pre>
-    <code>
-        @resultToDisplay
-    </code>
-</pre>
+</ServiceTemplate>
 
 
 @code {
     List<Scope> scopes = new List<Scope> { Scope.shops_r, Scope.shops_w, Scope.cart_r, Scope.listings_w, Scope.listings_r, Scope.email_r, Scope.transactions_r };
-    string shopId = "10919014"; //lavendereight
-    string recieptId = "2323578867"; //lavendereight
-    string listingId = "672800727"; //lavendereight
-    string transactionId = "2808047732"; //lavendereight
-    //string shopId = "17255024"; //templaterunner
-    //string recieptId = "2256218026"; //templaterunner
-    //string listingId = "867662080"; //templaterunner
-    //string transactionId = "2721211423"; //templaterunner
-    string resultToDisplay = string.Empty;    
 
     private void Authorise()
     {
@@ -97,121 +44,4 @@ templaterunner = 17255024
         AppState.OnChange -= StateHasChanged;
     }
 
-    private async Task GetReciept()
-    {
-        var result = await ReceiptService.GetShopReceiptAsync(AppState.TokenResponse,
-            AppState.ShopId, Convert.ToInt64(recieptId));
-
-        var tempString = JsonSerializer.Serialize(result);
-        var jDoc = JsonDocument.Parse(tempString);
-
-        resultToDisplay = JsonSerializer.Serialize(jDoc,
-            new JsonSerializerOptions { WriteIndented = true });
-
-        Console.WriteLine(resultToDisplay);
-    }
-
-    private async Task GetReciepts()
-    {
-        var paramss = new GetShopReceiptsFilter();
-
-        //paramss.MinLastModified=1637161723;
-        paramss.WasPaid = true;
-
-        var result = await ReceiptService.GetShopReceiptsAsync(AppState.TokenResponse,
-            AppState.ShopId, paramss);
-
-        var tempString = JsonSerializer.Serialize(result);
-        var jDoc = JsonDocument.Parse(tempString);
-
-        resultToDisplay = JsonSerializer.Serialize(jDoc,
-            new JsonSerializerOptions { WriteIndented = true });
-
-        Console.WriteLine(resultToDisplay);
-    }
-
-    private async Task GetRecieptTransactionsByListingId()
-    {
-        var result = await ReceiptService.GetShopReceiptTransactionsByListingAsync(
-            apiToken: AppState.TokenResponse,
-            shopId: AppState.ShopId,
-            listingId: Convert.ToInt64(listingId));
-
-        var tempString = JsonSerializer.Serialize(result);
-        var jDoc = JsonDocument.Parse(tempString);
-
-        resultToDisplay = JsonSerializer.Serialize(jDoc,
-            new JsonSerializerOptions { WriteIndented = true });
-
-        Console.WriteLine(resultToDisplay);
-    }
-
-    private async Task GetRecieptTransactionsByRecieptId()
-    {
-        var result = await ReceiptService.GetShopReceiptTransactionsByReceiptAsync(
-            apiToken: AppState.TokenResponse,
-            shopId: AppState.ShopId,
-            receiptid: Convert.ToInt64(recieptId));
-
-        var tempString = JsonSerializer.Serialize(result);
-        var jDoc = JsonDocument.Parse(tempString);
-
-        resultToDisplay = JsonSerializer.Serialize(jDoc,
-            new JsonSerializerOptions { WriteIndented = true });
-
-        Console.WriteLine(resultToDisplay);
-    }
-
-    private async Task GetTransaction()
-    {
-        var result = await ReceiptService.GetShopReceiptTransactionAsync(apiToken: AppState.TokenResponse,
-            shopId: AppState.ShopId, transactionId: Convert.ToInt64(transactionId));
-
-        var tempString = JsonSerializer.Serialize(result);
-        var jDoc = JsonDocument.Parse(tempString);
-
-        resultToDisplay = JsonSerializer.Serialize(jDoc,
-            new JsonSerializerOptions { WriteIndented = true });
-
-        Console.WriteLine(resultToDisplay);
-    }
-
-    private async Task GetTransactionsByShop()
-    {
-        var paramss = new GetShopReceiptTransactionsByShopFilter();
-
-        var result = await ReceiptService.GetShopReceiptTransactionsByShopAsync(AppState.TokenResponse,
-            AppState.ShopId, paramss);
-
-        var tempString = JsonSerializer.Serialize(result);
-        var jDoc = JsonDocument.Parse(tempString);
-
-        resultToDisplay = JsonSerializer.Serialize(jDoc,
-            new JsonSerializerOptions { WriteIndented = true });
-
-        Console.WriteLine(resultToDisplay);
-    }
-
-    private async Task GetListing()
-    {
-        var includes = new List<ListingInclude>();
-        includes.Add(ListingInclude.Images);
-        includes.Add(ListingInclude.Shipping);
-        includes.Add(ListingInclude.Shop);
-        includes.Add(ListingInclude.User);
-
-        var result = await ListingService.GetListingAsync(
-            AppState.TokenResponse,
-            Convert.ToInt64(listingId),
-            includes
-        );
-
-        var tempString = JsonSerializer.Serialize(result);
-        var jDoc = JsonDocument.Parse(tempString);
-
-        resultToDisplay = JsonSerializer.Serialize(jDoc,
-            new JsonSerializerOptions { WriteIndented = true });
-
-        Console.WriteLine(resultToDisplay);
-    }
 }

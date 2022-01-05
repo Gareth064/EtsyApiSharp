@@ -18,7 +18,7 @@ namespace EtsyApiSharp.Services.ListingManagements
             _httpClient.DefaultRequestHeaders.Add("x-api-key", clientId);
         }
 
-        public Task<ApiListResponse<List<ShopListing>>> FindAllActiveListingsByShopAsync(
+        public Task<ApiListResponse<EtsyListResponse<ShopListing>>> FindAllActiveListingsByShopAsync(
             string apiToken,
             long shopId,
             FindAllActiveListingsByShopFilter? filter = null)
@@ -26,19 +26,120 @@ namespace EtsyApiSharp.Services.ListingManagements
             throw new NotImplementedException();
         }
 
-        public Task<ApiResponse<List<ShopListing>>> FindAllListingsActiveAsync(
+        public async Task<ApiResponse<EtsyListResponse<ShopListing>>> FindAllListingsActiveAsync(
             string apiToken,
             FindAllListingsActiveFilter? filter = null)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
+                UriBuilder baseUri = new UriBuilder($"{_httpClient.BaseAddress}{Url.ListingUrls.FindAllListingsActive()}");
+
+                if (filter is not null)
+                {
+                    if (filter.Limit is not 25)
+                        baseUri.AddQueryParam("limit", filter.Limit.ToString());
+
+                    if (filter.Offset is not 0)
+                        baseUri.AddQueryParam("offset", filter.Offset.ToString());
+
+                    if(filter.SortOn is not null)
+                        baseUri.AddQueryParam("sort_on", filter.SortOn.ToString());
+
+                    if (filter.SortOrder is not null)
+                        baseUri.AddQueryParam("sort_order", filter.SortOrder.ToString());
+
+                    if (filter.MinPrice is not null)
+                        baseUri.AddQueryParam("min_price", filter.MinPrice.ToString());
+
+                    if (filter.MaxPrice is not null)
+                        baseUri.AddQueryParam("max_price", filter.MaxPrice.ToString());
+
+                    if (filter.Keywords is not null)
+                        baseUri.AddQueryParam("keywords", filter.Keywords);
+
+                    if (filter.TaxonomyId is not null)
+                        baseUri.AddQueryParam("taxonomy_id", filter.TaxonomyId.ToString());
+
+                    if (filter.ShopLocation is not null)
+                        baseUri.AddQueryParam("shop_location", filter.ShopLocation);
+                }
+
+                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, baseUri.Uri);
+                var response = _httpClient.SendAsync(request);
+                var bodyContent = await response.Result.Content.ReadAsStringAsync();
+                var reciepts = JsonSerializer.Deserialize<EtsyListResponse<ShopListing>>(bodyContent);
+
+                var result = new ApiResponse<EtsyListResponse<ShopListing>>
+                {
+                    ResponseCode = 200,
+                    Success = true,
+                    Data = reciepts,
+                    Message = null
+                };
+
+                return result;
+            }
+            catch (HttpRequestException ex)
+            {
+                var result = new ApiResponse<EtsyListResponse<ShopListing>>
+                {
+                    ResponseCode = (int)ex.StatusCode,
+                    Success = false,
+                    Data = null,
+                    Message = $"{ex.Message}"
+                };
+
+                return result;
+            }
         }
 
-        public Task<ApiResponse<List<ShopListing>>> GetFeaturedListingsByShopAsync(
+        public async Task<ApiResponse<EtsyListResponse<ShopListing>>> GetFeaturedListingsByShopAsync(
             string apiToken,
             long shopId,
             GetFeaturedListingsByShopFilter? filter = null)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
+                UriBuilder baseUri = new UriBuilder($"{_httpClient.BaseAddress}{Url.ListingUrls.GetFeaturedListingsByShop(shopId: shopId)}");
+
+                if (filter is not null)
+                {
+                    if (filter.Limit is not 25)
+                        baseUri.AddQueryParam("limit", filter.Limit.ToString());
+
+                    if (filter.Offset is not 0)
+                        baseUri.AddQueryParam("offset", filter.Offset.ToString()); 
+                }
+
+                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, baseUri.Uri);
+                var response = _httpClient.SendAsync(request);
+                var bodyContent = await response.Result.Content.ReadAsStringAsync();
+                var reciepts = JsonSerializer.Deserialize<EtsyListResponse<ShopListing>>(bodyContent);
+
+                var result = new ApiResponse<EtsyListResponse<ShopListing>>
+                {
+                    ResponseCode = 200,
+                    Success = true,
+                    Data = reciepts,
+                    Message = null
+                };
+
+                return result;
+            }
+            catch (HttpRequestException ex)
+            {
+                var result = new ApiResponse<EtsyListResponse<ShopListing>>
+                {
+                    ResponseCode = (int)ex.StatusCode,
+                    Success = false,
+                    Data = null,
+                    Message = $"{ex.Message}"
+                };
+
+                return result;
+            }
         }
 
         public async Task<ApiResponse<ShopListingWithAssociations>> GetListingAsync(
@@ -105,7 +206,7 @@ namespace EtsyApiSharp.Services.ListingManagements
             }
         }
 
-        public Task<ApiResponse<List<ListingPropertyValue>>> GetListingPropertiesAsync(
+        public Task<ApiResponse<EtsyListResponse<ListingPropertyValue>>> GetListingPropertiesAsync(
             string apiToken,
             long shopId,
             long listingId)
@@ -121,7 +222,7 @@ namespace EtsyApiSharp.Services.ListingManagements
             throw new NotImplementedException();
         }
 
-        public Task<ApiResponse<List<ShopListing>>> GetListingsByListingIdsAsync(
+        public Task<ApiResponse<EtsyListResponse<ShopListing>>> GetListingsByListingIdsAsync(
             string apiToken,
             List<long> listingIds,
             List<ListingInclude>? includes = null)
@@ -129,7 +230,7 @@ namespace EtsyApiSharp.Services.ListingManagements
             throw new NotImplementedException();
         }
 
-        public Task<ApiResponse<List<ShopListing>>> GetListingsByShopAsync(
+        public Task<ApiResponse<EtsyListResponse<ShopListing>>> GetListingsByShopAsync(
             string apiToken,
             long shopId,
             GetListingsByShopFilter? filter = null)
@@ -137,7 +238,7 @@ namespace EtsyApiSharp.Services.ListingManagements
             throw new NotImplementedException();
         }
 
-        public Task<ApiResponse<List<ShopListing>>> GetListingsByShopReceiptAsync(
+        public Task<ApiResponse<EtsyListResponse<ShopListing>>> GetListingsByShopReceiptAsync(
             string apiToken,
             long shopId,
             long receiptId,
@@ -146,7 +247,7 @@ namespace EtsyApiSharp.Services.ListingManagements
             throw new NotImplementedException();
         }
 
-        public Task<ApiResponse<List<ShopListing>>> GetListingsByShopSectionIdAsync(
+        public Task<ApiResponse<EtsyListResponse<ShopListing>>> GetListingsByShopSectionIdAsync(
             string apiToken,
             long shopId,
             GetListingsByShopSectionIdFilter filter)
@@ -154,14 +255,14 @@ namespace EtsyApiSharp.Services.ListingManagements
             throw new NotImplementedException();
         }
 
-        public Task<ApiResponse<List<TaxonomyNodeProperty>>> GetPropertiesByTaxonomyIdAsync(
+        public Task<ApiResponse<EtsyListResponse<TaxonomyNodeProperty>>> GetPropertiesByTaxonomyIdAsync(
             string apiToken,
             long taxonomyId)
         {
             throw new NotImplementedException();
         }
 
-        public Task<ApiResponse<List<SellerTaxonomyNode>>> GetSellerTaxonomyNodesAsync(
+        public Task<ApiResponse<EtsyListResponse<SellerTaxonomyNode>>> GetSellerTaxonomyNodesAsync(
             string apiToken)
         {
             throw new NotImplementedException();

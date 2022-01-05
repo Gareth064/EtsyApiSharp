@@ -1,0 +1,23 @@
+﻿<hr />
+<h3>@ServiceTitle</h3>
+<br />
+<div style="display:grid; grid-template-columns: 1fr 1fr;">
+    <div style="grid-column: 1; width: 300px">
+        @ChildContent
+    </div>
+    <div style="grid-column: 2; width: 300px">
+        @if (ShowResultsPane)
+        {
+        <textarea rows=20 cols=125 readonly="readonly" style="font-size: small" @bind=@ResultsToDisplay />
+        }
+    </div>
+</div>
+<hr />
+
+@code {
+    [Parameter] public string ServiceTitle { get; set; }
+    [Parameter] public RenderFragment ChildContent { get; set; }
+    [Parameter] public bool ShowResultsPane { get; set; }
+    [Parameter] public string? ResultsToDisplay { get; set; }
+
+}

@@ -11,18 +11,11 @@
 
     <main>
         <div class="top-row px-4">
-            <form class="row row-cols-lg-auto g-3">
-                <div class="col-sm-2">
-                    <label for="shopInput">Shop</label>
-                    <select id="shopInput" class="form-control" data-role="select-dropdown" data-profile="minimal" @onchange=ShopChanged>
-                        <option value=""></option>
-                        <option value="17255024">Template Runner</option>
-                        <option value="10919014">Lavender Eight</option>
-                    </select>
-                </div>
-                <div class="col-sm-2">
-                </div>
-            </form>
+                <select @onchange=ShopChanged>
+                    <option value="" selected="selected">Choose Shop</option>
+                    <option value="17255024">Template Runner</option>
+                    <option value="10919014">Lavender Eight</option>
+                </select>
         </div>
         <article class="content px-4">
             @Body
@@ -30,7 +23,7 @@
     </main>
 </div>
 
-@code{
+@code {
     private void ShopChanged(ChangeEventArgs e)
     {
         var shopId = Convert.ToInt64(e.Value);
