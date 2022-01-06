@@ -1,3 +1,4 @@
+using EtsyApiSharp.Helpers.Converters;
 using System.Text.Json.Serialization;
 
 namespace EtsyApiSharp.Models
@@ -274,6 +275,7 @@ namespace EtsyApiSharp.Models
         /// <summary>
         /// Average rating based on reviews of shop listings in the past year.
         /// </summary>
+        [JsonConverter(typeof(JsonStringFloatConverter))]
         [JsonPropertyName("review_average")]
         public float? ReviewAverage { get; set; }
 

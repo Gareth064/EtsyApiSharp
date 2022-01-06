@@ -75,7 +75,7 @@
     private async Task FindAllListingsActiveAsync()
     {
         var filter = new FindAllListingsActiveFilter();
-        filter.Limit = 1;
+        filter.Keywords = "template";
 
         if (String.IsNullOrEmpty(shopId))
         {
