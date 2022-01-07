@@ -44,6 +44,9 @@
             public static string FindAllActiveListingsByShop(long shopId) =>
                 $"/v3/application/shops/{ shopId }/listings/active";
 
+            public static string GetListingsByShop(long shopId) =>
+                $"/v3/application/shops/{ shopId }/listings";
+
         }
     }
 }

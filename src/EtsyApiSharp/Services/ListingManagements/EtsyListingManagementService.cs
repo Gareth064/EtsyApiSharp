@@ -273,12 +273,61 @@ namespace EtsyApiSharp.Services.ListingManagements
             throw new NotImplementedException();
         }
 
-        public Task<ApiResponse<EtsyListResponse<ShopListing>>> GetListingsByShopAsync(
+        public async Task<ApiResponse<EtsyListResponse<ShopListing>>> GetListingsByShopAsync(
             string apiToken,
             long shopId,
             GetListingsByShopFilter? filter = null)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
+                UriBuilder baseUri = new UriBuilder($"{_httpClient.BaseAddress}{Url.ListingUrls.GetListingsByShop(shopId: shopId)}");
+
+                if (filter is not null)
+                {
+                    if (filter.Limit is not 25)
+                        baseUri.AddQueryParam("limit", filter.Limit.ToString());
+
+                    if (filter.Offset is not 0)
+                        baseUri.AddQueryParam("offset", filter.Offset.ToString());
+
+                    if(filter.State is not ListingState.active)
+                        baseUri.AddQueryParam("state", filter.State.ToString());
+
+                    if(filter.SortOn is not ListingSortOn.created)
+                        baseUri.AddQueryParam("sort_on", filter.SortOn.ToString());
+
+                    if (filter.SortOrder is not ListingSortOrder.desc)
+                        baseUri.AddQueryParam("sort_order", filter.SortOrder.ToString());
+                }
+
+                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, baseUri.Uri);
+                var response = _httpClient.SendAsync(request);
+                var bodyContent = await response.Result.Content.ReadAsStringAsync();
+                var reciepts = JsonSerializer.Deserialize<EtsyListResponse<ShopListing>>(bodyContent);
+
+                var result = new ApiResponse<EtsyListResponse<ShopListing>>
+                {
+                    ResponseCode = 200,
+                    Success = true,
+                    Data = reciepts,
+                    Message = null
+                };
+
+                return result;
+            }
+            catch (HttpRequestException ex)
+            {
+                var result = new ApiResponse<EtsyListResponse<ShopListing>>
+                {
+                    ResponseCode = (int)ex.StatusCode,
+                    Success = false,
+                    Data = null,
+                    Message = $"{ex.Message}"
+                };
+
+                return result;
+            }
         }
 
         public Task<ApiResponse<EtsyListResponse<ShopListing>>> GetListingsByShopReceiptAsync(
