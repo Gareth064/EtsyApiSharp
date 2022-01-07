@@ -330,13 +330,53 @@ namespace EtsyApiSharp.Services.ListingManagements
             }
         }
 
-        public Task<ApiResponse<EtsyListResponse<ShopListing>>> GetListingsByShopReceiptAsync(
+        public async Task<ApiResponse<EtsyListResponse<ShopListing>>> GetListingsByShopReceiptAsync(
             string apiToken,
             long shopId,
             long receiptId,
             GetListingsByShopReceiptFilter? filter = null)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
+                UriBuilder baseUri = new UriBuilder($"{_httpClient.BaseAddress}{Url.ListingUrls.GetListingsByShopReceipt(shopId: shopId, receiptId: receiptId)}");
+
+                if (filter is not null)
+                {
+                    if (filter.Limit is not 25)
+                        baseUri.AddQueryParam("limit", filter.Limit.ToString());
+
+                    if (filter.Offset is not 0)
+                        baseUri.AddQueryParam("offset", filter.Offset.ToString());
+                }
+
+                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, baseUri.Uri);
+                var response = _httpClient.SendAsync(request);
+                var bodyContent = await response.Result.Content.ReadAsStringAsync();
+                var reciepts = JsonSerializer.Deserialize<EtsyListResponse<ShopListing>>(bodyContent);
+
+                var result = new ApiResponse<EtsyListResponse<ShopListing>>
+                {
+                    ResponseCode = 200,
+                    Success = true,
+                    Data = reciepts,
+                    Message = null
+                };
+
+                return result;
+            }
+            catch (HttpRequestException ex)
+            {
+                var result = new ApiResponse<EtsyListResponse<ShopListing>>
+                {
+                    ResponseCode = (int)ex.StatusCode,
+                    Success = false,
+                    Data = null,
+                    Message = $"{ex.Message}"
+                };
+
+                return result;
+            }
         }
 
         public Task<ApiResponse<EtsyListResponse<ShopListing>>> GetListingsByShopSectionIdAsync(

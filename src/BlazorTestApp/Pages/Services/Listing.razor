@@ -9,7 +9,7 @@
 
 <ServiceTemplate ServiceTitle="Listing Services" ShowResultsPane="true" ResultsToDisplay=@resultToDisplay>
     <input @bind="listingId" />
-    <button @onclick="GetListing">Get Listing</button>
+    <button @onclick="GetListingAsync">Get Listing</button>
     <br />
     <br />
     <input @bind="shopId" />
@@ -19,15 +19,19 @@
     <br />
     <br />
     <button @onclick="FindAllListingsActiveAsync">All Active Listings</button>
+    <br />
+    <br />
+    <input @bind="receiptId" />
+    <button @onclick="GetListingsByShopReceiptAsync">Get Listings by Receipt</button>
 </ServiceTemplate>
 
 @code {
     string resultToDisplay = string.Empty;
-    string listingId = "867662080"; //templaterunner
-                                    //string transactionId = "2808047732"; //lavendereight
+    string listingId = "";
+    string receiptId = "";
     string shopId;
 
-    private async Task GetListing()
+    private async Task GetListingAsync()
     {
         var includes = new List<ListingInclude>();
         includes.Add(ListingInclude.Images);
@@ -116,7 +120,6 @@
             new JsonSerializerOptions { WriteIndented = true });
 
         Console.WriteLine(resultToDisplay);
-
     }
 
     private async Task GetListingsByShopAsync()
@@ -140,6 +143,30 @@
             new JsonSerializerOptions { WriteIndented = true });
 
         Console.WriteLine(resultToDisplay);
+    }
 
+    private async Task GetListingsByShopReceiptAsync()
+    {
+        var filter = new GetListingsByShopReceiptFilter();
+        filter.Limit = 1;
+
+        if (String.IsNullOrEmpty(shopId))
+        {
+            shopId = AppState.ShopId.ToString();
+        }
+
+        var result = await ListingService.GetListingsByShopReceiptAsync(
+            AppState.TokenResponse,
+            Convert.ToInt64(shopId),
+            Convert.ToInt64(receiptId),
+            filter);
+
+        var tempString = JsonSerializer.Serialize(result);
+        var jDoc = JsonDocument.Parse(tempString);
+
+        resultToDisplay = JsonSerializer.Serialize(jDoc,
+            new JsonSerializerOptions { WriteIndented = true });
+
+        Console.WriteLine(resultToDisplay);
     }
 }
