@@ -52,6 +52,9 @@
 
             public static string GetListingProperties(long shopId, long listingId) =>
                 $"/v3/application/shops/{ shopId }/listings/{ listingId }/properties";
+
+            public static string GetListingProperty(long listingId, long propertyId) =>
+                $"/v3/application/listings/{ listingId }/properties/{ propertyId }";
         }
     }
 }

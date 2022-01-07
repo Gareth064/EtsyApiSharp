@@ -9,27 +9,32 @@
 
 <ServiceTemplate ServiceTitle="Listing Services" ShowResultsPane="true" ResultsToDisplay=@resultToDisplay>
     <input @bind="listingId" />
-    <button @onclick="GetListingAsync">Get Listing</button>
-    <button @onclick="GetListingPropertiesAsync">Get Listing Properties</button>
+    <button @onclick="GetListingAsync">Listing by Listing ID</button>
+    <button @onclick="GetListingPropertiesAsync">Listing Properties by Listing ID</button>
+    <br />
+    <br />
+    <input @bind="propertyId" />
+    <button @onclick="GetListingPropertyAsync">Listing Property By Property ID</button>
     <br />
     <br />
     <input @bind="shopId" />
-    <button @onclick="GetFeaturedListingsByShopAsync">Featured Listings By Shop</button>
-    <button @onclick="FindAllActiveListingsByShopAsync">Active Listings By Shop</button>
-    <button @onclick="GetListingsByShopAsync">Listings By Shop</button>
+    <button @onclick="GetFeaturedListingsByShopAsync">Featured Listings By Shop ID</button>
+    <button @onclick="FindAllActiveListingsByShopAsync">Active Listings By Shop ID</button>
+    <button @onclick="GetListingsByShopAsync">Listings By Shop ID</button>
     <br />
     <br />
     <button @onclick="FindAllListingsActiveAsync">All Active Listings</button>
     <br />
     <br />
     <input @bind="receiptId" />
-    <button @onclick="GetListingsByShopReceiptAsync">Get Listings by Receipt</button>
+    <button @onclick="GetListingsByShopReceiptAsync">Get Listings by Receipt ID</button>
 </ServiceTemplate>
 
 @code {
     string resultToDisplay = string.Empty;
     string listingId = "";
     string receiptId = "";
+    string propertyId = "";
     string shopId;
 
     private async Task GetListingAsync()
@@ -70,7 +75,6 @@
     private async Task FindAllListingsActiveAsync()
     {
         var filter = new FindAllListingsActiveFilter();
-        filter.Keywords = "template";
 
         var result = await ListingService.FindAllListingsActiveAsync(
             AppState.TokenResponse,
@@ -139,6 +143,16 @@
             AppState.TokenResponse,
             Convert.ToInt64(shopId),
             Convert.ToInt64(listingId));
+
+        DisplayResultsOnScreen(result);
+    }
+
+    private async Task GetListingPropertyAsync()
+    {
+        var result = await ListingService.GetListingPropertyAsync(
+            AppState.TokenResponse,
+            Convert.ToInt64(shopId),
+            Convert.ToInt64(propertyId));
 
         DisplayResultsOnScreen(result);
     }

@@ -275,7 +275,6 @@ namespace EtsyApiSharp.Models
         /// <summary>
         /// Average rating based on reviews of shop listings in the past year.
         /// </summary>
-        [JsonConverter(typeof(JsonStringFloatConverter))]
         [JsonPropertyName("review_average")]
         public float? ReviewAverage { get; set; }
 

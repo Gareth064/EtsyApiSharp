@@ -288,12 +288,43 @@ namespace EtsyApiSharp.Services.ListingManagements
             }
         }
 
-        public Task<ApiResponse<ListingPropertyValue>> GetListingPropertyAsync(
+        public async Task<ApiResponse<ListingPropertyValue>> GetListingPropertyAsync(
             string apiToken,
             long listingId,
             long propertyId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
+                UriBuilder baseUri = new UriBuilder($"{_httpClient.BaseAddress}{Url.ListingUrls.GetListingProperty(listingId: listingId, propertyId: propertyId)}");
+
+                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, baseUri.Uri);
+                var response = _httpClient.SendAsync(request);
+                var bodyContent = await response.Result.Content.ReadAsStringAsync();
+                var reciepts = JsonSerializer.Deserialize<ListingPropertyValue>(bodyContent);
+
+                var result = new ApiResponse<ListingPropertyValue>
+                {
+                    ResponseCode = 200,
+                    Success = true,
+                    Data = reciepts,
+                    Message = null
+                };
+
+                return result;
+            }
+            catch (HttpRequestException ex)
+            {
+                var result = new ApiResponse<ListingPropertyValue>
+                {
+                    ResponseCode = (int)ex.StatusCode,
+                    Success = false,
+                    Data = null,
+                    Message = $"{ex.Message}"
+                };
+
+                return result;
+            }
         }
 
         public Task<ApiResponse<EtsyListResponse<ShopListing>>> GetListingsByListingIdsAsync(
