@@ -10,6 +10,7 @@
 <ServiceTemplate ServiceTitle="Listing Services" ShowResultsPane="true" ResultsToDisplay=@resultToDisplay>
     <input @bind="listingId" />
     <button @onclick="GetListingAsync">Get Listing</button>
+    <button @onclick="GetListingPropertiesAsync">Get Listing Properties</button>
     <br />
     <br />
     <input @bind="shopId" />
@@ -45,13 +46,7 @@
             includes
         );
 
-        var tempString = JsonSerializer.Serialize(result);
-        var jDoc = JsonDocument.Parse(tempString);
-
-        resultToDisplay = JsonSerializer.Serialize(jDoc,
-            new JsonSerializerOptions { WriteIndented = true });
-
-        Console.WriteLine(resultToDisplay);
+        DisplayResultsOnScreen(result);
     }
 
     private async Task GetFeaturedListingsByShopAsync()
@@ -69,13 +64,7 @@
             Convert.ToInt64(shopId),
             filter);
 
-        var tempString = JsonSerializer.Serialize(result);
-        var jDoc = JsonDocument.Parse(tempString);
-
-        resultToDisplay = JsonSerializer.Serialize(jDoc,
-            new JsonSerializerOptions { WriteIndented = true });
-
-        Console.WriteLine(resultToDisplay);
+        DisplayResultsOnScreen(result);
     }
 
     private async Task FindAllListingsActiveAsync()
@@ -83,22 +72,11 @@
         var filter = new FindAllListingsActiveFilter();
         filter.Keywords = "template";
 
-        if (String.IsNullOrEmpty(shopId))
-        {
-            shopId = AppState.ShopId.ToString();
-        }
-
         var result = await ListingService.FindAllListingsActiveAsync(
             AppState.TokenResponse,
             filter);
 
-        var tempString = JsonSerializer.Serialize(result);
-        var jDoc = JsonDocument.Parse(tempString);
-
-        resultToDisplay = JsonSerializer.Serialize(jDoc,
-            new JsonSerializerOptions { WriteIndented = true });
-
-        Console.WriteLine(resultToDisplay);
+        DisplayResultsOnScreen(result);
     }
 
     private async Task FindAllActiveListingsByShopAsync()
@@ -113,13 +91,7 @@
             Convert.ToInt64(shopId),
             filter);
 
-        var tempString = JsonSerializer.Serialize(result);
-        var jDoc = JsonDocument.Parse(tempString);
-
-        resultToDisplay = JsonSerializer.Serialize(jDoc,
-            new JsonSerializerOptions { WriteIndented = true });
-
-        Console.WriteLine(resultToDisplay);
+        DisplayResultsOnScreen(result);
     }
 
     private async Task GetListingsByShopAsync()
@@ -136,13 +108,7 @@
             Convert.ToInt64(shopId),
             filter);
 
-        var tempString = JsonSerializer.Serialize(result);
-        var jDoc = JsonDocument.Parse(tempString);
-
-        resultToDisplay = JsonSerializer.Serialize(jDoc,
-            new JsonSerializerOptions { WriteIndented = true });
-
-        Console.WriteLine(resultToDisplay);
+        DisplayResultsOnScreen(result);
     }
 
     private async Task GetListingsByShopReceiptAsync()
@@ -161,6 +127,24 @@
             Convert.ToInt64(receiptId),
             filter);
 
+        DisplayResultsOnScreen(result);
+    }
+
+    private async Task GetListingPropertiesAsync()
+    {
+        if (String.IsNullOrEmpty(shopId))
+            shopId = AppState.ShopId.ToString();
+
+        var result = await ListingService.GetListingPropertiesAsync(
+            AppState.TokenResponse,
+            Convert.ToInt64(shopId),
+            Convert.ToInt64(listingId));
+
+        DisplayResultsOnScreen(result);
+    }
+
+    private void DisplayResultsOnScreen<T>(T result)
+    {
         var tempString = JsonSerializer.Serialize(result);
         var jDoc = JsonDocument.Parse(tempString);
 

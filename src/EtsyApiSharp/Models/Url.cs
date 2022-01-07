@@ -49,6 +49,9 @@
 
             public static string GetListingsByShopReceipt(long shopId, long receiptId) =>
                 $"/v3/application/shops/{ shopId }/receipts/{ receiptId }/listings";
+
+            public static string GetListingProperties(long shopId, long listingId) =>
+                $"/v3/application/shops/{ shopId }/listings/{ listingId }/properties";
         }
     }
 }
