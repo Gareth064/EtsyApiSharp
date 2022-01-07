@@ -18,7 +18,7 @@ namespace EtsyApiSharp.Services.ListingManagements
             _httpClient.DefaultRequestHeaders.Add("x-api-key", clientId);
         }
 
-        public async Task<ApiResponse<EtsyListResponse<ShopListing>>> FindAllActiveListingsByShopAsync(
+        public async Task<ApiResponse<EtsyListResponse<ShopListingWithAssociations>>> FindAllActiveListingsByShopAsync(
             string apiToken,
             long shopId,
             FindAllActiveListingsByShopFilter? filter = null)
@@ -43,9 +43,9 @@ namespace EtsyApiSharp.Services.ListingManagements
                 HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, baseUri.Uri);
                 var response = _httpClient.SendAsync(request);
                 var bodyContent = await response.Result.Content.ReadAsStringAsync();
-                var reciepts = JsonSerializer.Deserialize<EtsyListResponse<ShopListing>>(bodyContent);
+                var reciepts = JsonSerializer.Deserialize<EtsyListResponse<ShopListingWithAssociations>>(bodyContent);
 
-                var result = new ApiResponse<EtsyListResponse<ShopListing>>
+                var result = new ApiResponse<EtsyListResponse<ShopListingWithAssociations>>
                 {
                     ResponseCode = 200,
                     Success = true,
@@ -57,7 +57,7 @@ namespace EtsyApiSharp.Services.ListingManagements
             }
             catch (HttpRequestException ex)
             {
-                var result = new ApiResponse<EtsyListResponse<ShopListing>>
+                var result = new ApiResponse<EtsyListResponse<ShopListingWithAssociations>>
                 {
                     ResponseCode = (int)ex.StatusCode,
                     Success = false,
@@ -69,7 +69,7 @@ namespace EtsyApiSharp.Services.ListingManagements
             }
         }
 
-        public async Task<ApiResponse<EtsyListResponse<ShopListing>>> FindAllListingsActiveAsync(
+        public async Task<ApiResponse<EtsyListResponse<ShopListingWithAssociations>>> FindAllListingsActiveAsync(
             string apiToken,
             FindAllListingsActiveFilter? filter = null)
         {
@@ -111,9 +111,9 @@ namespace EtsyApiSharp.Services.ListingManagements
                 HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, baseUri.Uri);
                 var response = _httpClient.SendAsync(request);
                 var bodyContent = await response.Result.Content.ReadAsStringAsync();
-                var reciepts = JsonSerializer.Deserialize<EtsyListResponse<ShopListing>>(bodyContent);
+                var reciepts = JsonSerializer.Deserialize<EtsyListResponse<ShopListingWithAssociations>>(bodyContent);
 
-                var result = new ApiResponse<EtsyListResponse<ShopListing>>
+                var result = new ApiResponse<EtsyListResponse<ShopListingWithAssociations>>
                 {
                     ResponseCode = 200,
                     Success = true,
@@ -125,7 +125,7 @@ namespace EtsyApiSharp.Services.ListingManagements
             }
             catch (HttpRequestException ex)
             {
-                var result = new ApiResponse<EtsyListResponse<ShopListing>>
+                var result = new ApiResponse<EtsyListResponse<ShopListingWithAssociations>>
                 {
                     ResponseCode = (int)ex.StatusCode,
                     Success = false,
@@ -137,7 +137,7 @@ namespace EtsyApiSharp.Services.ListingManagements
             }
         }
 
-        public async Task<ApiResponse<EtsyListResponse<ShopListing>>> GetFeaturedListingsByShopAsync(
+        public async Task<ApiResponse<EtsyListResponse<ShopListingWithAssociations>>> GetFeaturedListingsByShopAsync(
             string apiToken,
             long shopId,
             GetFeaturedListingsByShopFilter? filter = null)
@@ -159,9 +159,9 @@ namespace EtsyApiSharp.Services.ListingManagements
                 HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, baseUri.Uri);
                 var response = _httpClient.SendAsync(request);
                 var bodyContent = await response.Result.Content.ReadAsStringAsync();
-                var reciepts = JsonSerializer.Deserialize<EtsyListResponse<ShopListing>>(bodyContent);
+                var reciepts = JsonSerializer.Deserialize<EtsyListResponse<ShopListingWithAssociations>>(bodyContent);
 
-                var result = new ApiResponse<EtsyListResponse<ShopListing>>
+                var result = new ApiResponse<EtsyListResponse<ShopListingWithAssociations>>
                 {
                     ResponseCode = 200,
                     Success = true,
@@ -173,7 +173,7 @@ namespace EtsyApiSharp.Services.ListingManagements
             }
             catch (HttpRequestException ex)
             {
-                var result = new ApiResponse<EtsyListResponse<ShopListing>>
+                var result = new ApiResponse<EtsyListResponse<ShopListingWithAssociations>>
                 {
                     ResponseCode = (int)ex.StatusCode,
                     Success = false,
@@ -327,15 +327,75 @@ namespace EtsyApiSharp.Services.ListingManagements
             }
         }
 
-        public Task<ApiResponse<EtsyListResponse<ShopListing>>> GetListingsByListingIdsAsync(
+        public async Task<ApiResponse<EtsyListResponse<ShopListingWithAssociations>>> GetListingsByListingIdsAsync(
             string apiToken,
             List<long> listingIds,
             List<ListingInclude>? includes = null)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
+                UriBuilder baseUri = new UriBuilder($"{_httpClient.BaseAddress}{Url.ListingUrls.GetListingsByListingIds()}");
+                string includesQueryParam = String.Empty;
+
+                string idsForQuery = "";
+                idsForQuery = idsForQuery.ListOfLongToCommaSeperatedString(listingIds);
+                baseUri.AddQueryParam("listing_ids", idsForQuery);
+
+                if (includes is not null)
+                {
+                    foreach (var include in includes)
+                    {
+                        includesQueryParam += $"{include},";
+                    }
+
+                    baseUri.AddQueryParam("includes", includesQueryParam);
+                }
+
+                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, baseUri.Uri);
+                var response = _httpClient.SendAsync(request);
+                var bodyContent = await response.Result.Content.ReadAsStringAsync();
+                var reciepts = JsonSerializer.Deserialize<EtsyListResponse<ShopListingWithAssociations>>(bodyContent);
+
+                var result = new ApiResponse<EtsyListResponse<ShopListingWithAssociations>>
+                {
+                    ResponseCode = 200,
+                    Success = true,
+                    Data = reciepts,
+                    Message = null
+                };
+
+                return result;
+            }
+            catch (HttpRequestException ex)
+            {
+                Debug.WriteLine(ex.Message);
+                var result = new ApiResponse<EtsyListResponse<ShopListingWithAssociations>>
+                {
+                    ResponseCode = (int)ex.StatusCode,
+                    Success = false,
+                    Data = null,
+                    Message = $"{ex.Message}"
+                };
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                var result = new ApiResponse<EtsyListResponse<ShopListingWithAssociations>>
+                {
+                    ResponseCode = 500,
+                    Success = false,
+                    Data = null,
+                    Message = $"{ex.Message}"
+                };
+
+                return result;
+            }
         }
 
-        public async Task<ApiResponse<EtsyListResponse<ShopListing>>> GetListingsByShopAsync(
+        public async Task<ApiResponse<EtsyListResponse<ShopListingWithAssociations>>> GetListingsByShopAsync(
             string apiToken,
             long shopId,
             GetListingsByShopFilter? filter = null)
@@ -366,9 +426,9 @@ namespace EtsyApiSharp.Services.ListingManagements
                 HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, baseUri.Uri);
                 var response = _httpClient.SendAsync(request);
                 var bodyContent = await response.Result.Content.ReadAsStringAsync();
-                var reciepts = JsonSerializer.Deserialize<EtsyListResponse<ShopListing>>(bodyContent);
+                var reciepts = JsonSerializer.Deserialize<EtsyListResponse<ShopListingWithAssociations>>(bodyContent);
 
-                var result = new ApiResponse<EtsyListResponse<ShopListing>>
+                var result = new ApiResponse<EtsyListResponse<ShopListingWithAssociations>>
                 {
                     ResponseCode = 200,
                     Success = true,
@@ -380,7 +440,7 @@ namespace EtsyApiSharp.Services.ListingManagements
             }
             catch (HttpRequestException ex)
             {
-                var result = new ApiResponse<EtsyListResponse<ShopListing>>
+                var result = new ApiResponse<EtsyListResponse<ShopListingWithAssociations>>
                 {
                     ResponseCode = (int)ex.StatusCode,
                     Success = false,
@@ -392,7 +452,7 @@ namespace EtsyApiSharp.Services.ListingManagements
             }
         }
 
-        public async Task<ApiResponse<EtsyListResponse<ShopListing>>> GetListingsByShopReceiptAsync(
+        public async Task<ApiResponse<EtsyListResponse<ShopListingWithAssociations>>> GetListingsByShopReceiptAsync(
             string apiToken,
             long shopId,
             long receiptId,
@@ -415,9 +475,9 @@ namespace EtsyApiSharp.Services.ListingManagements
                 HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, baseUri.Uri);
                 var response = _httpClient.SendAsync(request);
                 var bodyContent = await response.Result.Content.ReadAsStringAsync();
-                var reciepts = JsonSerializer.Deserialize<EtsyListResponse<ShopListing>>(bodyContent);
+                var reciepts = JsonSerializer.Deserialize<EtsyListResponse<ShopListingWithAssociations>>(bodyContent);
 
-                var result = new ApiResponse<EtsyListResponse<ShopListing>>
+                var result = new ApiResponse<EtsyListResponse<ShopListingWithAssociations>>
                 {
                     ResponseCode = 200,
                     Success = true,
@@ -429,7 +489,7 @@ namespace EtsyApiSharp.Services.ListingManagements
             }
             catch (HttpRequestException ex)
             {
-                var result = new ApiResponse<EtsyListResponse<ShopListing>>
+                var result = new ApiResponse<EtsyListResponse<ShopListingWithAssociations>>
                 {
                     ResponseCode = (int)ex.StatusCode,
                     Success = false,
@@ -441,7 +501,7 @@ namespace EtsyApiSharp.Services.ListingManagements
             }
         }
 
-        public Task<ApiResponse<EtsyListResponse<ShopListing>>> GetListingsByShopSectionIdAsync(
+        public Task<ApiResponse<EtsyListResponse<ShopListingWithAssociations>>> GetListingsByShopSectionIdAsync(
             string apiToken,
             long shopId,
             GetListingsByShopSectionIdFilter filter)

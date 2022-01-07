@@ -7,11 +7,11 @@ namespace EtsyApiSharp.Services.ListingManagements
 {
     public interface IEtsyListingManagementService
     {
-        Task<ApiResponse<EtsyListResponse<ShopListing>>> FindAllListingsActiveAsync(
+        Task<ApiResponse<EtsyListResponse<ShopListingWithAssociations>>> FindAllListingsActiveAsync(
             string apiToken,
             FindAllListingsActiveFilter? filter = null);
 
-        Task<ApiResponse<EtsyListResponse<ShopListing>>> FindAllActiveListingsByShopAsync(
+        Task<ApiResponse<EtsyListResponse<ShopListingWithAssociations>>> FindAllActiveListingsByShopAsync(
             string apiToken,
             long shopId,
             FindAllActiveListingsByShopFilter? filter = null);
@@ -23,7 +23,7 @@ namespace EtsyApiSharp.Services.ListingManagements
             string apiToken,
             long taxonomyId);
 
-        Task<ApiResponse<EtsyListResponse<ShopListing>>> GetListingsByShopAsync(
+        Task<ApiResponse<EtsyListResponse<ShopListingWithAssociations>>> GetListingsByShopAsync(
             string apiToken,
             long shopId,
             GetListingsByShopFilter? filter = null);
@@ -33,12 +33,12 @@ namespace EtsyApiSharp.Services.ListingManagements
             long listingId,
             List<ListingInclude>? includes = null);
 
-        Task<ApiResponse<EtsyListResponse<ShopListing>>> GetListingsByListingIdsAsync(
+        Task<ApiResponse<EtsyListResponse<ShopListingWithAssociations>>> GetListingsByListingIdsAsync(
             string apiToken,
             List<long> listingIds,
             List<ListingInclude>? includes = null);
 
-        Task<ApiResponse<EtsyListResponse<ShopListing>>> GetFeaturedListingsByShopAsync(
+        Task<ApiResponse<EtsyListResponse<ShopListingWithAssociations>>> GetFeaturedListingsByShopAsync(
             string apiToken,
             long shopId,
             GetFeaturedListingsByShopFilter? filter = null);
@@ -53,13 +53,13 @@ namespace EtsyApiSharp.Services.ListingManagements
             long shopId,
             long listingId);
 
-        Task<ApiResponse<EtsyListResponse<ShopListing>>> GetListingsByShopReceiptAsync(
+        Task<ApiResponse<EtsyListResponse<ShopListingWithAssociations>>> GetListingsByShopReceiptAsync(
             string apiToken,
             long shopId,
             long receiptId,
             GetListingsByShopReceiptFilter? filter = null);
 
-        Task<ApiResponse<EtsyListResponse<ShopListing>>> GetListingsByShopSectionIdAsync(
+        Task<ApiResponse<EtsyListResponse<ShopListingWithAssociations>>> GetListingsByShopSectionIdAsync(
             string apiToken,
             long shopId,
             GetListingsByShopSectionIdFilter filter);

@@ -28,6 +28,9 @@
     <br />
     <input @bind="receiptId" />
     <button @onclick="GetListingsByShopReceiptAsync">Get Listings by Receipt ID</button>
+    <br />
+    <br />
+    <button @onclick="GetListingsByListingIdsAsync">Get Listings By Listing IDs</button>
 </ServiceTemplate>
 
 @code {
@@ -156,6 +159,29 @@
 
         DisplayResultsOnScreen(result);
     }
+
+    private async Task GetListingsByListingIdsAsync()
+    {
+        var IdList = new List<long>();
+        IdList.Add(499552854);
+        IdList.Add(803745479);
+        IdList.Add(1141926638);
+
+        var includes = new List<ListingInclude>();
+        includes.Add(ListingInclude.Images);
+        includes.Add(ListingInclude.Shipping);
+        includes.Add(ListingInclude.Shop);
+        includes.Add(ListingInclude.User);
+
+        var result = await ListingService.GetListingsByListingIdsAsync(
+            AppState.TokenResponse,
+            IdList,
+            includes
+        );
+
+        DisplayResultsOnScreen(result);
+    }
+
 
     private void DisplayResultsOnScreen<T>(T result)
     {

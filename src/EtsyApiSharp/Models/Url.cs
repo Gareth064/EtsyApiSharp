@@ -55,6 +55,9 @@
 
             public static string GetListingProperty(long listingId, long propertyId) =>
                 $"/v3/application/listings/{ listingId }/properties/{ propertyId }";
+
+            public static string GetListingsByListingIds() =>
+                $"/v3/application/listings/batch";
         }
     }
 }
