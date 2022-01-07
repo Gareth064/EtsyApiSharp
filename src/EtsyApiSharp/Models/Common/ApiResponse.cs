@@ -7,12 +7,4 @@
         public T? Data { get; set; }
         public string? Message { get; set; }
     }
-
-    public class ApiListResponse<T>
-    {
-        public int ResponseCode { get; set; }
-        public bool Success { get; set; }
-        public List<T>? Data { get; set; }
-        public string? Message { get; set; }
-    }
 }

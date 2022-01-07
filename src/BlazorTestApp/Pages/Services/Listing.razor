@@ -17,6 +17,10 @@
         <br />
     <br />
     <button @onclick="FindAllListingsActiveAsync">All Active Listings</button>
+    <br />
+    <br />
+    <input @bind="shopId" />
+    <button @onclick="FindAllActiveListingsByShopAsync">Active Listings By Shop</button>
 </ServiceTemplate>
 
 @code {
@@ -93,5 +97,28 @@
             new JsonSerializerOptions { WriteIndented = true });
 
         Console.WriteLine(resultToDisplay);
+    }
+
+    private async Task FindAllActiveListingsByShopAsync()
+    {
+        var filter = new FindAllActiveListingsByShopFilter();
+        filter.Keywords = "book";
+
+        if (String.IsNullOrEmpty(shopId))
+            shopId = AppState.ShopId.ToString();
+
+        var result = await ListingService.FindAllActiveListingsByShopAsync(
+            AppState.TokenResponse,
+            Convert.ToInt64(shopId),
+            filter);
+
+                    var tempString = JsonSerializer.Serialize(result);
+        var jDoc = JsonDocument.Parse(tempString);
+
+        resultToDisplay = JsonSerializer.Serialize(jDoc,
+            new JsonSerializerOptions { WriteIndented = true });
+
+        Console.WriteLine(resultToDisplay);
+
     }
 }

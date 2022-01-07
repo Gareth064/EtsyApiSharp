@@ -33,14 +33,16 @@
         public static class ListingUrls
         {
             public static string GetListing(long listingId) =>
-                $"/v3/application/listings/{listingId}";
+                $"/v3/application/listings/{ listingId }";
 
             public static string GetFeaturedListingsByShop(long shopId) =>
-                $"/v3/application/shops/{shopId}/listings/featured";
+                $"/v3/application/shops/{ shopId }/listings/featured";
 
             public static string FindAllListingsActive() =>
                 $"/v3/application/listings/active";
-            
+
+            public static string FindAllActiveListingsByShop(long shopId) =>
+                $"/v3/application/shops/{ shopId }/listings/active";
 
         }
     }

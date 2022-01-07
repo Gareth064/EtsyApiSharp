@@ -11,7 +11,7 @@ namespace EtsyApiSharp.Services.ListingManagements
             string apiToken,
             FindAllListingsActiveFilter? filter = null);
 
-        Task<ApiListResponse<EtsyListResponse<ShopListing>>> FindAllActiveListingsByShopAsync(
+        Task<ApiResponse<EtsyListResponse<ShopListing>>> FindAllActiveListingsByShopAsync(
             string apiToken,
             long shopId,
             FindAllActiveListingsByShopFilter? filter = null);
