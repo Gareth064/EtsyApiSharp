@@ -200,7 +200,6 @@ namespace EtsyApiSharp.Models
         /// <summary>
         /// The numeric weight of the product measured in units set in \'item_weight_unit\'. Default value is null. If set, the value must be greater than 0.
         /// </summary>
-        [JsonConverter(typeof(JsonStringFloatConverter))]
         [JsonPropertyName("item_weight")]
         public float? ItemWeight { get; set; }
 
@@ -213,21 +212,18 @@ namespace EtsyApiSharp.Models
         /// <summary>
         /// The numeric length of the product measured in units set in \'item_dimensions_unit\'. Default value is null. If set, the value must be greater than 0.
         /// </summary>
-        [JsonConverter(typeof(JsonStringFloatConverter))]
         [JsonPropertyName("item_length")]
         public float? ItemLength { get; set; }
 
         /// <summary>
         /// The numeric width of the product measured in units set in \'item_dimensions_unit\'. Default value is null. If set, the value must be greater than 0.
         /// </summary>
-        [JsonConverter(typeof(JsonStringFloatConverter))]
         [JsonPropertyName("item_width")]
         public float? ItemWidth { get; set; }
 
         /// <summary>
         /// The numeric length of the product measured in units set in \'item_dimensions_unit\'. Default value is null. If set, the value must be greater than 0.
         /// </summary>
-        [JsonConverter(typeof(JsonStringFloatConverter))]
         [JsonPropertyName("item_height")]
         public float? ItemHeight { get; set; }
 
