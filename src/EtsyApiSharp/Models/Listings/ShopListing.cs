@@ -145,6 +145,7 @@ namespace EtsyApiSharp.Models
         /// <summary>
         /// An enumerated type string that indicates whether the listing is physical or a digital download.
         /// </summary>
+        [JsonConverter(typeof(JsonNullableEnumStringConverter<ListingType>))]
         [JsonPropertyName("listing_type")]
         public ListingType ListingType { get; set; }
 
@@ -181,6 +182,7 @@ namespace EtsyApiSharp.Models
         /// <summary>
         /// An enumerated string inidcated who made the product. Helps buyers locate the listing under the Handmade heading. Requires 'is_supply' and 'when_made'.
         /// </summary>
+        [JsonConverter(typeof(JsonNullableEnumStringConverter<ListingWhoMade>))]
         [JsonPropertyName("who_made")]
         public ListingWhoMade WhoMade { get; set; }
 
@@ -188,7 +190,7 @@ namespace EtsyApiSharp.Models
         /// An enumerated string for the era in which the maker made the product in this listing. Helps buyers locate the listing under the Vintage heading. Requires 'is_supply' and 'who_made'.
         /// </summary>
         [JsonPropertyName("when_made")]
-        public ListingWhenMade WhenMade { get; set; }
+        public string WhenMade { get; set; }
 
         /// <summary>
         /// When true, tags the listing as a supply product, else indicates that it's a finished product. Helps buyers locate the listing under the Supplies heading. Requires 'who_made' and 'when_made'.

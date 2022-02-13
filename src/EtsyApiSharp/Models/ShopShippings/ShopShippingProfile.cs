@@ -75,7 +75,7 @@ namespace EtsyApiSharp.Models
         [JsonPropertyName("origin_postal_code")]
         public string OriginPostalCode { get; set; }
 
-        [JsonConverter(typeof(JsonNullableEnumInt32Converter<ShippingProfileType>))]
+        [JsonConverter(typeof(JsonNullableEnumStringConverter<ShippingProfileType>))]
         [JsonPropertyName("profile_type")]
         public ShippingProfileType ProfileType { get; set; }
 
