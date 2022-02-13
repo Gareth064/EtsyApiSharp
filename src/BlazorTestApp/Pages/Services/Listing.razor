@@ -22,6 +22,9 @@
     <button @onclick="FindAllActiveListingsByShopAsync">Active Listings By Shop ID</button>
     <button @onclick="GetListingsByShopAsync">Listings By Shop ID</button>
     <br />
+    <input @bind="sectionIds" />(Comma seperated)
+    <button @onclick="GetListingsByShopSectionIdAsync">Listings By Section IDs</button>
+    <br />
     <br />
     <button @onclick="FindAllListingsActiveAsync">All Active Listings</button>
     <br />
@@ -39,6 +42,7 @@
     string receiptId = "";
     string propertyId = "";
     string shopId;
+    string sectionIds;
 
     private async Task GetListingAsync()
     {
@@ -178,6 +182,25 @@
             IdList,
             includes
         );
+
+        DisplayResultsOnScreen(result);
+    }
+
+    private async Task GetListingsByShopSectionIdAsync()
+    {
+        var IdList = new List<long>();
+        var ids = sectionIds.Split(',');
+
+        foreach(var id in ids)
+        {
+            IdList.Add(Int64.Parse(id));
+        }
+
+        var result = await ListingService.GetListingsByShopSectionIdAsync(
+            AppState.TokenResponse,
+            Convert.ToInt64(shopId),
+            IdList,
+            null);
 
         DisplayResultsOnScreen(result);
     }

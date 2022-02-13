@@ -145,7 +145,6 @@ namespace EtsyApiSharp.Models
         /// <summary>
         /// An enumerated type string that indicates whether the listing is physical or a digital download.
         /// </summary>
-        [JsonConverter(typeof(JsonNullableEnumInt32Converter<ListingType>))]
         [JsonPropertyName("listing_type")]
         public ListingType ListingType { get; set; }
 
@@ -183,13 +182,13 @@ namespace EtsyApiSharp.Models
         /// An enumerated string inidcated who made the product. Helps buyers locate the listing under the Handmade heading. Requires 'is_supply' and 'when_made'.
         /// </summary>
         [JsonPropertyName("who_made")]
-        public string WhoMade { get; set; }
+        public ListingWhoMade WhoMade { get; set; }
 
         /// <summary>
         /// An enumerated string for the era in which the maker made the product in this listing. Helps buyers locate the listing under the Vintage heading. Requires 'is_supply' and 'who_made'.
         /// </summary>
         [JsonPropertyName("when_made")]
-        public string WhenMade { get; set; }
+        public ListingWhenMade WhenMade { get; set; }
 
         /// <summary>
         /// When true, tags the listing as a supply product, else indicates that it's a finished product. Helps buyers locate the listing under the Supplies heading. Requires 'who_made' and 'when_made'.
@@ -276,7 +275,7 @@ namespace EtsyApiSharp.Models
         public Money Price { get; set; }
 
         /// <summary>
-        /// The numeric taxonomy ID of the listing. The seller manages listing taxonomy IDs for their shop.  [See SellerTaxonomy](/documentation/reference#tag/SellerTaxonomy) for more information.
+        /// The numeric taxonomy ID of the listing. See [SellerTaxonomy](/documentation/reference#tag/SellerTaxonomy) and [BuyerTaxonomy](/documentation/reference#tag/BuyerTaxonomy) for more information.
         /// </summary>
         [JsonPropertyName("taxonomy_id")]
         public long? TaxonomyId { get; set; }

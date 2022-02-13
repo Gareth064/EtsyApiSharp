@@ -58,6 +58,9 @@
 
             public static string GetListingsByListingIds() =>
                 $"/v3/application/listings/batch";
+
+            public static string GetListingsByShopSectionId(long shopId) =>
+                $"/v3/application/shops/{ shopId }/shop-sections/listings";
         }
     }
 }

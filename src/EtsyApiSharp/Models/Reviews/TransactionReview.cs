@@ -41,7 +41,7 @@ namespace EtsyApiSharp.Models
         /// A message left by the author, explaining the feedback.
         /// </summary>
         [JsonPropertyName("review")]
-        public string Review { get; set; }
+        public string? Review { get; set; }
 
         /// <summary>
         /// The language of the TransactionReview

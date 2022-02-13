@@ -62,6 +62,7 @@ namespace EtsyApiSharp.Services.ListingManagements
         Task<ApiResponse<EtsyListResponse<ShopListingWithAssociations>>> GetListingsByShopSectionIdAsync(
             string apiToken,
             long shopId,
-            GetListingsByShopSectionIdFilter filter);
+            List<long> sectionIds,
+            GetListingsByShopSectionIdFilter? filter);
     }
 }
