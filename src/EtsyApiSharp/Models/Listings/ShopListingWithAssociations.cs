@@ -150,7 +150,7 @@ namespace EtsyApiSharp.Models
         public ListingType ListingType { get; set; }
 
         /// <summary>
-        /// A list of tag strings for the listing. Valid tag strings contain only letters, numbers, whitespace characters, -, ', ™, ©, and ®. (regex: /[^\\p{L}\\p{Nd}\\p{Zs}\\-'™©®]/u) Default value is null.
+        /// A comma-separated list of tag strings for the listing. Valid tag strings contain only letters, numbers, whitespace characters, -, ', ™, ©, and ®. (regex: /[^\\p{L}\\p{Nd}\\p{Zs}\\-'™©®]/u) Default value is null.
         /// </summary>
         [JsonPropertyName("tags")]
         public List<string> Tags { get; set; }

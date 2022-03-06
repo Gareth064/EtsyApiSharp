@@ -70,7 +70,7 @@ namespace EtsyApiSharp.Models
         public List<ShopShippingProfileUpgrade> ShippingProfileUpgrades { get; set; }
 
         /// <summary>
-        /// The postal code string (not necessarily a number) for the location from which the listing ships.
+        /// The postal code string (not necessarily a number) for the location from which the listing ships. Required if the `origin_country_iso` is `US` or `CA`.
         /// </summary>
         [JsonPropertyName("origin_postal_code")]
         public string OriginPostalCode { get; set; }
@@ -79,5 +79,16 @@ namespace EtsyApiSharp.Models
         [JsonPropertyName("profile_type")]
         public ShippingProfileType ProfileType { get; set; }
 
+        /// <summary>
+        /// The domestic handling fee added to buyer's shipping total - only available for calculated shipping profiles.
+        /// </summary>
+        [JsonPropertyName("domestic_handling_fee")]
+        public double DomesticHandlingFee { get; set; }
+
+        /// <summary>
+        /// The international handling fee added to buyer's shipping total - only available for calculated shipping profiles.
+        /// </summary>
+        [JsonPropertyName("international_handling_fee")]
+        public double InternationalHandlingFee { get; set; }
     }
 }
