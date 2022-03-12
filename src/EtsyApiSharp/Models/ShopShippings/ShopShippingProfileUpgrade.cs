@@ -1,3 +1,4 @@
+using EtsyApiSharp.Models.ShopShippings.Enums;
 using System.Text.Json.Serialization;
 
 namespace EtsyApiSharp.Models
@@ -29,7 +30,7 @@ namespace EtsyApiSharp.Models
         /// The type of the shipping upgrade. Domestic (0) or international (1).
         /// </summary>
         [JsonPropertyName("type")]
-        public string Type { get; set; }
+        public ShippingProfileUpgradeType Type { get; set; }
 
         /// <summary>
         /// The positive non-zero numeric position in the images displayed in a listing, with rank 1 images appearing in the left-most position in a listing.

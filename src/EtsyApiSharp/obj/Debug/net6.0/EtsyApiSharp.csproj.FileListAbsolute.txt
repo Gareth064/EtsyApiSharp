@@ -4,9 +4,9 @@ C:\Code\Gareth064\EtsyApiSharp\src\EtsyApiSharp\obj\Debug\net6.0\EtsyApiSharp.As
 C:\Code\Gareth064\EtsyApiSharp\src\EtsyApiSharp\obj\Debug\net6.0\EtsyApiSharp.csproj.CoreCompileInputs.cache
 C:\Code\Gareth064\EtsyApiSharp\src\EtsyApiSharp\bin\Debug\net6.0\EtsyApiSharp.deps.json
 C:\Code\Gareth064\EtsyApiSharp\src\EtsyApiSharp\bin\Debug\net6.0\EtsyApiSharp.dll
-C:\Code\Gareth064\EtsyApiSharp\src\EtsyApiSharp\bin\Debug\net6.0\ref\EtsyApiSharp.dll
 C:\Code\Gareth064\EtsyApiSharp\src\EtsyApiSharp\bin\Debug\net6.0\EtsyApiSharp.pdb
 C:\Code\Gareth064\EtsyApiSharp\src\EtsyApiSharp\obj\Debug\net6.0\EtsyApiSharp.dll
 C:\Code\Gareth064\EtsyApiSharp\src\EtsyApiSharp\obj\Debug\net6.0\ref\EtsyApiSharp.dll
 C:\Code\Gareth064\EtsyApiSharp\src\EtsyApiSharp\obj\Debug\net6.0\EtsyApiSharp.pdb
 C:\Code\Gareth064\EtsyApiSharp\src\EtsyApiSharp\obj\Debug\net6.0\EtsyApiSharp.csproj.AssemblyReference.cache
+C:\Code\Gareth064\EtsyApiSharp\src\EtsyApiSharp\obj\Debug\net6.0\refint\EtsyApiSharp.dll

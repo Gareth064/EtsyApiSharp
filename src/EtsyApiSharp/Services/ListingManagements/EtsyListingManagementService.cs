@@ -1,4 +1,5 @@
-﻿using EtsyApiSharp.Helpers.Extensions;
+﻿using EtsyApiSharp.Helpers;
+using EtsyApiSharp.Helpers.Extensions;
 using EtsyApiSharp.Models;
 using EtsyApiSharp.Models.Common;
 using EtsyApiSharp.Models.Filters;
@@ -41,17 +42,8 @@ namespace EtsyApiSharp.Services.ListingManagements
                 }
 
                 HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, baseUri.Uri);
-                var response = _httpClient.SendAsync(request);
-                var bodyContent = await response.Result.Content.ReadAsStringAsync();
-                var reciepts = JsonSerializer.Deserialize<EtsyListResponse<ShopListingWithAssociations>>(bodyContent);
-
-                var result = new ApiResponse<EtsyListResponse<ShopListingWithAssociations>>
-                {
-                    ResponseCode = 200,
-                    Success = true,
-                    Data = reciepts,
-                    Message = null
-                };
+                var response = await _httpClient.SendAsync(request);
+                var result = await EtsyResponseParser.ParseResponseOfList<ShopListingWithAssociations>(response);
 
                 return result;
             }
@@ -86,7 +78,7 @@ namespace EtsyApiSharp.Services.ListingManagements
                     if (filter.Offset is not 0)
                         baseUri.AddQueryParam("offset", filter.Offset.ToString());
 
-                    if(filter.SortOn is not null)
+                    if (filter.SortOn is not null)
                         baseUri.AddQueryParam("sort_on", filter.SortOn.ToString());
 
                     if (filter.SortOrder is not null)
@@ -109,17 +101,8 @@ namespace EtsyApiSharp.Services.ListingManagements
                 }
 
                 HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, baseUri.Uri);
-                var response = _httpClient.SendAsync(request);
-                var bodyContent = await response.Result.Content.ReadAsStringAsync();
-                var reciepts = JsonSerializer.Deserialize<EtsyListResponse<ShopListingWithAssociations>>(bodyContent);
-
-                var result = new ApiResponse<EtsyListResponse<ShopListingWithAssociations>>
-                {
-                    ResponseCode = 200,
-                    Success = true,
-                    Data = reciepts,
-                    Message = null
-                };
+                var response = await _httpClient.SendAsync(request);
+                var result = await EtsyResponseParser.ParseResponseOfList<ShopListingWithAssociations>(response);
 
                 return result;
             }
@@ -153,21 +136,12 @@ namespace EtsyApiSharp.Services.ListingManagements
                         baseUri.AddQueryParam("limit", filter.Limit.ToString());
 
                     if (filter.Offset is not 0)
-                        baseUri.AddQueryParam("offset", filter.Offset.ToString()); 
+                        baseUri.AddQueryParam("offset", filter.Offset.ToString());
                 }
 
                 HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, baseUri.Uri);
-                var response = _httpClient.SendAsync(request);
-                var bodyContent = await response.Result.Content.ReadAsStringAsync();
-                var reciepts = JsonSerializer.Deserialize<EtsyListResponse<ShopListingWithAssociations>>(bodyContent);
-
-                var result = new ApiResponse<EtsyListResponse<ShopListingWithAssociations>>
-                {
-                    ResponseCode = 200,
-                    Success = true,
-                    Data = reciepts,
-                    Message = null
-                };
+                var response = await _httpClient.SendAsync(request);
+                var result = await EtsyResponseParser.ParseResponseOfList<ShopListingWithAssociations>(response);
 
                 return result;
             }
@@ -207,17 +181,8 @@ namespace EtsyApiSharp.Services.ListingManagements
                 }
 
                 HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, baseUri.Uri);
-                var response = _httpClient.SendAsync(request);
-                var bodyContent = await response.Result.Content.ReadAsStringAsync();
-                var reciepts = JsonSerializer.Deserialize<ShopListingWithAssociations>(bodyContent);
-
-                var result = new ApiResponse<ShopListingWithAssociations>
-                {
-                    ResponseCode = 200,
-                    Success = true,
-                    Data = reciepts,
-                    Message = null
-                };
+                var response = await _httpClient.SendAsync(request);
+                var result = await EtsyResponseParser.ParseResponseOfSingle<ShopListingWithAssociations>(response);
 
                 return result;
             }
@@ -234,7 +199,7 @@ namespace EtsyApiSharp.Services.ListingManagements
 
                 return result;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Debug.WriteLine(ex.Message);
                 var result = new ApiResponse<ShopListingWithAssociations>
@@ -260,17 +225,8 @@ namespace EtsyApiSharp.Services.ListingManagements
                 UriBuilder baseUri = new UriBuilder($"{_httpClient.BaseAddress}{Url.ListingUrls.GetListingProperties(shopId: shopId, listingId: listingId)}");
 
                 HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, baseUri.Uri);
-                var response = _httpClient.SendAsync(request);
-                var bodyContent = await response.Result.Content.ReadAsStringAsync();
-                var reciepts = JsonSerializer.Deserialize<EtsyListResponse<ListingPropertyValue>>(bodyContent);
-
-                var result = new ApiResponse<EtsyListResponse<ListingPropertyValue>>
-                {
-                    ResponseCode = 200,
-                    Success = true,
-                    Data = reciepts,
-                    Message = null
-                };
+                var response = await _httpClient.SendAsync(request);
+                var result = await EtsyResponseParser.ParseResponseOfList<ListingPropertyValue>(response);
 
                 return result;
             }
@@ -413,10 +369,10 @@ namespace EtsyApiSharp.Services.ListingManagements
                     if (filter.Offset is not 0)
                         baseUri.AddQueryParam("offset", filter.Offset.ToString());
 
-                    if(filter.State is not ListingState.active)
+                    if (filter.State is not ListingState.active)
                         baseUri.AddQueryParam("state", filter.State.ToString());
 
-                    if(filter.SortOn is not ListingSortOn.created)
+                    if (filter.SortOn is not ListingSortOn.created)
                         baseUri.AddQueryParam("sort_on", filter.SortOn.ToString());
 
                     if (filter.SortOrder is not ListingSortOrder.desc)
@@ -424,17 +380,8 @@ namespace EtsyApiSharp.Services.ListingManagements
                 }
 
                 HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, baseUri.Uri);
-                var response = _httpClient.SendAsync(request);
-                var bodyContent = await response.Result.Content.ReadAsStringAsync();
-                var reciepts = JsonSerializer.Deserialize<EtsyListResponse<ShopListingWithAssociations>>(bodyContent);
-
-                var result = new ApiResponse<EtsyListResponse<ShopListingWithAssociations>>
-                {
-                    ResponseCode = 200,
-                    Success = true,
-                    Data = reciepts,
-                    Message = null
-                };
+                var response = await _httpClient.SendAsync(request);
+                var result = await EtsyResponseParser.ParseResponseOfList<ShopListingWithAssociations>(response);
 
                 return result;
             }
@@ -473,17 +420,8 @@ namespace EtsyApiSharp.Services.ListingManagements
                 }
 
                 HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, baseUri.Uri);
-                var response = _httpClient.SendAsync(request);
-                var bodyContent = await response.Result.Content.ReadAsStringAsync();
-                var reciepts = JsonSerializer.Deserialize<EtsyListResponse<ShopListingWithAssociations>>(bodyContent);
-
-                var result = new ApiResponse<EtsyListResponse<ShopListingWithAssociations>>
-                {
-                    ResponseCode = 200,
-                    Success = true,
-                    Data = reciepts,
-                    Message = null
-                };
+                var response = await _httpClient.SendAsync(request);
+                var result = await EtsyResponseParser.ParseResponseOfList<ShopListingWithAssociations>(response);
 
                 return result;
             }
@@ -511,6 +449,9 @@ namespace EtsyApiSharp.Services.ListingManagements
             {
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
                 UriBuilder baseUri = new UriBuilder($"{_httpClient.BaseAddress}{Url.ListingUrls.GetListingsByShopSectionId(shopId: shopId)}");
+                string idsForQuery = "";
+                idsForQuery = idsForQuery.ListOfLongToCommaSeperatedString(sectionIds);
+                baseUri.AddQueryParam("shop_section_ids", idsForQuery);
 
                 if (filter is not null)
                 {
@@ -528,17 +469,8 @@ namespace EtsyApiSharp.Services.ListingManagements
                 }
 
                 HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, baseUri.Uri);
-                var response = _httpClient.SendAsync(request);
-                var bodyContent = await response.Result.Content.ReadAsStringAsync();
-                var reciepts = JsonSerializer.Deserialize<EtsyListResponse<ShopListingWithAssociations>>(bodyContent);
-
-                var result = new ApiResponse<EtsyListResponse<ShopListingWithAssociations>>
-                {
-                    ResponseCode = 200,
-                    Success = true,
-                    Data = reciepts,
-                    Message = null
-                };
+                var response = await _httpClient.SendAsync(request);
+                var result = await EtsyResponseParser.ParseResponseOfList<ShopListingWithAssociations>(response);
 
                 return result;
             }
@@ -560,13 +492,32 @@ namespace EtsyApiSharp.Services.ListingManagements
             string apiToken,
             long taxonomyId)
         {
+            //TODO: GetPropertiesByTaxonomyIdAsync
             throw new NotImplementedException();
         }
 
         public Task<ApiResponse<EtsyListResponse<SellerTaxonomyNode>>> GetSellerTaxonomyNodesAsync(
             string apiToken)
         {
+            //TODO: GetSellerTaxonomyNodesAsync
             throw new NotImplementedException();
         }
+
+        public Task<ApiResponse<EtsyListResponse<TaxonomyNodeProperty>>> GetPropertiesByBuyerTaxonomyIdAsync(
+    string apiToken,
+    long taxonomyId)
+        {
+            //TODO: GetPropertiesByBuyerTaxonomyIdAsync
+            throw new NotImplementedException();
+        }
+
+        public Task<ApiResponse<EtsyListResponse<SellerTaxonomyNode>>> GetBuyerTaxonomyNodesAsync(
+            string apiToken)
+        {
+            //TODO: GetBuyerTaxonomyNodesAsync
+            throw new NotImplementedException();
+        }
+
+
     }
 }
