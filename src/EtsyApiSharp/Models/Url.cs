@@ -61,6 +61,12 @@
 
             public static string GetListingsByShopSectionId(long shopId) =>
                 $"/v3/application/shops/{ shopId }/shop-sections/listings";
+
+            public static string GetListingImage(long listingId, long listingImageId) =>
+                $"/v3/application/listings/{ listingId }/images/{ listingImageId }";
+
+            public static string GetListingImages(long listingId) =>
+                $"/v3/application/listings/{ listingId }/images";
         }
     }
 }

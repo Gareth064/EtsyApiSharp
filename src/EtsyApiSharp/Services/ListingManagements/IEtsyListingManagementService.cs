@@ -64,5 +64,21 @@ namespace EtsyApiSharp.Services.ListingManagements
             long shopId,
             List<long> sectionIds,
             GetListingsByShopSectionIdFilter? filter);
+
+        Task<ApiResponse<EtsyListResponse<TaxonomyNodeProperty>>> GetPropertiesByBuyerTaxonomyIdAsync(
+            string apiToken,
+            long taxonomyId);
+
+        public Task<ApiResponse<EtsyListResponse<SellerTaxonomyNode>>> GetBuyerTaxonomyNodesAsync(
+            string apiToken);
+
+        public Task<ApiResponse<ListingImage>> GetListingImageAsync(
+            string apiToken,
+            long listingId,
+            long listingImageId);
+
+        public Task<ApiResponse<EtsyListResponse<ListingImage>>> GetListingImagesAsync(
+            string apiToken,
+            long listingId);
     }
 }

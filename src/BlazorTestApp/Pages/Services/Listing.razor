@@ -10,7 +10,12 @@
 <ServiceTemplate ServiceTitle="Listing Services" ShowResultsPane="true" ResultsToDisplay=@resultToDisplay>
     <input @bind="listingId" />
     <button @onclick="GetListingAsync">Listing by Listing ID</button>
+    <button @onclick="GetListingImagesAsync">Listing Images by Listing ID</button>
     <button @onclick="GetListingPropertiesAsync">Listing Properties by Listing ID</button>
+    <br />
+    <br />
+        <input @bind="listingImageId" />
+    <button @onclick="GetListingImageAsync">Listing Image By Image ID By Listing ID</button>
     <br />
     <br />
     <input @bind="propertyId" />
@@ -39,6 +44,7 @@
 @code {
     string resultToDisplay = string.Empty;
     string listingId = "";
+    string listingImageId = "";
     string receiptId = "";
     string propertyId = "";
     string shopId;
@@ -201,6 +207,26 @@
             Convert.ToInt64(shopId),
             IdList,
             null);
+
+        DisplayResultsOnScreen(result);
+    }
+
+    private async Task GetListingImageAsync()
+    {
+        var result = await ListingService.GetListingImageAsync(
+            AppState.TokenResponse,
+            Convert.ToInt64(listingId),
+            Convert.ToInt64(listingImageId)
+        );
+
+        DisplayResultsOnScreen(result);
+    }
+
+        private async Task GetListingImagesAsync()
+    {
+        var result = await ListingService.GetListingImagesAsync(
+            AppState.TokenResponse,
+            Convert.ToInt64(listingId));
 
         DisplayResultsOnScreen(result);
     }
