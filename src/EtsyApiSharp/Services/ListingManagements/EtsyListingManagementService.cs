@@ -255,17 +255,8 @@ namespace EtsyApiSharp.Services.ListingManagements
                 UriBuilder baseUri = new UriBuilder($"{_httpClient.BaseAddress}{Url.ListingUrls.GetListingProperty(listingId: listingId, propertyId: propertyId)}");
 
                 HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, baseUri.Uri);
-                var response = _httpClient.SendAsync(request);
-                var bodyContent = await response.Result.Content.ReadAsStringAsync();
-                var reciepts = JsonSerializer.Deserialize<ListingPropertyValue>(bodyContent);
-
-                var result = new ApiResponse<ListingPropertyValue>
-                {
-                    ResponseCode = 200,
-                    Success = true,
-                    Data = reciepts,
-                    Message = null
-                };
+                var response = await _httpClient.SendAsync(request);
+                var result = await EtsyResponseParser.ParseResponseOfSingle<ListingPropertyValue>(response);
 
                 return result;
             }
@@ -504,8 +495,8 @@ namespace EtsyApiSharp.Services.ListingManagements
         }
 
         public Task<ApiResponse<EtsyListResponse<TaxonomyNodeProperty>>> GetPropertiesByBuyerTaxonomyIdAsync(
-    string apiToken,
-    long taxonomyId)
+            string apiToken,
+            long taxonomyId)
         {
             //TODO: GetPropertiesByBuyerTaxonomyIdAsync
             throw new NotImplementedException();
@@ -518,6 +509,61 @@ namespace EtsyApiSharp.Services.ListingManagements
             throw new NotImplementedException();
         }
 
+        public async Task<ApiResponse<ListingImage>> GetListingImageAsync(
+            string apiToken, 
+            long listingId, 
+            long listingImageId)
+        {
+            try
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
+                UriBuilder baseUri = new UriBuilder($"{_httpClient.BaseAddress}{Url.ListingUrls.GetListingImage(listingId: listingId, listingImageId: listingImageId)}");
+                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, baseUri.Uri);
+                var response = await _httpClient.SendAsync(request);
+                var result = await EtsyResponseParser.ParseResponseOfSingle<ListingImage>(response);
 
+                return result;
+            }
+            catch (HttpRequestException ex)
+            {
+                var result = new ApiResponse<ListingImage>
+                {
+                    ResponseCode = (int)ex.StatusCode,
+                    Success = false,
+                    Data = null,
+                    Message = $"{ex.Message}"
+                };
+
+                return result;
+            }
+        }
+
+        public async Task<ApiResponse<EtsyListResponse<ListingImage>>> GetListingImagesAsync(
+            string apiToken, 
+            long listingId)
+        {
+            try
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
+                UriBuilder baseUri = new UriBuilder($"{_httpClient.BaseAddress}{Url.ListingUrls.GetListingImages(listingId: listingId)}");
+                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, baseUri.Uri);
+                var response = await _httpClient.SendAsync(request);
+                var result = await EtsyResponseParser.ParseResponseOfList<ListingImage>(response);
+
+                return result;
+            }
+            catch (HttpRequestException ex)
+            {
+                var result = new ApiResponse<EtsyListResponse<ListingImage>>
+                {
+                    ResponseCode = (int)ex.StatusCode,
+                    Success = false,
+                    Data = null,
+                    Message = $"{ex.Message}"
+                };
+
+                return result;
+            }
+        }
     }
 }
