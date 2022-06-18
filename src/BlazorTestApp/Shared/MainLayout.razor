@@ -27,6 +27,8 @@
     private void ShopChanged(ChangeEventArgs e)
     {
         var shopId = Convert.ToInt64(e.Value);
+        AppState.OnChange += StateHasChanged;
         AppState.ShopId = shopId;
+        AppState.OnChange -= StateHasChanged;        
     }
 }
