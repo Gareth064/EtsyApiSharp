@@ -94,6 +94,9 @@ namespace EtsyApiSharp.Services.ReceiptManagements
                 if (filter.WasShipped is not null)
                     baseUri.AddQueryParam("was_shipped", filter.WasShipped.ToString());
 
+                if (filter.WasDelivered is not null)
+                    baseUri.AddQueryParam("was_delivered", filter.WasDelivered.ToString());
+
                 HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, baseUri.Uri);
                 var response = _httpClient.SendAsync(request);
                 var bodyContent = await response.Result.Content.ReadAsStringAsync();

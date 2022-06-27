@@ -24,7 +24,8 @@ namespace EtsyApiSharp.Services.ReceiptManagements
         Task<ApiResponse<EtsyListResponse<ShopReceiptTransaction>>> GetShopReceiptTransactionsByListingAsync(
             string apiToken,
             long shopId,
-            long listingId);
+            long listingId,
+            GetShopReceiptTransactionsByShopFilter filter);
 
         Task<ApiResponse<EtsyListResponse<ShopReceiptTransaction>>> GetShopReceiptTransactionsByReceiptAsync(
             string apiToken,

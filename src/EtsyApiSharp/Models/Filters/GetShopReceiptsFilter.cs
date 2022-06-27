@@ -8,6 +8,7 @@
         public long? MaxLastModified { get; set; }
         public bool? WasPaid { get; set; }
         public bool? WasShipped { get; set; }
+        public bool? WasDelivered { get; set; }
 
     }
 }
