@@ -55,5 +55,11 @@ namespace EtsyApiSharp.Models
         [JsonPropertyName("create_timestamp")]
         public int CreateTimestamp { get; set; }
 
+        /// <summary>
+        /// The unique numeric ID of a file associated with a digital listing.
+        /// </summary>
+        [JsonPropertyName("created_timestamp")]
+        public int CreatedTimestamp { get; set; }
+
     }
 }

@@ -53,6 +53,12 @@ namespace EtsyApiSharp.Models
         public int CreationTimestamp { get; set; }
 
         /// <summary>
+        /// The listing\'s creation time, in epoch seconds.
+        /// </summary>
+        [JsonPropertyName("created_timestamp")]
+        public int CreatedTimestamp { get; set; }
+
+        /// <summary>
         /// The listing\'s expiration time, in epoch seconds.
         /// </summary>
         [JsonPropertyName("ending_timestamp")]
@@ -69,6 +75,12 @@ namespace EtsyApiSharp.Models
         /// </summary>
         [JsonPropertyName("last_modified_timestamp")]
         public int LastModifiedTimestamp { get; set; }
+
+        /// <summary>
+        /// The time of the last update to the listing, in epoch seconds.
+        /// </summary>
+        [JsonPropertyName("updated_timestamp")]
+        public int UpdatedTimestamp { get; set; }
 
         /// <summary>
         /// The date and time of the last state change of this listing.
@@ -113,6 +125,12 @@ namespace EtsyApiSharp.Models
         public bool NonTaxable { get; set; }
 
         /// <summary>
+        /// When true, applicable [shop](/documentation/reference#tag/Shop) tax rates apply to this listing at checkout.
+        /// </summary>
+        [JsonPropertyName("is_taxable")]
+        public bool IsTaxable { get; set; }
+
+        /// <summary>
         /// When true, a buyer may contact the seller for a customized order. The default value is true when a shop accepts custom orders. Does not apply to shops that do not accept custom orders.
         /// </summary>
         [JsonPropertyName("is_customizable")]
@@ -125,19 +143,19 @@ namespace EtsyApiSharp.Models
         public bool IsPersonalizable { get; set; }
 
         /// <summary>
-        /// When true, this listing requires personalization. The default value is null.
+        /// When true, this listing requires personalization. The default value is null. Will only change if is_personalizable is 'true'.
         /// </summary>
         [JsonPropertyName("personalization_is_required")]
         public bool PersonalizationIsRequired { get; set; }
 
         /// <summary>
-        /// This an integer value representing the maximum length for the personalization message entered by the buyer.
+        /// This an integer value representing the maximum length for the personalization message entered by the buyer. Will only change if is_personalizable is 'true'.
         /// </summary>
         [JsonPropertyName("personalization_char_count_max")]
         public int? PersonalizationCharCountMax { get; set; }
 
         /// <summary>
-        /// When true, this listing requires personalization. The default value is null.
+        /// When true, this listing requires personalization. The default value is null. Will only change if is_personalizable is 'true'.
         /// </summary>
         [JsonPropertyName("personalization_instructions")]
         public string PersonalizationInstructions { get; set; }
@@ -271,7 +289,7 @@ namespace EtsyApiSharp.Models
         public string Language { get; set; }
 
         /// <summary>
-        /// The positive non-zero price of the product. (Sold product listings are private) Note: The price is the minimum possible price. The getInventory method requests exact prices for available offerings.
+        /// The positive non-zero price of the product. (Sold product listings are private) Note: The price is the minimum possible price. The [`getListingInventory`](/documentation/reference/#operation/getListingInventory) method requests exact prices for available offerings.
         /// </summary>
         [JsonPropertyName("price")]
         public Money Price { get; set; }
@@ -307,6 +325,12 @@ namespace EtsyApiSharp.Models
         public List<ListingImage> Images { get; set; }
 
         /// <summary>
+        /// An enumerated string that attaches an valid association. Default value is null.
+        /// </summary>
+        [JsonPropertyName("inventory")]
+        public ListingInventory Inventory { get; set; }
+
+        /// <summary>
         /// Represents a list of production partners for a shop.
         /// </summary>
         [JsonPropertyName("production_partners")]
@@ -322,7 +346,7 @@ namespace EtsyApiSharp.Models
         /// An array of translations for the listing. Default value is an empty array.
         /// </summary>
         [JsonPropertyName("translations")]
-        public List<ListingTranslation>? Translations { get; set; }
+        public List<ListingTranslation> Translations { get; set; }
 
     }
 }

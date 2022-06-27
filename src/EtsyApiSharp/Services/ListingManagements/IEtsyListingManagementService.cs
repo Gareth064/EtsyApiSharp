@@ -26,6 +26,7 @@ namespace EtsyApiSharp.Services.ListingManagements
         Task<ApiResponse<EtsyListResponse<ShopListingWithAssociations>>> GetListingsByShopAsync(
             string apiToken,
             long shopId,
+            List<ListingInclude> includes = null,
             GetListingsByShopFilter? filter = null);
 
         Task<ApiResponse<ShopListingWithAssociations>> GetListingAsync(

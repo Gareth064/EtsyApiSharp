@@ -5,7 +5,7 @@ namespace EtsyApiSharp.Models
     /// <summary>
     /// A product property definition.
     /// </summary>
-    public class TaxonomyNodeProperty
+    public class BuyerTaxonomyNodeProperty
     {
         /// <summary>
         /// The unique numeric ID of this product property.
@@ -29,7 +29,7 @@ namespace EtsyApiSharp.Models
         /// A list of available scales.
         /// </summary>
         [JsonPropertyName("scales")]
-        public List<TaxonomyPropertyScale> Scales { get; set; }
+        public List<BuyerTaxonomyPropertyScale> Scales { get; set; }
 
         /// <summary>
         /// When true, listings assigned eligible taxonomy IDs require this property.
@@ -65,13 +65,13 @@ namespace EtsyApiSharp.Models
         /// A list of supported property value strings for this property.
         /// </summary>
         [JsonPropertyName("possible_values")]
-        public List<TaxonomyPropertyValue> PossibleValues { get; set; }
+        public List<BuyerTaxonomyPropertyValue> PossibleValues { get; set; }
 
         /// <summary>
         /// A list of property value strings automatically and always selected for the given property.
         /// </summary>
         [JsonPropertyName("selected_values")]
-        public List<TaxonomyPropertyValue> SelectedValues { get; set; }
+        public List<BuyerTaxonomyPropertyValue> SelectedValues { get; set; }
 
     }
 }

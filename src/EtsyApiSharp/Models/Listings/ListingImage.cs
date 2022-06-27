@@ -74,6 +74,12 @@ namespace EtsyApiSharp.Models
         public int CreationTsz { get; set; }
 
         /// <summary>
+        /// The listing image\'s creation time, in epoch seconds.
+        /// </summary>
+        [JsonPropertyName("created_timestamp")]
+        public int CreatedTimestamp { get; set; }
+
+        /// <summary>
         /// The positive non-zero numeric position in the images displayed in a listing, with rank 1 images appearing in the left-most position in a listing.
         /// </summary>
         [JsonPropertyName("rank")]
@@ -114,6 +120,12 @@ namespace EtsyApiSharp.Models
         /// </summary>
         [JsonPropertyName("full_width")]
         public int? FullWidth { get; set; }
+
+        /// <summary>
+        /// Alt text for the listing image.
+        /// </summary>
+        [JsonPropertyName("alt_text")]
+        public string AltText { get; set; }
 
     }
 }

@@ -283,14 +283,14 @@ namespace EtsyApiSharp.Services.ListingManagements
             {
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
                 UriBuilder baseUri = new UriBuilder($"{_httpClient.BaseAddress}{Url.ListingUrls.GetListingsByListingIds()}");
-                string includesQueryParam = String.Empty;
-
                 string idsForQuery = "";
                 idsForQuery = idsForQuery.ListOfLongToCommaSeperatedString(listingIds);
                 baseUri.AddQueryParam("listing_ids", idsForQuery);
 
                 if (includes is not null)
                 {
+                    string includesQueryParam = String.Empty;
+
                     foreach (var include in includes)
                     {
                         includesQueryParam += $"{include},";
@@ -345,6 +345,7 @@ namespace EtsyApiSharp.Services.ListingManagements
         public async Task<ApiResponse<EtsyListResponse<ShopListingWithAssociations>>> GetListingsByShopAsync(
             string apiToken,
             long shopId,
+            List<ListingInclude>? includes = null,
             GetListingsByShopFilter? filter = null)
         {
             try
@@ -368,6 +369,18 @@ namespace EtsyApiSharp.Services.ListingManagements
 
                     if (filter.SortOrder is not ListingSortOrder.desc)
                         baseUri.AddQueryParam("sort_order", filter.SortOrder.ToString());
+                }
+
+                if (includes is not null)
+                {
+                    string includesQueryParam = String.Empty;
+
+                    foreach (var include in includes)
+                    {
+                        includesQueryParam += $"{include},";
+                    }
+
+                    baseUri.AddQueryParam("includes", includesQueryParam);
                 }
 
                 HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, baseUri.Uri);

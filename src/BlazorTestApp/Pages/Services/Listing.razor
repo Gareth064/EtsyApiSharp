@@ -14,7 +14,7 @@
     <button @onclick="GetListingPropertiesAsync">Listing Properties by Listing ID</button>
     <br />
     <br />
-        <input @bind="listingImageId" />
+    <input @bind="listingImageId" />
     <button @onclick="GetListingImageAsync">Listing Image By Image ID By Listing ID</button>
     <br />
     <br />
@@ -57,6 +57,7 @@
         includes.Add(ListingInclude.Shipping);
         includes.Add(ListingInclude.Shop);
         includes.Add(ListingInclude.User);
+        includes.Add(ListingInclude.Inventory);
 
         var result = await ListingService.GetListingAsync(
             AppState.TokenResponse,
@@ -114,8 +115,14 @@
     private async Task GetListingsByShopAsync()
     {
         var filter = new GetListingsByShopFilter();
-        filter.SortOn = ListingSortOn.price;
+        filter.SortOn = ListingSortOn.updated;
         filter.SortOrder = ListingSortOrder.desc;
+        var includes = new List<ListingInclude>();
+        includes.Add(ListingInclude.Images);
+        includes.Add(ListingInclude.Shipping);
+        includes.Add(ListingInclude.Shop);
+        includes.Add(ListingInclude.User);
+        includes.Add(ListingInclude.Inventory);
 
         if (String.IsNullOrEmpty(shopId))
             shopId = AppState.ShopId.ToString();
@@ -123,6 +130,7 @@
         var result = await ListingService.GetListingsByShopAsync(
             AppState.TokenResponse,
             Convert.ToInt64(shopId),
+            includes,
             filter);
 
         DisplayResultsOnScreen(result);
@@ -197,7 +205,7 @@
         var IdList = new List<long>();
         var ids = sectionIds.Split(',');
 
-        foreach(var id in ids)
+        foreach (var id in ids)
         {
             IdList.Add(Int64.Parse(id));
         }
@@ -222,7 +230,7 @@
         DisplayResultsOnScreen(result);
     }
 
-        private async Task GetListingImagesAsync()
+    private async Task GetListingImagesAsync()
     {
         var result = await ListingService.GetListingImagesAsync(
             AppState.TokenResponse,
