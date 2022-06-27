@@ -44,6 +44,12 @@ namespace EtsyApiSharp.Models
         public int CreateTimestamp { get; set; }
 
         /// <summary>
+        /// The transaction\'s creation date and time, in epoch seconds.
+        /// </summary>
+        [JsonPropertyName("created_timestamp")]
+        public int CreatedTimestamp { get; set; }
+
+        /// <summary>
         /// The transaction\'s paid date and time, in epoch seconds.
         /// </summary>
         [JsonPropertyName("paid_timestamp")]
@@ -128,6 +134,12 @@ namespace EtsyApiSharp.Models
         public List<TransactionVariation> Variations { get; set; }
 
         /// <summary>
+        /// A list of property value entries for this product.
+        /// </summary>
+        [JsonPropertyName("product_data")]
+        public List<ListingPropertyValue> ProductData { get; set; }
+
+        /// <summary>
         /// The ID of the shipping profile selected for this listing.
         /// </summary>
         [JsonPropertyName("shipping_profile_id")]
@@ -162,6 +174,18 @@ namespace EtsyApiSharp.Models
         /// </summary>
         [JsonPropertyName("expected_ship_date")]
         public int? ExpectedShipDate { get; set; }
+
+        /// <summary>
+        /// The amount of the buyer coupon that was discounted in the shop's currency.
+        /// </summary>
+        [JsonPropertyName("buyer_coupon")]
+        public float BuyerCoupon { get; set; }
+
+        /// <summary>
+        /// The amount of the shop coupon that was discounted in the shop's currency.
+        /// </summary>
+        [JsonPropertyName("shop_coupon")]
+        public float ShopCoupon { get; set; }
 
     }
 }

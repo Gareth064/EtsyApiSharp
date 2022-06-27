@@ -146,10 +146,22 @@ namespace EtsyApiSharp.Models
         public int CreateTimestamp { get; set; }
 
         /// <summary>
+        /// The receipt\'s creation time, in epoch seconds.
+        /// </summary>
+        [JsonPropertyName("created_timestamp")]
+        public int CreatedTimestamp { get; set; }
+
+        /// <summary>
         /// The time of the last update to the receipt, in epoch seconds.
         /// </summary>
         [JsonPropertyName("update_timestamp")]
         public int UpdateTimestamp { get; set; }
+
+        /// <summary>
+        /// The time of the last update to the receipt, in epoch seconds.
+        /// </summary>
+        [JsonPropertyName("updated_timestamp")]
+        public int UpdatedTimestamp { get; set; }
 
         /// <summary>
         /// When true, the buyer indicated this purchase is a gift.
@@ -222,6 +234,12 @@ namespace EtsyApiSharp.Models
         /// </summary>
         [JsonPropertyName("transactions")]
         public List<ShopReceiptTransaction> Transactions { get; set; }
+
+        /// <summary>
+        /// Refunds for a given receipt.
+        /// </summary>
+        [JsonPropertyName("refunds")]
+        public List<ShopRefund> Refunds { get; set; }
 
     }
 }
