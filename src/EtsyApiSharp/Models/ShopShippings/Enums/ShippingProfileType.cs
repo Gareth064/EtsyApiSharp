@@ -1,8 +1,7 @@
-﻿namespace EtsyApiSharp.Models.ShopShippings.Enums
+﻿namespace EtsyApiSharp.Models.ShopShippings.Enums;
+
+public enum ShippingProfileType
 {
-    public enum ShippingProfileType
-    {
-        manual,
-        calculated
-    }
+    manual,
+    calculated
 }

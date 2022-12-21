@@ -8,575 +8,574 @@ using System.Diagnostics;
 using System.Net.Http.Headers;
 using System.Text.Json;
 
-namespace EtsyApiSharp.Services.ListingManagements
+namespace EtsyApiSharp.Services.ListingManagements;
+
+public class EtsyListingManagementService : IEtsyListingManagementService
 {
-    public class EtsyListingManagementService : IEtsyListingManagementService
+    private readonly HttpClient _httpClient;
+    public EtsyListingManagementService(string clientId)
     {
-        private readonly HttpClient _httpClient;
-        public EtsyListingManagementService(string clientId)
-        {
-            _httpClient = new HttpClient { BaseAddress = new Uri(Url.AuthUrls.BaseApiUrl) };
-            _httpClient.DefaultRequestHeaders.Add("x-api-key", clientId);
-        }
+        _httpClient = new HttpClient { BaseAddress = new Uri(Url.AuthUrls.BaseApiUrl) };
+        _httpClient.DefaultRequestHeaders.Add("x-api-key", clientId);
+    }
 
-        public async Task<ApiResponse<EtsyListResponse<ShopListingWithAssociations>>> FindAllActiveListingsByShopAsync(
-            string apiToken,
-            long shopId,
-            FindAllActiveListingsByShopFilter? filter = null)
+    public async Task<ApiResponse<EtsyListResponse<ShopListingWithAssociations>>> FindAllActiveListingsByShopAsync(
+        string apiToken,
+        long shopId,
+        FindAllActiveListingsByShopFilter? filter = null)
+    {
+        try
         {
-            try
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
+            UriBuilder baseUri = new($"{_httpClient.BaseAddress}{Url.ListingUrls.FindAllActiveListingsByShop(shopId: shopId)}");
+
+            if (filter is not null)
             {
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
-                UriBuilder baseUri = new UriBuilder($"{_httpClient.BaseAddress}{Url.ListingUrls.FindAllActiveListingsByShop(shopId: shopId)}");
+                if (filter.Limit is not 25)
+                    baseUri.AddQueryParam("limit", filter.Limit.ToString());
 
-                if (filter is not null)
+                if (filter.Offset is not 0)
+                    baseUri.AddQueryParam("offset", filter.Offset.ToString());
+
+                if (String.IsNullOrEmpty(filter.Keywords) is false)
+                    baseUri.AddQueryParam("keywords", filter.Keywords.ToString());
+            }
+
+            HttpRequestMessage request = new(HttpMethod.Get, baseUri.Uri);
+            var response = await _httpClient.SendAsync(request);
+            var result = await EtsyResponseParser.ParseResponseOfList<ShopListingWithAssociations>(response);
+
+            return result;
+        }
+        catch (HttpRequestException ex)
+        {
+            var result = new ApiResponse<EtsyListResponse<ShopListingWithAssociations>>
+            {
+                ResponseCode = (int)ex.StatusCode!,
+                Success = false,
+                Data = null,
+                Message = $"{ex.Message}"
+            };
+
+            return result;
+        }
+    }
+
+    public async Task<ApiResponse<EtsyListResponse<ShopListingWithAssociations>>> FindAllListingsActiveAsync(
+        string apiToken,
+        FindAllListingsActiveFilter? filter = null)
+    {
+        try
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
+            UriBuilder baseUri = new($"{_httpClient.BaseAddress}{Url.ListingUrls.FindAllListingsActive()}");
+
+            if (filter is not null)
+            {
+                if (filter.Limit is not 25)
+                    baseUri.AddQueryParam("limit", filter.Limit.ToString());
+
+                if (filter.Offset is not 0)
+                    baseUri.AddQueryParam("offset", filter.Offset.ToString());
+
+                if (filter.SortOn is not null)
+                    baseUri.AddQueryParam("sort_on", filter.SortOn.ToString()!);
+
+                if (filter.SortOrder is not null)
+                    baseUri.AddQueryParam("sort_order", filter.SortOrder.ToString()!);
+
+                if (filter.MinPrice is not null)
+                    baseUri.AddQueryParam("min_price", filter.MinPrice.ToString()!);
+
+                if (filter.MaxPrice is not null)
+                    baseUri.AddQueryParam("max_price", filter.MaxPrice.ToString()!);
+
+                if (filter.Keywords is not null)
+                    baseUri.AddQueryParam("keywords", filter.Keywords);
+
+                if (filter.TaxonomyId is not null)
+                    baseUri.AddQueryParam("taxonomy_id", filter.TaxonomyId.ToString()!);
+
+                if (filter.ShopLocation is not null)
+                    baseUri.AddQueryParam("shop_location", filter.ShopLocation);
+            }
+
+            HttpRequestMessage request = new(HttpMethod.Get, baseUri.Uri);
+            var response = await _httpClient.SendAsync(request);
+            var result = await EtsyResponseParser.ParseResponseOfList<ShopListingWithAssociations>(response);
+
+            return result;
+        }
+        catch (HttpRequestException ex)
+        {
+            var result = new ApiResponse<EtsyListResponse<ShopListingWithAssociations>>
+            {
+                ResponseCode = (int)ex.StatusCode!,
+                Success = false,
+                Data = null,
+                Message = $"{ex.Message}"
+            };
+
+            return result;
+        }
+    }
+
+    public async Task<ApiResponse<EtsyListResponse<ShopListingWithAssociations>>> GetFeaturedListingsByShopAsync(
+        string apiToken,
+        long shopId,
+        GetFeaturedListingsByShopFilter? filter = null)
+    {
+        try
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
+            UriBuilder baseUri = new($"{_httpClient.BaseAddress}{Url.ListingUrls.GetFeaturedListingsByShop(shopId: shopId)}");
+
+            if (filter is not null)
+            {
+                if (filter.Limit is not 25)
+                    baseUri.AddQueryParam("limit", filter.Limit.ToString());
+
+                if (filter.Offset is not 0)
+                    baseUri.AddQueryParam("offset", filter.Offset.ToString());
+            }
+
+            HttpRequestMessage request = new(HttpMethod.Get, baseUri.Uri);
+            var response = await _httpClient.SendAsync(request);
+            var result = await EtsyResponseParser.ParseResponseOfList<ShopListingWithAssociations>(response);
+
+            return result;
+        }
+        catch (HttpRequestException ex)
+        {
+            var result = new ApiResponse<EtsyListResponse<ShopListingWithAssociations>>
+            {
+                ResponseCode = (int)ex.StatusCode!,
+                Success = false,
+                Data = null,
+                Message = $"{ex.Message}"
+            };
+
+            return result;
+        }
+    }
+
+    public async Task<ApiResponse<ShopListingWithAssociations>> GetListingAsync(
+        string apiToken,
+        long listingId,
+        List<ListingInclude>? includes = null)
+    {
+        try
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
+            UriBuilder baseUri = new($"{_httpClient.BaseAddress}{Url.ListingUrls.GetListing(listingId: listingId)}");
+            string includesQueryParam = String.Empty;
+
+            if (includes is not null)
+            {
+                foreach (var include in includes)
                 {
-                    if (filter.Limit is not 25)
-                        baseUri.AddQueryParam("limit", filter.Limit.ToString());
-
-                    if (filter.Offset is not 0)
-                        baseUri.AddQueryParam("offset", filter.Offset.ToString());
-
-                    if (String.IsNullOrEmpty(filter.Keywords) is false)
-                        baseUri.AddQueryParam("keywords", filter.Keywords.ToString());
+                    includesQueryParam += $"{include},";
                 }
 
-                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, baseUri.Uri);
-                var response = await _httpClient.SendAsync(request);
-                var result = await EtsyResponseParser.ParseResponseOfList<ShopListingWithAssociations>(response);
-
-                return result;
+                baseUri.AddQueryParam("includes", includesQueryParam);
             }
-            catch (HttpRequestException ex)
-            {
-                var result = new ApiResponse<EtsyListResponse<ShopListingWithAssociations>>
-                {
-                    ResponseCode = (int)ex.StatusCode,
-                    Success = false,
-                    Data = null,
-                    Message = $"{ex.Message}"
-                };
 
-                return result;
-            }
+            HttpRequestMessage request = new(HttpMethod.Get, baseUri.Uri);
+            var response = await _httpClient.SendAsync(request);
+            var result = await EtsyResponseParser.ParseResponseOfSingle<ShopListingWithAssociations>(response);
+
+            return result;
         }
-
-        public async Task<ApiResponse<EtsyListResponse<ShopListingWithAssociations>>> FindAllListingsActiveAsync(
-            string apiToken,
-            FindAllListingsActiveFilter? filter = null)
+        catch (HttpRequestException ex)
         {
-            try
+            Debug.WriteLine(ex);
+            var result = new ApiResponse<ShopListingWithAssociations>
             {
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
-                UriBuilder baseUri = new UriBuilder($"{_httpClient.BaseAddress}{Url.ListingUrls.FindAllListingsActive()}");
+                ResponseCode = (int)ex.StatusCode!,
+                Success = false,
+                Data = null,
+                Message = $"{ex.Message}"
+            };
 
-                if (filter is not null)
-                {
-                    if (filter.Limit is not 25)
-                        baseUri.AddQueryParam("limit", filter.Limit.ToString());
-
-                    if (filter.Offset is not 0)
-                        baseUri.AddQueryParam("offset", filter.Offset.ToString());
-
-                    if (filter.SortOn is not null)
-                        baseUri.AddQueryParam("sort_on", filter.SortOn.ToString());
-
-                    if (filter.SortOrder is not null)
-                        baseUri.AddQueryParam("sort_order", filter.SortOrder.ToString());
-
-                    if (filter.MinPrice is not null)
-                        baseUri.AddQueryParam("min_price", filter.MinPrice.ToString());
-
-                    if (filter.MaxPrice is not null)
-                        baseUri.AddQueryParam("max_price", filter.MaxPrice.ToString());
-
-                    if (filter.Keywords is not null)
-                        baseUri.AddQueryParam("keywords", filter.Keywords);
-
-                    if (filter.TaxonomyId is not null)
-                        baseUri.AddQueryParam("taxonomy_id", filter.TaxonomyId.ToString());
-
-                    if (filter.ShopLocation is not null)
-                        baseUri.AddQueryParam("shop_location", filter.ShopLocation);
-                }
-
-                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, baseUri.Uri);
-                var response = await _httpClient.SendAsync(request);
-                var result = await EtsyResponseParser.ParseResponseOfList<ShopListingWithAssociations>(response);
-
-                return result;
-            }
-            catch (HttpRequestException ex)
-            {
-                var result = new ApiResponse<EtsyListResponse<ShopListingWithAssociations>>
-                {
-                    ResponseCode = (int)ex.StatusCode,
-                    Success = false,
-                    Data = null,
-                    Message = $"{ex.Message}"
-                };
-
-                return result;
-            }
+            return result;
         }
-
-        public async Task<ApiResponse<EtsyListResponse<ShopListingWithAssociations>>> GetFeaturedListingsByShopAsync(
-            string apiToken,
-            long shopId,
-            GetFeaturedListingsByShopFilter? filter = null)
+        catch (Exception ex)
         {
-            try
+            Debug.WriteLine(ex);
+            var result = new ApiResponse<ShopListingWithAssociations>
             {
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
-                UriBuilder baseUri = new UriBuilder($"{_httpClient.BaseAddress}{Url.ListingUrls.GetFeaturedListingsByShop(shopId: shopId)}");
+                ResponseCode = 500,
+                Success = false,
+                Data = null,
+                Message = $"{ex.Message}"
+            };
 
-                if (filter is not null)
-                {
-                    if (filter.Limit is not 25)
-                        baseUri.AddQueryParam("limit", filter.Limit.ToString());
-
-                    if (filter.Offset is not 0)
-                        baseUri.AddQueryParam("offset", filter.Offset.ToString());
-                }
-
-                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, baseUri.Uri);
-                var response = await _httpClient.SendAsync(request);
-                var result = await EtsyResponseParser.ParseResponseOfList<ShopListingWithAssociations>(response);
-
-                return result;
-            }
-            catch (HttpRequestException ex)
-            {
-                var result = new ApiResponse<EtsyListResponse<ShopListingWithAssociations>>
-                {
-                    ResponseCode = (int)ex.StatusCode,
-                    Success = false,
-                    Data = null,
-                    Message = $"{ex.Message}"
-                };
-
-                return result;
-            }
+            return result;
         }
+    }
 
-        public async Task<ApiResponse<ShopListingWithAssociations>> GetListingAsync(
-            string apiToken,
-            long listingId,
-            List<ListingInclude>? includes = null)
+    public async Task<ApiResponse<EtsyListResponse<ListingPropertyValue>>> GetListingPropertiesAsync(
+        string apiToken,
+        long shopId,
+        long listingId)
+    {
+        try
         {
-            try
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
+            UriBuilder baseUri = new($"{_httpClient.BaseAddress}{Url.ListingUrls.GetListingProperties(shopId: shopId, listingId: listingId)}");
+
+            HttpRequestMessage request = new(HttpMethod.Get, baseUri.Uri);
+            var response = await _httpClient.SendAsync(request);
+            var result = await EtsyResponseParser.ParseResponseOfList<ListingPropertyValue>(response);
+
+            return result;
+        }
+        catch (HttpRequestException ex)
+        {
+            var result = new ApiResponse<EtsyListResponse<ListingPropertyValue>>
             {
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
-                UriBuilder baseUri = new UriBuilder($"{_httpClient.BaseAddress}{Url.ListingUrls.GetListing(listingId: listingId)}");
+                ResponseCode = (int)ex.StatusCode!,
+                Success = false,
+                Data = null,
+                Message = $"{ex.Message}"
+            };
+
+            return result;
+        }
+    }
+
+    public async Task<ApiResponse<ListingPropertyValue>> GetListingPropertyAsync(
+        string apiToken,
+        long listingId,
+        long propertyId)
+    {
+        try
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
+            UriBuilder baseUri = new($"{_httpClient.BaseAddress}{Url.ListingUrls.GetListingProperty(listingId: listingId, propertyId: propertyId)}");
+
+            HttpRequestMessage request = new(HttpMethod.Get, baseUri.Uri);
+            var response = await _httpClient.SendAsync(request);
+            var result = await EtsyResponseParser.ParseResponseOfSingle<ListingPropertyValue>(response);
+
+            return result;
+        }
+        catch (HttpRequestException ex)
+        {
+            var result = new ApiResponse<ListingPropertyValue>
+            {
+                ResponseCode = (int)ex.StatusCode!,
+                Success = false,
+                Data = null,
+                Message = $"{ex.Message}"
+            };
+
+            return result;
+        }
+    }
+
+    public async Task<ApiResponse<EtsyListResponse<ShopListingWithAssociations>>> GetListingsByListingIdsAsync(
+        string apiToken,
+        List<long> listingIds,
+        List<ListingInclude>? includes = null)
+    {
+        try
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
+            UriBuilder baseUri = new($"{_httpClient.BaseAddress}{Url.ListingUrls.GetListingsByListingIds()}");
+            string idsForQuery = "";
+            idsForQuery = idsForQuery.ListOfLongToCommaSeperatedString(listingIds);
+            baseUri.AddQueryParam("listing_ids", idsForQuery);
+
+            if (includes is not null)
+            {
                 string includesQueryParam = String.Empty;
 
-                if (includes is not null)
+                foreach (var include in includes)
                 {
-                    foreach (var include in includes)
-                    {
-                        includesQueryParam += $"{include},";
-                    }
-
-                    baseUri.AddQueryParam("includes", includesQueryParam);
+                    includesQueryParam += $"{include},";
                 }
 
-                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, baseUri.Uri);
-                var response = await _httpClient.SendAsync(request);
-                var result = await EtsyResponseParser.ParseResponseOfSingle<ShopListingWithAssociations>(response);
-
-                return result;
+                baseUri.AddQueryParam("includes", includesQueryParam);
             }
-            catch (HttpRequestException ex)
+
+            HttpRequestMessage request = new(HttpMethod.Get, baseUri.Uri);
+            var response = _httpClient.SendAsync(request);
+            var bodyContent = await response.Result.Content.ReadAsStringAsync();
+            var reciepts = JsonSerializer.Deserialize<EtsyListResponse<ShopListingWithAssociations>>(bodyContent);
+
+            var result = new ApiResponse<EtsyListResponse<ShopListingWithAssociations>>
             {
-                Debug.WriteLine(ex.Message);
-                var result = new ApiResponse<ShopListingWithAssociations>
-                {
-                    ResponseCode = (int)ex.StatusCode,
-                    Success = false,
-                    Data = null,
-                    Message = $"{ex.Message}"
-                };
+                ResponseCode = 200,
+                Success = true,
+                Data = reciepts,
+                Message = null
+            };
 
-                return result;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-                var result = new ApiResponse<ShopListingWithAssociations>
-                {
-                    ResponseCode = 500,
-                    Success = false,
-                    Data = null,
-                    Message = $"{ex.Message}"
-                };
-
-                return result;
-            }
+            return result;
         }
-
-        public async Task<ApiResponse<EtsyListResponse<ListingPropertyValue>>> GetListingPropertiesAsync(
-            string apiToken,
-            long shopId,
-            long listingId)
+        catch (HttpRequestException ex)
         {
-            try
+            Debug.WriteLine(ex.Message);
+            var result = new ApiResponse<EtsyListResponse<ShopListingWithAssociations>>
             {
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
-                UriBuilder baseUri = new UriBuilder($"{_httpClient.BaseAddress}{Url.ListingUrls.GetListingProperties(shopId: shopId, listingId: listingId)}");
+                ResponseCode = (int)ex.StatusCode!,
+                Success = false,
+                Data = null,
+                Message = $"{ex.Message}"
+            };
 
-                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, baseUri.Uri);
-                var response = await _httpClient.SendAsync(request);
-                var result = await EtsyResponseParser.ParseResponseOfList<ListingPropertyValue>(response);
-
-                return result;
-            }
-            catch (HttpRequestException ex)
-            {
-                var result = new ApiResponse<EtsyListResponse<ListingPropertyValue>>
-                {
-                    ResponseCode = (int)ex.StatusCode,
-                    Success = false,
-                    Data = null,
-                    Message = $"{ex.Message}"
-                };
-
-                return result;
-            }
+            return result;
         }
-
-        public async Task<ApiResponse<ListingPropertyValue>> GetListingPropertyAsync(
-            string apiToken,
-            long listingId,
-            long propertyId)
+        catch (Exception ex)
         {
-            try
+            Debug.WriteLine(ex.Message);
+            var result = new ApiResponse<EtsyListResponse<ShopListingWithAssociations>>
             {
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
-                UriBuilder baseUri = new UriBuilder($"{_httpClient.BaseAddress}{Url.ListingUrls.GetListingProperty(listingId: listingId, propertyId: propertyId)}");
+                ResponseCode = 500,
+                Success = false,
+                Data = null,
+                Message = $"{ex.Message}"
+            };
 
-                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, baseUri.Uri);
-                var response = await _httpClient.SendAsync(request);
-                var result = await EtsyResponseParser.ParseResponseOfSingle<ListingPropertyValue>(response);
-
-                return result;
-            }
-            catch (HttpRequestException ex)
-            {
-                var result = new ApiResponse<ListingPropertyValue>
-                {
-                    ResponseCode = (int)ex.StatusCode,
-                    Success = false,
-                    Data = null,
-                    Message = $"{ex.Message}"
-                };
-
-                return result;
-            }
+            return result;
         }
+    }
 
-        public async Task<ApiResponse<EtsyListResponse<ShopListingWithAssociations>>> GetListingsByListingIdsAsync(
-            string apiToken,
-            List<long> listingIds,
-            List<ListingInclude>? includes = null)
+    public async Task<ApiResponse<EtsyListResponse<ShopListingWithAssociations>>> GetListingsByShopAsync(
+        string apiToken,
+        long shopId,
+        List<ListingInclude>? includes = null,
+        GetListingsByShopFilter? filter = null)
+    {
+        try
         {
-            try
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
+            UriBuilder baseUri = new($"{_httpClient.BaseAddress}{Url.ListingUrls.GetListingsByShop(shopId: shopId)}");
+
+            if (filter is not null)
             {
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
-                UriBuilder baseUri = new UriBuilder($"{_httpClient.BaseAddress}{Url.ListingUrls.GetListingsByListingIds()}");
-                string idsForQuery = "";
-                idsForQuery = idsForQuery.ListOfLongToCommaSeperatedString(listingIds);
-                baseUri.AddQueryParam("listing_ids", idsForQuery);
+                if (filter.Limit is not 25)
+                    baseUri.AddQueryParam("limit", filter.Limit.ToString());
 
-                if (includes is not null)
+                if (filter.Offset is not 0)
+                    baseUri.AddQueryParam("offset", filter.Offset.ToString());
+
+                if (filter.State is not ListingState.active)
+                    baseUri.AddQueryParam("state", filter.State.ToString());
+
+                if (filter.SortOn is not ListingSortOn.created)
+                    baseUri.AddQueryParam("sort_on", filter.SortOn.ToString());
+
+                if (filter.SortOrder is not ListingSortOrder.desc)
+                    baseUri.AddQueryParam("sort_order", filter.SortOrder.ToString());
+            }
+
+            if (includes is not null)
+            {
+                string includesQueryParam = String.Empty;
+
+                foreach (var include in includes)
                 {
-                    string includesQueryParam = String.Empty;
-
-                    foreach (var include in includes)
-                    {
-                        includesQueryParam += $"{include},";
-                    }
-
-                    baseUri.AddQueryParam("includes", includesQueryParam);
+                    includesQueryParam += $"{include},";
                 }
 
-                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, baseUri.Uri);
-                var response = _httpClient.SendAsync(request);
-                var bodyContent = await response.Result.Content.ReadAsStringAsync();
-                var reciepts = JsonSerializer.Deserialize<EtsyListResponse<ShopListingWithAssociations>>(bodyContent);
-
-                var result = new ApiResponse<EtsyListResponse<ShopListingWithAssociations>>
-                {
-                    ResponseCode = 200,
-                    Success = true,
-                    Data = reciepts,
-                    Message = null
-                };
-
-                return result;
+                baseUri.AddQueryParam("includes", includesQueryParam);
             }
-            catch (HttpRequestException ex)
-            {
-                Debug.WriteLine(ex.Message);
-                var result = new ApiResponse<EtsyListResponse<ShopListingWithAssociations>>
-                {
-                    ResponseCode = (int)ex.StatusCode,
-                    Success = false,
-                    Data = null,
-                    Message = $"{ex.Message}"
-                };
 
-                return result;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-                var result = new ApiResponse<EtsyListResponse<ShopListingWithAssociations>>
-                {
-                    ResponseCode = 500,
-                    Success = false,
-                    Data = null,
-                    Message = $"{ex.Message}"
-                };
+            HttpRequestMessage request = new(HttpMethod.Get, baseUri.Uri);
+            var response = await _httpClient.SendAsync(request);
+            var result = await EtsyResponseParser.ParseResponseOfList<ShopListingWithAssociations>(response);
 
-                return result;
-            }
+            return result;
         }
-
-        public async Task<ApiResponse<EtsyListResponse<ShopListingWithAssociations>>> GetListingsByShopAsync(
-            string apiToken,
-            long shopId,
-            List<ListingInclude>? includes = null,
-            GetListingsByShopFilter? filter = null)
+        catch (HttpRequestException ex)
         {
-            try
+            var result = new ApiResponse<EtsyListResponse<ShopListingWithAssociations>>
             {
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
-                UriBuilder baseUri = new UriBuilder($"{_httpClient.BaseAddress}{Url.ListingUrls.GetListingsByShop(shopId: shopId)}");
+                ResponseCode = (int)ex.StatusCode!,
+                Success = false,
+                Data = null,
+                Message = $"{ex.Message}"
+            };
 
-                if (filter is not null)
-                {
-                    if (filter.Limit is not 25)
-                        baseUri.AddQueryParam("limit", filter.Limit.ToString());
-
-                    if (filter.Offset is not 0)
-                        baseUri.AddQueryParam("offset", filter.Offset.ToString());
-
-                    if (filter.State is not ListingState.active)
-                        baseUri.AddQueryParam("state", filter.State.ToString());
-
-                    if (filter.SortOn is not ListingSortOn.created)
-                        baseUri.AddQueryParam("sort_on", filter.SortOn.ToString());
-
-                    if (filter.SortOrder is not ListingSortOrder.desc)
-                        baseUri.AddQueryParam("sort_order", filter.SortOrder.ToString());
-                }
-
-                if (includes is not null)
-                {
-                    string includesQueryParam = String.Empty;
-
-                    foreach (var include in includes)
-                    {
-                        includesQueryParam += $"{include},";
-                    }
-
-                    baseUri.AddQueryParam("includes", includesQueryParam);
-                }
-
-                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, baseUri.Uri);
-                var response = await _httpClient.SendAsync(request);
-                var result = await EtsyResponseParser.ParseResponseOfList<ShopListingWithAssociations>(response);
-
-                return result;
-            }
-            catch (HttpRequestException ex)
-            {
-                var result = new ApiResponse<EtsyListResponse<ShopListingWithAssociations>>
-                {
-                    ResponseCode = (int)ex.StatusCode,
-                    Success = false,
-                    Data = null,
-                    Message = $"{ex.Message}"
-                };
-
-                return result;
-            }
+            return result;
         }
+    }
 
-        public async Task<ApiResponse<EtsyListResponse<ShopListingWithAssociations>>> GetListingsByShopReceiptAsync(
-            string apiToken,
-            long shopId,
-            long receiptId,
-            GetListingsByShopReceiptFilter? filter = null)
+    public async Task<ApiResponse<EtsyListResponse<ShopListingWithAssociations>>> GetListingsByShopReceiptAsync(
+        string apiToken,
+        long shopId,
+        long receiptId,
+        GetListingsByShopReceiptFilter? filter = null)
+    {
+        try
         {
-            try
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
+            UriBuilder baseUri = new($"{_httpClient.BaseAddress}{Url.ListingUrls.GetListingsByShopReceipt(shopId: shopId, receiptId: receiptId)}");
+
+            if (filter is not null)
             {
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
-                UriBuilder baseUri = new UriBuilder($"{_httpClient.BaseAddress}{Url.ListingUrls.GetListingsByShopReceipt(shopId: shopId, receiptId: receiptId)}");
+                if (filter.Limit is not 25)
+                    baseUri.AddQueryParam("limit", filter.Limit.ToString());
 
-                if (filter is not null)
-                {
-                    if (filter.Limit is not 25)
-                        baseUri.AddQueryParam("limit", filter.Limit.ToString());
-
-                    if (filter.Offset is not 0)
-                        baseUri.AddQueryParam("offset", filter.Offset.ToString());
-                }
-
-                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, baseUri.Uri);
-                var response = await _httpClient.SendAsync(request);
-                var result = await EtsyResponseParser.ParseResponseOfList<ShopListingWithAssociations>(response);
-
-                return result;
+                if (filter.Offset is not 0)
+                    baseUri.AddQueryParam("offset", filter.Offset.ToString());
             }
-            catch (HttpRequestException ex)
-            {
-                var result = new ApiResponse<EtsyListResponse<ShopListingWithAssociations>>
-                {
-                    ResponseCode = (int)ex.StatusCode,
-                    Success = false,
-                    Data = null,
-                    Message = $"{ex.Message}"
-                };
 
-                return result;
-            }
+            HttpRequestMessage request = new(HttpMethod.Get, baseUri.Uri);
+            var response = await _httpClient.SendAsync(request);
+            var result = await EtsyResponseParser.ParseResponseOfList<ShopListingWithAssociations>(response);
+
+            return result;
         }
-
-        public async Task<ApiResponse<EtsyListResponse<ShopListingWithAssociations>>> GetListingsByShopSectionIdAsync(
-            string apiToken,
-            long shopId,
-            List<long> sectionIds,
-            GetListingsByShopSectionIdFilter filter)
+        catch (HttpRequestException ex)
         {
-            try
+            var result = new ApiResponse<EtsyListResponse<ShopListingWithAssociations>>
             {
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
-                UriBuilder baseUri = new UriBuilder($"{_httpClient.BaseAddress}{Url.ListingUrls.GetListingsByShopSectionId(shopId: shopId)}");
-                string idsForQuery = "";
-                idsForQuery = idsForQuery.ListOfLongToCommaSeperatedString(sectionIds);
-                baseUri.AddQueryParam("shop_section_ids", idsForQuery);
+                ResponseCode = (int)ex.StatusCode!,
+                Success = false,
+                Data = null,
+                Message = $"{ex.Message}"
+            };
 
-                if (filter is not null)
-                {
-                    if (filter.Limit is not 25)
-                        baseUri.AddQueryParam("limit", filter.Limit.ToString());
+            return result;
+        }
+    }
 
-                    if (filter.Offset is not 0)
-                        baseUri.AddQueryParam("offset", filter.Offset.ToString());
+    public async Task<ApiResponse<EtsyListResponse<ShopListingWithAssociations>>> GetListingsByShopSectionIdAsync(
+        string apiToken,
+        long shopId,
+        List<long> sectionIds,
+        GetListingsByShopSectionIdFilter? filter = null)
+    {
+        try
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
+            UriBuilder baseUri = new($"{_httpClient.BaseAddress}{Url.ListingUrls.GetListingsByShopSectionId(shopId: shopId)}");
+            string idsForQuery = "";
+            idsForQuery = idsForQuery.ListOfLongToCommaSeperatedString(sectionIds);
+            baseUri.AddQueryParam("shop_section_ids", idsForQuery);
 
-                    if (filter.SortOn is not ListingSortOn.created)
-                        baseUri.AddQueryParam("sort_on", filter.SortOn.ToString());
-
-                    if (filter.SortOrder is not ListingSortOrder.desc)
-                        baseUri.AddQueryParam("sort_order", filter.SortOrder.ToString());
-                }
-
-                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, baseUri.Uri);
-                var response = await _httpClient.SendAsync(request);
-                var result = await EtsyResponseParser.ParseResponseOfList<ShopListingWithAssociations>(response);
-
-                return result;
-            }
-            catch (HttpRequestException ex)
+            if (filter is not null)
             {
-                var result = new ApiResponse<EtsyListResponse<ShopListingWithAssociations>>
-                {
-                    ResponseCode = (int)ex.StatusCode,
-                    Success = false,
-                    Data = null,
-                    Message = $"{ex.Message}"
-                };
+                if (filter.Limit is not 25)
+                    baseUri.AddQueryParam("limit", filter.Limit.ToString());
 
-                return result;
+                if (filter.Offset is not 0)
+                    baseUri.AddQueryParam("offset", filter.Offset.ToString());
+
+                if (filter.SortOn is not ListingSortOn.created)
+                    baseUri.AddQueryParam("sort_on", filter.SortOn.ToString());
+
+                if (filter.SortOrder is not ListingSortOrder.desc)
+                    baseUri.AddQueryParam("sort_order", filter.SortOrder.ToString());
             }
-        }
 
-        public Task<ApiResponse<EtsyListResponse<TaxonomyNodeProperty>>> GetPropertiesByTaxonomyIdAsync(
-            string apiToken,
-            long taxonomyId)
-        {
-            //TODO: GetPropertiesByTaxonomyIdAsync
-            throw new NotImplementedException();
-        }
+            HttpRequestMessage request = new(HttpMethod.Get, baseUri.Uri);
+            var response = await _httpClient.SendAsync(request);
+            var result = await EtsyResponseParser.ParseResponseOfList<ShopListingWithAssociations>(response);
 
-        public Task<ApiResponse<EtsyListResponse<SellerTaxonomyNode>>> GetSellerTaxonomyNodesAsync(
-            string apiToken)
-        {
-            //TODO: GetSellerTaxonomyNodesAsync
-            throw new NotImplementedException();
+            return result;
         }
-
-        public Task<ApiResponse<EtsyListResponse<TaxonomyNodeProperty>>> GetPropertiesByBuyerTaxonomyIdAsync(
-            string apiToken,
-            long taxonomyId)
+        catch (HttpRequestException ex)
         {
-            //TODO: GetPropertiesByBuyerTaxonomyIdAsync
-            throw new NotImplementedException();
-        }
-
-        public Task<ApiResponse<EtsyListResponse<SellerTaxonomyNode>>> GetBuyerTaxonomyNodesAsync(
-            string apiToken)
-        {
-            //TODO: GetBuyerTaxonomyNodesAsync
-            throw new NotImplementedException();
-        }
-
-        public async Task<ApiResponse<ListingImage>> GetListingImageAsync(
-            string apiToken, 
-            long listingId, 
-            long listingImageId)
-        {
-            try
+            var result = new ApiResponse<EtsyListResponse<ShopListingWithAssociations>>
             {
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
-                UriBuilder baseUri = new UriBuilder($"{_httpClient.BaseAddress}{Url.ListingUrls.GetListingImage(listingId: listingId, listingImageId: listingImageId)}");
-                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, baseUri.Uri);
-                var response = await _httpClient.SendAsync(request);
-                var result = await EtsyResponseParser.ParseResponseOfSingle<ListingImage>(response);
+                ResponseCode = (int)ex.StatusCode!,
+                Success = false,
+                Data = null,
+                Message = $"{ex.Message}"
+            };
 
-                return result;
-            }
-            catch (HttpRequestException ex)
-            {
-                var result = new ApiResponse<ListingImage>
-                {
-                    ResponseCode = (int)ex.StatusCode,
-                    Success = false,
-                    Data = null,
-                    Message = $"{ex.Message}"
-                };
-
-                return result;
-            }
+            return result;
         }
+    }
 
-        public async Task<ApiResponse<EtsyListResponse<ListingImage>>> GetListingImagesAsync(
-            string apiToken, 
-            long listingId)
+    public Task<ApiResponse<EtsyListResponse<TaxonomyNodeProperty>>> GetPropertiesByTaxonomyIdAsync(
+        string apiToken,
+        long taxonomyId)
+    {
+        //TODO: GetPropertiesByTaxonomyIdAsync
+        throw new NotImplementedException();
+    }
+
+    public Task<ApiResponse<EtsyListResponse<SellerTaxonomyNode>>> GetSellerTaxonomyNodesAsync(
+        string apiToken)
+    {
+        //TODO: GetSellerTaxonomyNodesAsync
+        throw new NotImplementedException();
+    }
+
+    public Task<ApiResponse<EtsyListResponse<TaxonomyNodeProperty>>> GetPropertiesByBuyerTaxonomyIdAsync(
+        string apiToken,
+        long taxonomyId)
+    {
+        //TODO: GetPropertiesByBuyerTaxonomyIdAsync
+        throw new NotImplementedException();
+    }
+
+    public Task<ApiResponse<EtsyListResponse<SellerTaxonomyNode>>> GetBuyerTaxonomyNodesAsync(
+        string apiToken)
+    {
+        //TODO: GetBuyerTaxonomyNodesAsync
+        throw new NotImplementedException();
+    }
+
+    public async Task<ApiResponse<ListingImage>> GetListingImageAsync(
+        string apiToken,
+        long listingId,
+        long listingImageId)
+    {
+        try
         {
-            try
-            {
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
-                UriBuilder baseUri = new UriBuilder($"{_httpClient.BaseAddress}{Url.ListingUrls.GetListingImages(listingId: listingId)}");
-                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, baseUri.Uri);
-                var response = await _httpClient.SendAsync(request);
-                var result = await EtsyResponseParser.ParseResponseOfList<ListingImage>(response);
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
+            UriBuilder baseUri = new($"{_httpClient.BaseAddress}{Url.ListingUrls.GetListingImage(listingId: listingId, listingImageId: listingImageId)}");
+            HttpRequestMessage request = new(HttpMethod.Get, baseUri.Uri);
+            var response = await _httpClient.SendAsync(request);
+            var result = await EtsyResponseParser.ParseResponseOfSingle<ListingImage>(response);
 
-                return result;
-            }
-            catch (HttpRequestException ex)
+            return result;
+        }
+        catch (HttpRequestException ex)
+        {
+            var result = new ApiResponse<ListingImage>
             {
-                var result = new ApiResponse<EtsyListResponse<ListingImage>>
-                {
-                    ResponseCode = (int)ex.StatusCode,
-                    Success = false,
-                    Data = null,
-                    Message = $"{ex.Message}"
-                };
+                ResponseCode = (int)ex.StatusCode!,
+                Success = false,
+                Data = null,
+                Message = $"{ex.Message}"
+            };
 
-                return result;
-            }
+            return result;
+        }
+    }
+
+    public async Task<ApiResponse<EtsyListResponse<ListingImage>>> GetListingImagesAsync(
+        string apiToken,
+        long listingId)
+    {
+        try
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
+            UriBuilder baseUri = new($"{_httpClient.BaseAddress}{Url.ListingUrls.GetListingImages(listingId: listingId)}");
+            HttpRequestMessage request = new(HttpMethod.Get, baseUri.Uri);
+            var response = await _httpClient.SendAsync(request);
+            var result = await EtsyResponseParser.ParseResponseOfList<ListingImage>(response);
+
+            return result;
+        }
+        catch (HttpRequestException ex)
+        {
+            var result = new ApiResponse<EtsyListResponse<ListingImage>>
+            {
+                ResponseCode = (int)ex.StatusCode!,
+                Success = false,
+                Data = null,
+                Message = $"{ex.Message}"
+            };
+
+            return result;
         }
     }
 }

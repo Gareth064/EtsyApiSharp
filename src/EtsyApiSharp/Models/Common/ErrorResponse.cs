@@ -1,10 +1,9 @@
 using System.Text.Json.Serialization;
 
-namespace EtsyApiSharp.Models
+namespace EtsyApiSharp.Models;
+
+public class ErrorResponse
 {
-    public class ErrorResponse
-    {
-        [JsonPropertyName("error")]
-        public string Error { get; set; }
-    }
+    [JsonPropertyName("error")]
+    public string Error { get; set; }
 }

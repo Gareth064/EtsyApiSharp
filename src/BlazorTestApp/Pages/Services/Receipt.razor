@@ -53,7 +53,8 @@
 
         var result = await ReceiptService.GetShopReceiptsAsync(
             AppState.TokenResponse,
-            AppState.ShopId, paramss);
+            AppState.ShopId,
+            paramss);
 
         DisplayResultsOnScreen(result);
     }
@@ -63,7 +64,8 @@
         var result = await ReceiptService.GetShopReceiptTransactionsByListingAsync(
             apiToken: AppState.TokenResponse,
             shopId: AppState.ShopId,
-            listingId: Convert.ToInt64(listingId));
+            listingId: Convert.ToInt64(listingId),
+            new GetShopReceiptTransactionsByListingFilter());
 
         DisplayResultsOnScreen(result);
     }

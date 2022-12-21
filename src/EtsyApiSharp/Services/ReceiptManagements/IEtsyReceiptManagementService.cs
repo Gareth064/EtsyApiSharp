@@ -2,39 +2,38 @@
 using EtsyApiSharp.Models.Common;
 using EtsyApiSharp.Models.Filters;
 
-namespace EtsyApiSharp.Services.ReceiptManagements
+namespace EtsyApiSharp.Services.ReceiptManagements;
+
+public interface IEtsyReceiptManagementService
 {
-    public interface IEtsyReceiptManagementService
-    {
-        Task<ApiResponse<ShopReceipt>> GetShopReceiptAsync(
-            string apiToken,
-            long shopId,
-            long receiptid);
+    Task<ApiResponse<ShopReceipt>> GetShopReceiptAsync(
+        string apiToken,
+        long shopId,
+        long receiptid);
 
-        Task<ApiResponse<EtsyListResponse<ShopReceipt>>> GetShopReceiptsAsync(
-            string apiToken,
-            long shopId,
-            GetShopReceiptsFilter queryParams);
+    Task<ApiResponse<EtsyListResponse<ShopReceipt>>> GetShopReceiptsAsync(
+        string apiToken,
+        long shopId,
+        GetShopReceiptsFilter queryParams);
 
-        Task<ApiResponse<ShopReceiptTransaction>> GetShopReceiptTransactionAsync(
-            string apiToken,
-            long shopId,
-            long transactionId);
+    Task<ApiResponse<ShopReceiptTransaction>> GetShopReceiptTransactionAsync(
+        string apiToken,
+        long shopId,
+        long transactionId);
 
-        Task<ApiResponse<EtsyListResponse<ShopReceiptTransaction>>> GetShopReceiptTransactionsByListingAsync(
-            string apiToken,
-            long shopId,
-            long listingId,
-            GetShopReceiptTransactionsByListingFilter filter);
+    Task<ApiResponse<EtsyListResponse<ShopReceiptTransaction>>> GetShopReceiptTransactionsByListingAsync(
+        string apiToken,
+        long shopId,
+        long listingId,
+        GetShopReceiptTransactionsByListingFilter filter);
 
-        Task<ApiResponse<EtsyListResponse<ShopReceiptTransaction>>> GetShopReceiptTransactionsByReceiptAsync(
-            string apiToken,
-            long shopId,
-            long receiptid);
+    Task<ApiResponse<EtsyListResponse<ShopReceiptTransaction>>> GetShopReceiptTransactionsByReceiptAsync(
+        string apiToken,
+        long shopId,
+        long receiptid);
 
-        Task<ApiResponse<EtsyListResponse<ShopReceiptTransaction>>> GetShopReceiptTransactionsByShopAsync(
-            string apiToken,
-            long shopId,
-            GetShopReceiptTransactionsByShopFilter filter);
-    }
+    Task<ApiResponse<EtsyListResponse<ShopReceiptTransaction>>> GetShopReceiptTransactionsByShopAsync(
+        string apiToken,
+        long shopId,
+        GetShopReceiptTransactionsByShopFilter filter);
 }

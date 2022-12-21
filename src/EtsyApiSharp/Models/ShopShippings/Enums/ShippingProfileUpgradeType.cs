@@ -1,8 +1,7 @@
-﻿namespace EtsyApiSharp.Models.ShopShippings.Enums
+﻿namespace EtsyApiSharp.Models.ShopShippings.Enums;
+
+public enum ShippingProfileUpgradeType
 {
-    public enum ShippingProfileUpgradeType
-    {
-        Domestic = 0,
-        International = 1
-    }
+    Domestic = 0,
+    International = 1
 }

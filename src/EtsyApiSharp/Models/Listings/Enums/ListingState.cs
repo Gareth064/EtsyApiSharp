@@ -1,11 +1,10 @@
-﻿namespace EtsyApiSharp.Models.Listings.Enums
+﻿namespace EtsyApiSharp.Models.Listings.Enums;
+
+public enum ListingState
 {
-    public enum ListingState
-    {
-        active,
-        inactive,
-        sold_out,
-        draft,
-        expired
-    }
+    active,
+    inactive,
+    sold_out,
+    draft,
+    expired
 }

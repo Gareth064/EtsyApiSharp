@@ -1,4 +1,3 @@
-﻿namespace EtsyApiSharp.Models.Filters
-{
-    public class GetListingsByShopReceiptFilter : EtsyFilterBase { }
-}
+﻿namespace EtsyApiSharp.Models.Filters;
+
+public class GetListingsByShopReceiptFilter : EtsyFilterBase { }

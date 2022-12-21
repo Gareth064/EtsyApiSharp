@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "zOEiG6uzwK+FEzbbGpBtx7XOV9oa4lBMQEMl6RB69cH+RJwmji2lEKuEl0h/vtP6QuEfU3ToO23NrYqdvVJAIQ==",
+  "dgSpecHash": "4EcGouN5xkqV1l0qMVLfdI2ocmbi6nPt1k7tnV/FWyhTLDD3lF4HSru72PbQu3PE0THZ+3BWmbVp52nJcqie2g==",
   "success": true,
   "projectFilePath": "C:\\Code\\Gareth064\\EtsyApiSharp\\src\\EtsyApiSharp\\EtsyApiSharp.csproj",
   "expectedPackageFiles": [
@@ -17,10 +17,10 @@
     "C:\\Users\\garet\\.nuget\\packages\\system.buffers\\4.5.1\\system.buffers.4.5.1.nupkg.sha512",
     "C:\\Users\\garet\\.nuget\\packages\\system.diagnostics.diagnosticsource\\6.0.0-rc.1.21451.13\\system.diagnostics.diagnosticsource.6.0.0-rc.1.21451.13.nupkg.sha512",
     "C:\\Users\\garet\\.nuget\\packages\\system.memory\\4.5.4\\system.memory.4.5.4.nupkg.sha512",
-    "C:\\Users\\garet\\.nuget\\packages\\system.net.http.json\\6.0.0-rc.1.21451.13\\system.net.http.json.6.0.0-rc.1.21451.13.nupkg.sha512",
-    "C:\\Users\\garet\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\6.0.0-rc.1.21451.13\\system.runtime.compilerservices.unsafe.6.0.0-rc.1.21451.13.nupkg.sha512",
-    "C:\\Users\\garet\\.nuget\\packages\\system.text.encodings.web\\6.0.0-rc.1.21451.13\\system.text.encodings.web.6.0.0-rc.1.21451.13.nupkg.sha512",
-    "C:\\Users\\garet\\.nuget\\packages\\system.text.json\\6.0.0-rc.1.21451.13\\system.text.json.6.0.0-rc.1.21451.13.nupkg.sha512"
+    "C:\\Users\\garet\\.nuget\\packages\\system.net.http.json\\6.0.0\\system.net.http.json.6.0.0.nupkg.sha512",
+    "C:\\Users\\garet\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\6.0.0\\system.runtime.compilerservices.unsafe.6.0.0.nupkg.sha512",
+    "C:\\Users\\garet\\.nuget\\packages\\system.text.encodings.web\\6.0.0\\system.text.encodings.web.6.0.0.nupkg.sha512",
+    "C:\\Users\\garet\\.nuget\\packages\\system.text.json\\6.0.0\\system.text.json.6.0.0.nupkg.sha512"
   ],
   "logs": []
 }

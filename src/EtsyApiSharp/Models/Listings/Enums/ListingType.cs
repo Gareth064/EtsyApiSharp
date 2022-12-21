@@ -1,9 +1,8 @@
-﻿namespace EtsyApiSharp.Models.Listings.Enums
+﻿namespace EtsyApiSharp.Models.Listings.Enums;
+
+public enum ListingType
 {
-    public enum ListingType
-    {
-        physical,
-        download,
-        both
-    }
+    physical,
+    download,
+    both
 }

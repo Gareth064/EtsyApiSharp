@@ -1,9 +1,8 @@
-﻿namespace EtsyApiSharp.Models.Listings.Enums
+﻿namespace EtsyApiSharp.Models.Listings.Enums;
+
+public enum ListingWhoMade
 {
-    public enum ListingWhoMade
-    {
-        i_did,
-        someone_else,
-        collective
-    }
+    i_did,
+    someone_else,
+    collective
 }

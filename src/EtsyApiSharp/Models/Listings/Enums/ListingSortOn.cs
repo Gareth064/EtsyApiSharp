@@ -1,9 +1,8 @@
-﻿namespace EtsyApiSharp.Models.Listings.Enums
+﻿namespace EtsyApiSharp.Models.Listings.Enums;
+
+public enum ListingSortOn
 {
-    public enum ListingSortOn
-    {
-        created,
-        price,
-        updated
-    }
+    created,
+    price,
+    updated
 }

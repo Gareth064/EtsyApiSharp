@@ -1,12 +1,11 @@
-﻿namespace EtsyApiSharp.Models.Listings.Enums
+﻿namespace EtsyApiSharp.Models.Listings.Enums;
+
+public enum ListingSortOrder
 {
-    public enum ListingSortOrder
-    {
-        desc,
-        asc,
-        descending,
-        ascending,
-        up,
-        down
-    }
+    desc,
+    asc,
+    descending,
+    ascending,
+    up,
+    down
 }

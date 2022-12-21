@@ -1,41 +1,40 @@
 using System.Text.Json.Serialization;
 
-namespace EtsyApiSharp.Models
+namespace EtsyApiSharp.Models;
+
+/// <summary>
+/// A representation of a single listing's inventory record with associations
+/// </summary>
+public class ListingInventoryWithAssociations
 {
     /// <summary>
-    /// A representation of a single listing's inventory record with associations
+    /// A JSON array of products available in a listing, even if only one product. All field names in the JSON blobs are lowercase.
     /// </summary>
-    public class ListingInventoryWithAssociations
-    {
-        /// <summary>
-        /// A JSON array of products available in a listing, even if only one product. All field names in the JSON blobs are lowercase.
-        /// </summary>
-        [JsonPropertyName("products")]
-        public List<ListingInventoryProduct> Products { get; set; }
+    [JsonPropertyName("products")]
+    public List<ListingInventoryProduct> Products { get; set; }
 
-        /// <summary>
-        /// An array of unique [listing property](/documentation/reference#operation/getListingProperties) ID integers for the properties that change product prices, if any. For example, if you charge specific prices for different sized products in the same listing, then this array contains the property ID for size.
-        /// </summary>
-        [JsonPropertyName("price_on_property")]
-        public List<int> PriceOnProperty { get; set; }
+    /// <summary>
+    /// An array of unique [listing property](/documentation/reference#operation/getListingProperties) ID integers for the properties that change product prices, if any. For example, if you charge specific prices for different sized products in the same listing, then this array contains the property ID for size.
+    /// </summary>
+    [JsonPropertyName("price_on_property")]
+    public List<int> PriceOnProperty { get; set; }
 
-        /// <summary>
-        /// An array of unique [listing property](/documentation/reference#operation/getListingProperties) ID integers for the properties that change the quantity of the products, if any. For example, if you stock specific quantities of different colored products in the same listing, then this array contains the property ID for color.
-        /// </summary>
-        [JsonPropertyName("quantity_on_property")]
-        public List<int> QuantityOnProperty { get; set; }
+    /// <summary>
+    /// An array of unique [listing property](/documentation/reference#operation/getListingProperties) ID integers for the properties that change the quantity of the products, if any. For example, if you stock specific quantities of different colored products in the same listing, then this array contains the property ID for color.
+    /// </summary>
+    [JsonPropertyName("quantity_on_property")]
+    public List<int> QuantityOnProperty { get; set; }
 
-        /// <summary>
-        /// An array of unique [listing property](/documentation/reference#operation/getListingProperties) ID integers for the properties that change the product SKU, if any. For example, if you use specific skus for different colored products in the same listing, then this array contains the property ID for color.
-        /// </summary>
-        [JsonPropertyName("sku_on_property")]
-        public List<int> SkuOnProperty { get; set; }
+    /// <summary>
+    /// An array of unique [listing property](/documentation/reference#operation/getListingProperties) ID integers for the properties that change the product SKU, if any. For example, if you use specific skus for different colored products in the same listing, then this array contains the property ID for color.
+    /// </summary>
+    [JsonPropertyName("sku_on_property")]
+    public List<int> SkuOnProperty { get; set; }
 
-        /// <summary>
-        /// An enumerated string that attaches an valid association. Default value is null.
-        /// </summary>
-        [JsonPropertyName("listing")]
-        public ShopListing Listing { get; set; }
+    /// <summary>
+    /// An enumerated string that attaches an valid association. Default value is null.
+    /// </summary>
+    [JsonPropertyName("listing")]
+    public ShopListing Listing { get; set; }
 
-    }
 }
