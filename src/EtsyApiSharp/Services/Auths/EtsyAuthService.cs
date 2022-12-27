@@ -1,7 +1,6 @@
 ﻿using EtsyApiSharp.Helpers;
 using EtsyApiSharp.Infrastructure;
 using EtsyApiSharp.Models;
-using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 
@@ -50,22 +49,22 @@ public class EtsyAuthService : IEtsyAuthService
         HttpRequestMessage baseRequest = new(HttpMethod.Post, Url.AuthUrls.BaseTokenUrl);
         baseRequest.Content = new FormUrlEncodedContent(formData);
 
-        using (var httpClient = httpClientFactory.CreateClient())
+        var httpClient = httpClientFactory.CreateClient();
+
+        try
         {
-            try
-            {
-                var response = await httpClient.SendAsync(baseRequest);
-                string responseString = await response.Content.ReadAsStringAsync();
-                token = JsonSerializer.Deserialize<EtsyTokenResponse>(responseString);
+            var response = await httpClient.SendAsync(baseRequest);
+            string responseString = await response.Content.ReadAsStringAsync();
+            token = JsonSerializer.Deserialize<EtsyTokenResponse>(responseString);
 
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-
-            return token!;
         }
+        catch (Exception)
+        {
+            throw;
+        }
+
+        return token!;
+
     }
 
     public async Task<EtsyTokenResponse> GetRefreshAccessTokenAsync(string refreshToken)
@@ -80,16 +79,14 @@ public class EtsyAuthService : IEtsyAuthService
         HttpRequestMessage baseRequest = new(HttpMethod.Post, Url.AuthUrls.BaseTokenUrl);
         baseRequest.Content = new FormUrlEncodedContent(formData);
 
-        using (var httpClient = httpClientFactory.CreateClient())
+        var httpClient = httpClientFactory.CreateClient();
+
+        var request = httpClient.SendAsync(baseRequest);
+
+        using (var response = await request)
         {
-            var request = httpClient.SendAsync(baseRequest);
-
-            using (var response = await request)
-            {
-                string responseString = await response.Content.ReadAsStringAsync();
-                token = JsonSerializer.Deserialize<EtsyTokenResponse>(responseString);
-            }
-
+            string responseString = await response.Content.ReadAsStringAsync();
+            token = JsonSerializer.Deserialize<EtsyTokenResponse>(responseString);
         }
 
         return token!;

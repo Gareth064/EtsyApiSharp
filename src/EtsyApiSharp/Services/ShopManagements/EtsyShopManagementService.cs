@@ -117,10 +117,10 @@ public class EtsyShopManagementService : IEtsyShopManagementService
         try
         {
             var httpClient = httpClientFactory.CreateClient();
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
-            httpClient.DefaultRequestHeaders.Add("x-api-key", clientId);
             UriBuilder baseUri = new($"{Url.AuthUrls.BaseApiUrl}{Url.ShopUrls.GetShopByOwnerUserId(userId: userId)}");
             HttpRequestMessage request = new(HttpMethod.Get, baseUri.Uri);
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
+            request.Headers.Add("x-api-key", clientId);
             var response = await httpClient.SendAsync(request);
             var result = await EtsyResponseParser.ParseResponseOfSingle<Shop>(response);
 
