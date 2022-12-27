@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "4EcGouN5xkqV1l0qMVLfdI2ocmbi6nPt1k7tnV/FWyhTLDD3lF4HSru72PbQu3PE0THZ+3BWmbVp52nJcqie2g==",
+  "dgSpecHash": "LUvn2jVZPn6EnDzogo/cN3lggQqJyUutyfmWt/L4TTDoqOBrKjBKjOlpLLubQTCzG56yR4v6UbDhuShHlYAMhQ==",
   "success": true,
-  "projectFilePath": "C:\\Code\\Gareth064\\EtsyApiSharp\\src\\EtsyApiSharp\\EtsyApiSharp.csproj",
+  "projectFilePath": "C:\\Users\\garet\\Source\\Gareth064\\EtsyApiSharp\\src\\EtsyApiSharp\\EtsyApiSharp.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\garet\\.nuget\\packages\\microsoft.extensions.configuration.abstractions\\6.0.0-rc.1.21451.13\\microsoft.extensions.configuration.abstractions.6.0.0-rc.1.21451.13.nupkg.sha512",
     "C:\\Users\\garet\\.nuget\\packages\\microsoft.extensions.configuration.binder\\6.0.0-rc.1.21451.13\\microsoft.extensions.configuration.binder.6.0.0-rc.1.21451.13.nupkg.sha512",

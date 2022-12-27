@@ -6,14 +6,16 @@ List<Scope> scopes = new List<Scope> { Scope.shops_r, Scope.shops_w, Scope.cart_
 
 var builder = WebApplication.CreateBuilder(args);
 
+var configuration = builder.Configuration;
+
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddHttpClient();
-builder.Services.AddEtsyAuthServiceSingleton("gss0u2qxjyv991mbjbwn2208", "https://localhost:5001/secret/callback", scopes);
-builder.Services.AddEtsyReceiptManagementServiceTransient("gss0u2qxjyv991mbjbwn2208");
-builder.Services.AddEtsyListingManagementServiceTransient("gss0u2qxjyv991mbjbwn2208");
+builder.Services.AddEtsyAuthServiceSingleton(configuration.GetSection("EtsyConfig").GetValue(string, "ClientId"), "https://localhost:5001/secret/callback", scopes);
+builder.Services.AddEtsyReceiptManagementServiceTransient(configuration.GetSection("EtsyConfig").GetValue(string, "ClientId"));
+builder.Services.AddEtsyListingManagementServiceTransient(configuration.GetSection("EtsyConfig").GetValue(string, "ClientId"));
 
 
 var app = builder.Build();

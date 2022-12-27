@@ -10,3 +10,15 @@ C:\Code\Gareth064\EtsyApiSharp\src\EtsyApiSharp\obj\Debug\net6.0\ref\EtsyApiShar
 C:\Code\Gareth064\EtsyApiSharp\src\EtsyApiSharp\obj\Debug\net6.0\EtsyApiSharp.pdb
 C:\Code\Gareth064\EtsyApiSharp\src\EtsyApiSharp\obj\Debug\net6.0\EtsyApiSharp.csproj.AssemblyReference.cache
 C:\Code\Gareth064\EtsyApiSharp\src\EtsyApiSharp\obj\Debug\net6.0\refint\EtsyApiSharp.dll
+C:\Users\garet\Source\Gareth064\EtsyApiSharp\src\EtsyApiSharp\bin\Debug\net6.0\EtsyApiSharp.deps.json
+C:\Users\garet\source\Gareth064\EtsyApiSharp\src\EtsyApiSharp\bin\Debug\net6.0\EtsyApiSharp.dll
+C:\Users\garet\source\Gareth064\EtsyApiSharp\src\EtsyApiSharp\bin\Debug\net6.0\EtsyApiSharp.pdb
+C:\Users\garet\source\Gareth064\EtsyApiSharp\src\EtsyApiSharp\obj\Debug\net6.0\EtsyApiSharp.csproj.AssemblyReference.cache
+C:\Users\garet\source\Gareth064\EtsyApiSharp\src\EtsyApiSharp\obj\Debug\net6.0\EtsyApiSharp.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\garet\source\Gareth064\EtsyApiSharp\src\EtsyApiSharp\obj\Debug\net6.0\EtsyApiSharp.AssemblyInfoInputs.cache
+C:\Users\garet\source\Gareth064\EtsyApiSharp\src\EtsyApiSharp\obj\Debug\net6.0\EtsyApiSharp.AssemblyInfo.cs
+C:\Users\garet\source\Gareth064\EtsyApiSharp\src\EtsyApiSharp\obj\Debug\net6.0\EtsyApiSharp.csproj.CoreCompileInputs.cache
+C:\Users\garet\source\Gareth064\EtsyApiSharp\src\EtsyApiSharp\obj\Debug\net6.0\EtsyApiSharp.dll
+C:\Users\garet\source\Gareth064\EtsyApiSharp\src\EtsyApiSharp\obj\Debug\net6.0\refint\EtsyApiSharp.dll
+C:\Users\garet\source\Gareth064\EtsyApiSharp\src\EtsyApiSharp\obj\Debug\net6.0\EtsyApiSharp.pdb
+C:\Users\garet\Source\Gareth064\EtsyApiSharp\src\EtsyApiSharp\obj\Debug\net6.0\ref\EtsyApiSharp.dll

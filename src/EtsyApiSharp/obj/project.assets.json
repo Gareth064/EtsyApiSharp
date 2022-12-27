@@ -761,11 +761,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Code\\Gareth064\\EtsyApiSharp\\src\\EtsyApiSharp\\EtsyApiSharp.csproj",
+      "projectUniqueName": "C:\\Users\\garet\\Source\\Gareth064\\EtsyApiSharp\\src\\EtsyApiSharp\\EtsyApiSharp.csproj",
       "projectName": "EtsyApiSharp",
-      "projectPath": "C:\\Code\\Gareth064\\EtsyApiSharp\\src\\EtsyApiSharp\\EtsyApiSharp.csproj",
+      "projectPath": "C:\\Users\\garet\\Source\\Gareth064\\EtsyApiSharp\\src\\EtsyApiSharp\\EtsyApiSharp.csproj",
       "packagesPath": "C:\\Users\\garet\\.nuget\\packages\\",
-      "outputPath": "C:\\Code\\Gareth064\\EtsyApiSharp\\src\\EtsyApiSharp\\obj\\",
+      "outputPath": "C:\\Users\\garet\\Source\\Gareth064\\EtsyApiSharp\\src\\EtsyApiSharp\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -832,7 +832,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.100\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.101\\RuntimeIdentifierGraph.json"
       }
     }
   }
