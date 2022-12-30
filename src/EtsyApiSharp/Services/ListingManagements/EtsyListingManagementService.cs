@@ -15,7 +15,7 @@ public class EtsyListingManagementService : IEtsyListingManagementService
     private readonly HttpClient _httpClient;
     public EtsyListingManagementService(string clientId)
     {
-        _httpClient = new HttpClient { BaseAddress = new Uri(Url.AuthUrls.BaseApiUrl) };
+        _httpClient = new HttpClient { BaseAddress = new Uri(Url.BaseUrls.BaseApiUrl) };
         _httpClient.DefaultRequestHeaders.Add("x-api-key", clientId);
     }
 

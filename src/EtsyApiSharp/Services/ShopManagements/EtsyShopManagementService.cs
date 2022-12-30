@@ -30,7 +30,7 @@ public class EtsyShopManagementService : IEtsyShopManagementService
             {
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
                 httpClient.DefaultRequestHeaders.Add("x-api-key", clientId);
-                UriBuilder baseUri = new($"{Url.AuthUrls.BaseApiUrl}{Url.ShopUrls.FindShops()}");
+                UriBuilder baseUri = new($"{Url.BaseUrls.BaseApiUrl}{Url.ShopUrls.FindShops()}");
 
                 if (filter is not null)
                 {
@@ -74,7 +74,7 @@ public class EtsyShopManagementService : IEtsyShopManagementService
             {
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
                 httpClient.DefaultRequestHeaders.Add("x-api-key", clientId);
-                UriBuilder baseUri = new($"{Url.AuthUrls.BaseApiUrl}{Url.ShopUrls.GetShop(shopId: shopId)}");
+                UriBuilder baseUri = new($"{Url.BaseUrls.BaseApiUrl}{Url.ShopUrls.GetShop(shopId: shopId)}");
                 HttpRequestMessage request = new(HttpMethod.Get, baseUri.Uri);
                 var response = httpClient.SendAsync(request).Result;
                 var result = await EtsyResponseParser.ParseResponseOfSingle<Shop>(response);
@@ -116,11 +116,11 @@ public class EtsyShopManagementService : IEtsyShopManagementService
     {
         try
         {
-            var httpClient = httpClientFactory.CreateClient();
-            UriBuilder baseUri = new($"{Url.AuthUrls.BaseApiUrl}{Url.ShopUrls.GetShopByOwnerUserId(userId: userId)}");
+            UriBuilder baseUri = new($"{Url.BaseUrls.BaseApiUrl}{Url.ShopUrls.GetShopByOwnerUserId(userId: userId)}");
             HttpRequestMessage request = new(HttpMethod.Get, baseUri.Uri);
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
             request.Headers.Add("x-api-key", clientId);
+            var httpClient = httpClientFactory.CreateClient();
             var response = await httpClient.SendAsync(request);
             var result = await EtsyResponseParser.ParseResponseOfSingle<Shop>(response);
 

@@ -23,7 +23,7 @@ public class EtsyAuthService : IEtsyAuthService
 
     public string BuildAuthorizationUrl(string codeVerifier)
     {
-        StringBuilder sbUri = new(Url.AuthUrls.BaseAuthUrl);
+        StringBuilder sbUri = new(Url.BaseUrls.BaseAuthUrl);
         sbUri.Append("?response_type=" + "code");
         sbUri.Append("&redirect_uri=" + redirectUrl);
         sbUri.Append("&scope=" + PermissionsScopes(scopes));
@@ -46,7 +46,7 @@ public class EtsyAuthService : IEtsyAuthService
         formData.Add(new KeyValuePair<string, string>("code_verifier", $"{codeVerifier}"));
 
 
-        HttpRequestMessage baseRequest = new(HttpMethod.Post, Url.AuthUrls.BaseTokenUrl);
+        HttpRequestMessage baseRequest = new(HttpMethod.Post, Url.BaseUrls.BaseTokenUrl);
         baseRequest.Content = new FormUrlEncodedContent(formData);
 
         var httpClient = httpClientFactory.CreateClient();
@@ -76,7 +76,7 @@ public class EtsyAuthService : IEtsyAuthService
         formData.Add(new KeyValuePair<string, string>("client_id", $"{clientId}"));
         formData.Add(new KeyValuePair<string, string>("refresh_token", $"{refreshToken}"));
 
-        HttpRequestMessage baseRequest = new(HttpMethod.Post, Url.AuthUrls.BaseTokenUrl);
+        HttpRequestMessage baseRequest = new(HttpMethod.Post, Url.BaseUrls.BaseTokenUrl);
         baseRequest.Content = new FormUrlEncodedContent(formData);
 
         var httpClient = httpClientFactory.CreateClient();

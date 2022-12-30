@@ -1,7 +1,11 @@
-﻿using EtsyApiSharp.Helpers.Extensions;
+﻿using EtsyApiSharp.Helpers;
+using EtsyApiSharp.Helpers.Extensions;
+using EtsyApiSharp.Infrastructure;
 using EtsyApiSharp.Models;
 using EtsyApiSharp.Models.Common;
 using EtsyApiSharp.Models.Filters;
+using System.Diagnostics;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
 
@@ -9,12 +13,12 @@ namespace EtsyApiSharp.Services.ReceiptManagements;
 
 public class EtsyReceiptManagementService : IEtsyReceiptManagementService
 {
-    private readonly HttpClient _httpClient;
+    private static IHttpClientFactory httpClientFactory = new DefaultHttpClientFactory();
+    private readonly string clientId;
 
     public EtsyReceiptManagementService(string clientId)
     {
-        _httpClient = new HttpClient { BaseAddress = new Uri(Url.AuthUrls.BaseApiUrl) };
-        _httpClient.DefaultRequestHeaders.Add("x-api-key", clientId);
+        this.clientId=clientId;
     }
 
     public async Task<ApiResponse<ShopReceipt>> CreateReceiptShipmentAsync(
@@ -32,17 +36,13 @@ public class EtsyReceiptManagementService : IEtsyReceiptManagementService
     {
         try
         {
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
-            string responseBody = await _httpClient.GetStringAsync(Url.ReceiptUrls.GetShopReceipt(shopId: shopId, receiptId: receiptId));
-            var reciept = JsonSerializer.Deserialize<ShopReceipt>(responseBody);
-
-            var result = new ApiResponse<ShopReceipt>
-            {
-                ResponseCode = 200,
-                Success = true,
-                Data = reciept,
-                Message = null
-            };
+            var httpClient = httpClientFactory.CreateClient();
+            UriBuilder baseUri = new($"{Url.BaseUrls.BaseApiUrl}{Url.ReceiptUrls.GetShopReceipt(shopId: shopId, receiptId: receiptId)}");
+            HttpRequestMessage request = new(HttpMethod.Get, baseUri.Uri);
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
+            request.Headers.Add("x-api-key", clientId);
+            var response = await httpClient.SendAsync(request);
+            var result = await EtsyResponseParser.ParseResponseOfSingle<ShopReceipt>(response);
 
             return result;
         }
@@ -51,6 +51,19 @@ public class EtsyReceiptManagementService : IEtsyReceiptManagementService
             var result = new ApiResponse<ShopReceipt>
             {
                 ResponseCode = (int)ex.StatusCode!,
+                Success = false,
+                Data = null,
+                Message = $"{ex.Message}"
+            };
+
+            return result;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
+            var result = new ApiResponse<ShopReceipt>
+            {
+                ResponseCode = 500,
                 Success = false,
                 Data = null,
                 Message = $"{ex.Message}"
@@ -67,8 +80,7 @@ public class EtsyReceiptManagementService : IEtsyReceiptManagementService
     {
         try
         {
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
-            UriBuilder baseUri = new($"{_httpClient.BaseAddress}{Url.ReceiptUrls.GetShopReceipts(shopId: shopId)}");
+            UriBuilder baseUri = new($"{Url.BaseUrls.BaseApiUrl}{Url.ReceiptUrls.GetShopReceipts(shopId: shopId)}");
 
             if (filter.Limit is not 25)
                 baseUri.AddQueryParam("limit", filter.Limit.ToString());
@@ -97,26 +109,23 @@ public class EtsyReceiptManagementService : IEtsyReceiptManagementService
             if (filter.WasDelivered is not null)
                 baseUri.AddQueryParam("was_delivered", filter.WasDelivered.ToString()!);
 
-            var request = new HttpRequestMessage(HttpMethod.Get, baseUri.Uri);
-            var response = await _httpClient.SendAsync(request);
-            var bodyContent = await response.Content.ReadAsStringAsync();
-            var reciepts = System.Text.Json.JsonSerializer.Deserialize<EtsyListResponse<ShopReceipt>>(bodyContent);
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, baseUri.Uri);
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
+            request.Headers.Add("x-api-key", clientId);
 
-            var result = new ApiResponse<EtsyListResponse<ShopReceipt>>
-            {
-                ResponseCode = 200,
-                Success = true,
-                Data = reciepts,
-                Message = null
-            };
+            var httpClient = httpClientFactory.CreateClient();
+            var response = await httpClient.SendAsync(request);
+
+            var result = await EtsyResponseParser.ParseResponseOfList<ShopReceipt>(response);
 
             return result;
         }
-        catch (HttpRequestException ex)
+        catch (Exception ex)
         {
+            Debug.WriteLine(ex.Message);
             var result = new ApiResponse<EtsyListResponse<ShopReceipt>>
             {
-                ResponseCode = (int)ex.StatusCode!,
+                ResponseCode = 500,
                 Success = false,
                 Data = null,
                 Message = $"{ex.Message}"
@@ -133,20 +142,14 @@ public class EtsyReceiptManagementService : IEtsyReceiptManagementService
     {
         try
         {
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
+            UriBuilder baseUri = new($"{Url.BaseUrls.BaseApiUrl}{Url.ReceiptUrls.GetShopReceiptTransaction(shopId: shopId, transactionId: transactionId)}");
+            HttpRequestMessage request = new(HttpMethod.Get, baseUri.Uri);
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
+            request.Headers.Add("x-api-key", clientId);
 
-            string responseBody = await _httpClient.GetStringAsync(
-                Url.ReceiptUrls.GetShopReceiptTransaction(shopId: shopId, transactionId: transactionId));
-
-            var reciept = JsonSerializer.Deserialize<ShopReceiptTransaction>(responseBody);
-
-            var result = new ApiResponse<ShopReceiptTransaction>
-            {
-                ResponseCode = 200,
-                Success = true,
-                Data = reciept,
-                Message = null
-            };
+            var httpClient = httpClientFactory.CreateClient();
+            var response = await httpClient.SendAsync(request);
+            var result = await EtsyResponseParser.ParseResponseOfSingle<ShopReceiptTransaction>(response);
 
             return result;
         }
@@ -155,6 +158,19 @@ public class EtsyReceiptManagementService : IEtsyReceiptManagementService
             var result = new ApiResponse<ShopReceiptTransaction>
             {
                 ResponseCode = (int)ex.StatusCode!,
+                Success = false,
+                Data = null,
+                Message = $"{ex.Message}"
+            };
+
+            return result;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
+            var result = new ApiResponse<ShopReceiptTransaction>
+            {
+                ResponseCode = 500,
                 Success = false,
                 Data = null,
                 Message = $"{ex.Message}"
@@ -172,20 +188,13 @@ public class EtsyReceiptManagementService : IEtsyReceiptManagementService
     {
         try
         {
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
-
-            string responseBody = await _httpClient.GetStringAsync(
-                Url.ReceiptUrls.GetShopReceiptTransactionsByListing(shopId: shopId, listingId: listingId));
-
-            var reciept = JsonSerializer.Deserialize<EtsyListResponse<ShopReceiptTransaction>>(responseBody);
-
-            var result = new ApiResponse<EtsyListResponse<ShopReceiptTransaction>>
-            {
-                ResponseCode = 200,
-                Success = true,
-                Data = reciept,
-                Message = null
-            };
+            UriBuilder baseUri = new($"{Url.BaseUrls.BaseApiUrl}{Url.ReceiptUrls.GetShopReceiptTransactionsByListing(shopId: shopId, listingId: listingId)}");
+            HttpRequestMessage request = new(HttpMethod.Get, baseUri.Uri);
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
+            request.Headers.Add("x-api-key", clientId);
+            var httpClient = httpClientFactory.CreateClient();
+            var response = await httpClient.SendAsync(request);
+            var result = await EtsyResponseParser.ParseResponseOfList<ShopReceiptTransaction>(response);
 
             return result;
         }
@@ -210,20 +219,14 @@ public class EtsyReceiptManagementService : IEtsyReceiptManagementService
     {
         try
         {
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(scheme: "Bearer", parameter: apiToken);
+            UriBuilder baseUri = new($"{Url.BaseUrls.BaseApiUrl}{Url.ReceiptUrls.GetShopReceiptTransactionsByReceipt(shopId: shopId, receiptId: receiptId)}");
+            HttpRequestMessage request = new(HttpMethod.Get, baseUri.Uri);
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
+            request.Headers.Add("x-api-key", clientId);
 
-            string responseBody = await _httpClient.GetStringAsync(
-                Url.ReceiptUrls.GetShopReceiptTransactionsByReceipt(shopId: shopId, receiptId: receiptId));
-
-            var reciept = JsonSerializer.Deserialize<EtsyListResponse<ShopReceiptTransaction>>(json: responseBody);
-
-            var result = new ApiResponse<EtsyListResponse<ShopReceiptTransaction>>
-            {
-                ResponseCode = 200,
-                Success = true,
-                Data = reciept,
-                Message = null
-            };
+            var httpClient = httpClientFactory.CreateClient();
+            var response = await httpClient.SendAsync(request);
+            var result = await EtsyResponseParser.ParseResponseOfList<ShopReceiptTransaction>(response);
 
             return result;
         }
@@ -232,6 +235,19 @@ public class EtsyReceiptManagementService : IEtsyReceiptManagementService
             var result = new ApiResponse<EtsyListResponse<ShopReceiptTransaction>>
             {
                 ResponseCode = (int)ex.StatusCode!,
+                Success = false,
+                Data = null,
+                Message = $"{ex.Message}"
+            };
+
+            return result;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
+            var result = new ApiResponse<EtsyListResponse<ShopReceiptTransaction>>
+            {
+                ResponseCode = 500,
                 Success = false,
                 Data = null,
                 Message = $"{ex.Message}"
@@ -248,28 +264,21 @@ public class EtsyReceiptManagementService : IEtsyReceiptManagementService
     {
         try
         {
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
-
-            UriBuilder baseUri = new($"{_httpClient.BaseAddress}{Url.ReceiptUrls.GetShopReceiptTransactionsByShop(shopId: shopId)}");
-
+            UriBuilder baseUri = new($"{Url.BaseUrls.BaseApiUrl}{Url.ReceiptUrls.GetShopReceiptTransactionsByShop(shopId: shopId)}");
+            
             if (filter.Limit is not 25)
                 baseUri.AddQueryParam("limit", filter.Limit.ToString());
 
             if (filter.Offset is not 0)
-                baseUri.AddQueryParam("offset", filter.Offset.ToString());
-
+                baseUri.AddQueryParam("offset", filter.Offset.ToString()); 
+            
             HttpRequestMessage request = new(HttpMethod.Get, baseUri.Uri);
-            var response = _httpClient.SendAsync(request);
-            var bodyContent = await response.Result.Content.ReadAsStringAsync();
-            var transactions = JsonSerializer.Deserialize<EtsyListResponse<ShopReceiptTransaction>>(bodyContent);
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
+            request.Headers.Add("x-api-key", clientId);
 
-            var result = new ApiResponse<EtsyListResponse<ShopReceiptTransaction>>
-            {
-                ResponseCode = 200,
-                Success = true,
-                Data = transactions,
-                Message = null
-            };
+            var httpClient = httpClientFactory.CreateClient();
+            var response = await httpClient.SendAsync(request);
+            var result = await EtsyResponseParser.ParseResponseOfList<ShopReceiptTransaction>(response);
 
             return result;
         }
@@ -278,6 +287,19 @@ public class EtsyReceiptManagementService : IEtsyReceiptManagementService
             var result = new ApiResponse<EtsyListResponse<ShopReceiptTransaction>>
             {
                 ResponseCode = (int)ex.StatusCode!,
+                Success = false,
+                Data = null,
+                Message = $"{ex.Message}"
+            };
+
+            return result;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
+            var result = new ApiResponse<EtsyListResponse<ShopReceiptTransaction>>
+            {
+                ResponseCode = 500,
                 Success = false,
                 Data = null,
                 Message = $"{ex.Message}"

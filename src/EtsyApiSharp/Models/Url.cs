@@ -2,7 +2,7 @@
 
 public class Url
 {
-    public static class AuthUrls
+    public static class BaseUrls
     {
         public static readonly string BaseAuthUrl = "https://www.etsy.com/oauth/connect";
         public static readonly string BaseTokenUrl = "https://api.etsy.com/v3/public/oauth/token";
