@@ -3,6 +3,7 @@ using EtsyApiSharp.Services.Auths;
 using EtsyApiSharp.Services.ListingManagements;
 using EtsyApiSharp.Services.ReceiptManagements;
 using EtsyApiSharp.Services.ShopManagements;
+using EtsyApiSharp.Services.UserManagements;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace EtsyApiSharp;
@@ -40,6 +41,7 @@ services.AddTransient<IEtsyListingManagementService, EtsyListingManagementServic
     public static IServiceCollection AddEtsyListingManagementServiceSingleton(this IServiceCollection services, string clientId) =>
 services.AddSingleton<IEtsyListingManagementService, EtsyListingManagementService>(_ => new EtsyListingManagementService(clientId));
 
+
     public static IServiceCollection AddEtsyShopManagementServiceScoped(this IServiceCollection services, string clientId) =>
 services.AddScoped<IEtsyShopManagementService, EtsyShopManagementService>(_ => new EtsyShopManagementService(clientId));
 
@@ -48,4 +50,14 @@ services.AddTransient<IEtsyShopManagementService, EtsyShopManagementService>(_ =
 
     public static IServiceCollection AddEtsyShopManagementServiceSingleton(this IServiceCollection services, string clientId) =>
 services.AddSingleton<IEtsyShopManagementService, EtsyShopManagementService>(_ => new EtsyShopManagementService(clientId));
+
+
+    public static IServiceCollection AddEtsyUserManagementServiceScoped(this IServiceCollection services, string clientId) =>
+services.AddScoped<IEtsyUserManagementService, EtsyUserManagementService>(_ => new EtsyUserManagementService(clientId));
+
+    public static IServiceCollection AddEtsyUserManagementServiceTransient(this IServiceCollection services, string clientId) =>
+services.AddTransient<IEtsyUserManagementService, EtsyUserManagementService>(_ => new EtsyUserManagementService(clientId));
+
+    public static IServiceCollection AddEtsyUserManagementServiceSingleton(this IServiceCollection services, string clientId) =>
+services.AddSingleton<IEtsyUserManagementService, EtsyUserManagementService>(_ => new EtsyUserManagementService(clientId));
 }
