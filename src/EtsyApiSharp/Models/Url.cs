@@ -83,4 +83,10 @@ public class Url
         public static string FindShops() =>
             $"/v3/application/shops/";
     }
+
+    public static class UserUrls
+    {
+        public static string GetUser(long userId) =>
+            $"/v3/application/users/{userId}";
+    }
 }

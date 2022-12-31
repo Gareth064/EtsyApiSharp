@@ -22,7 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Services\UserManagements\" />
     <Folder Include="Services\ShippingManagements\" />
     <Folder Include="Services\ReviewManagements\" />
     <Folder Include="Services\PaymentManagements\" />

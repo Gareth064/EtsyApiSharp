@@ -1,0 +1,46 @@
+﻿using EtsyApiSharp.Helpers;
+using EtsyApiSharp.Models;
+using EtsyApiSharp.Models.Common;
+using System.Diagnostics;
+using System.Net.Http.Headers;
+using System.Net.Http;
+using EtsyApiSharp.Infrastructure;
+
+namespace EtsyApiSharp.Services.UserManagements;
+public class EtsyUserManagementService : IEtsyUserManagementService
+{
+    private static IHttpClientFactory httpClientFactory = new DefaultHttpClientFactory();
+    private readonly string clientId;
+    public EtsyUserManagementService(string clientId)
+    {
+        this.clientId=clientId;
+    }
+    public async Task<ApiResponse<User>> GetUserAsync(string apiToken, long userId)
+    {
+        try
+        {
+            var httpClient = httpClientFactory.CreateClient();
+            UriBuilder baseUri = new($"{Url.BaseUrls.BaseApiUrl}{Url.UserUrls.GetUser(userId: userId)}");
+            HttpRequestMessage request = new(HttpMethod.Get, baseUri.Uri);
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
+            request.Headers.Add("x-api-key", clientId);
+            var response = await httpClient.SendAsync(request);
+            var result = await EtsyResponseParser.ParseResponseOfSingle<User>(response);
+
+            return result;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
+            var result = new ApiResponse<User>
+            {
+                ResponseCode = 500,
+                Success = false,
+                Data = null,
+                Message = $"{ex.Message}"
+            };
+
+            return result;
+        }
+    }
+}
