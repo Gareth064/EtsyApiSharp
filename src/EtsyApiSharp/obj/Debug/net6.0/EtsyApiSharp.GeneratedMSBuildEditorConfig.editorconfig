@@ -8,4 +8,4 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = EtsyApiSharp
-build_property.ProjectDir = C:\Users\garet\Source\Gareth064\EtsyApiSharp\src\EtsyApiSharp\
+build_property.ProjectDir = C:\Code\Gareth064\EtsyApiSharp\src\EtsyApiSharp\
