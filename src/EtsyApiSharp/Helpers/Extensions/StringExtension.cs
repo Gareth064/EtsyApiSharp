@@ -8,7 +8,7 @@ public static class StringExtension
         {
             if (i != listOfInts.Count)
             {
-                resultingString += $"{ listOfInts[i] },";
+                resultingString += $"{listOfInts[i]},";
             }
             else
             {

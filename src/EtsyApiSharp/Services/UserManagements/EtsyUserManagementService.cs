@@ -1,10 +1,9 @@
 ﻿using EtsyApiSharp.Helpers;
+using EtsyApiSharp.Infrastructure;
 using EtsyApiSharp.Models;
 using EtsyApiSharp.Models.Common;
 using System.Diagnostics;
 using System.Net.Http.Headers;
-using System.Net.Http;
-using EtsyApiSharp.Infrastructure;
 
 namespace EtsyApiSharp.Services.UserManagements;
 public class EtsyUserManagementService : IEtsyUserManagementService
