@@ -1,4 +1,3 @@
-using EtsyApiSharp.Helpers.Converters;
 using System.Text.Json.Serialization;
 
 namespace EtsyApiSharp.Models;

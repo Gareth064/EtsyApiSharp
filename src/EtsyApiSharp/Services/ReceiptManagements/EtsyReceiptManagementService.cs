@@ -5,9 +5,7 @@ using EtsyApiSharp.Models;
 using EtsyApiSharp.Models.Common;
 using EtsyApiSharp.Models.Filters;
 using System.Diagnostics;
-using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text.Json;
 
 namespace EtsyApiSharp.Services.ReceiptManagements;
 
@@ -265,13 +263,13 @@ public class EtsyReceiptManagementService : IEtsyReceiptManagementService
         try
         {
             UriBuilder baseUri = new($"{Url.BaseUrls.BaseApiUrl}{Url.ReceiptUrls.GetShopReceiptTransactionsByShop(shopId: shopId)}");
-            
+
             if (filter.Limit is not 25)
                 baseUri.AddQueryParam("limit", filter.Limit.ToString());
 
             if (filter.Offset is not 0)
-                baseUri.AddQueryParam("offset", filter.Offset.ToString()); 
-            
+                baseUri.AddQueryParam("offset", filter.Offset.ToString());
+
             HttpRequestMessage request = new(HttpMethod.Get, baseUri.Uri);
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
             request.Headers.Add("x-api-key", clientId);
