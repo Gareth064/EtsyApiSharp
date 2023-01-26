@@ -13,9 +13,10 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddHttpClient();
-builder.Services.AddEtsyAuthServiceSingleton(configuration.GetSection("EtsyConfig").GetValue(string, "ClientId"), "https://localhost:5001/secret/callback", scopes);
-builder.Services.AddEtsyReceiptManagementServiceTransient(configuration.GetSection("EtsyConfig").GetValue(string, "ClientId"));
-builder.Services.AddEtsyListingManagementServiceTransient(configuration.GetSection("EtsyConfig").GetValue(string, "ClientId"));
+builder.Services.AddEtsyAuthServiceSingleton(configuration.GetSection("EtsyConfig").GetValue<string>("ClientId"), "https://localhost:5001/secret/callback", scopes);
+builder.Services.AddEtsyReceiptManagementServiceTransient(configuration.GetSection("EtsyConfig").GetValue<string>("ClientId"));
+builder.Services.AddEtsyListingManagementServiceTransient(configuration.GetSection("EtsyConfig").GetValue<string>("ClientId"));
+builder.Services.AddEtsyShopManagementServiceScoped(configuration.GetSection("EtsyConfig").GetValue<string>("ClientId"));
 
 
 var app = builder.Build();
