@@ -1,0 +1,35 @@
+﻿@page "/services/shop"
+@using BlazorTestApp.Components
+@using BlazorTestApp.Data;
+@using EtsyApiSharp.Services.ShopManagements;
+@using System.Text.Json;
+@inject IEtsyShopManagementService ShopService
+
+<ServiceTemplate ServiceTitle="Shop Services" ShowResultsPane="true" ResultsToDisplay=@resultToDisplay>
+    <input @bind="ownerId" />
+    <button @onclick="GetShopByUserAsync">Listing Image By Image ID By Listing ID</button>
+</ServiceTemplate>
+
+
+@code {
+    string resultToDisplay = string.Empty;
+    long ownerId = 62971666;
+
+    private async Task GetShopByUserAsync()
+    {
+        var result = await ShopService.GetShopByOwnerUserIdAsync(AppState.TokenResponse, ownerId);
+
+        DisplayResultsOnScreen(result);
+    }
+
+    private void DisplayResultsOnScreen<T>(T result)
+    {
+        var tempString = JsonSerializer.Serialize(result);
+        var jDoc = JsonDocument.Parse(tempString);
+
+        resultToDisplay = JsonSerializer.Serialize(jDoc,
+            new JsonSerializerOptions { WriteIndented = true });
+
+        Console.WriteLine(resultToDisplay);
+    }
+}
