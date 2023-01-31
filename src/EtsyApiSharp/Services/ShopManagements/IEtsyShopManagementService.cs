@@ -20,7 +20,6 @@ public interface IEtsyShopManagementService
         Shop shop);
 
     Task<ApiResponse<EtsyListResponse<Shop>>> FindShopsAsync(
-        string apiToken,
         string shopName,
         FindShopsByNameFilter filter);
 }
