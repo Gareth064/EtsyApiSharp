@@ -81,7 +81,7 @@ public class Url
             $"/v3/application/shops/{shopId}";
 
         public static string FindShops() =>
-            $"/v3/application/shops/";
+            $"/v3/application/shops";
     }
 
     public static class UserUrls
