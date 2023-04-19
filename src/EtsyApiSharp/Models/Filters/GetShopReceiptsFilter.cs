@@ -7,6 +7,7 @@ public class GetShopReceiptsFilter : EtsyFilterBase
     public long? MinLastModified { get; set; }
     public long? MaxLastModified { get; set; }
     public bool? WasPaid { get; set; }
+    public bool? WasCancelled { get; set; }
     public bool? WasShipped { get; set; }
     public bool? WasDelivered { get; set; }
 
