@@ -7,17 +7,30 @@
 
 <ServiceTemplate ServiceTitle="Shop Services" ShowResultsPane="true" ResultsToDisplay=@resultToDisplay>
     <input @bind="ownerId" />
-    <button @onclick="GetShopByUserAsync">Listing Image By Image ID By Listing ID</button>
+    <button @onclick="GetShopByUserAsync">Get Shop by OwnerID</button>
+    <br />
+    <br />
+    <input @bind="shopName" />
+    <button @onclick="FindShopsByNameAsync">Find Shops by Name</button>
+
 </ServiceTemplate>
 
 
 @code {
     string resultToDisplay = string.Empty;
     long ownerId = 62971666;
+    string shopName = "";
 
     private async Task GetShopByUserAsync()
     {
         var result = await ShopService.GetShopByOwnerUserIdAsync(AppState.TokenResponse, ownerId);
+
+        DisplayResultsOnScreen(result);
+    }
+
+    private async Task FindShopsByNameAsync()
+    {
+        var result = await ShopService.FindShopsAsync(shopName,  null);
 
         DisplayResultsOnScreen(result);
     }
