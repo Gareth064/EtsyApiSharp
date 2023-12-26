@@ -103,8 +103,6 @@ public class EtsyReceiptManagementService : IEtsyReceiptManagementService
 
             if (filter.WasCancelled is not null)
                 baseUri.AddQueryParam("was_canceled", filter.WasCancelled.ToString()!);
-            else
-                baseUri.AddQueryParam("was_canceled", "null");
 
             if (filter.WasShipped is not null)
                 baseUri.AddQueryParam("was_shipped", filter.WasShipped.ToString()!);
