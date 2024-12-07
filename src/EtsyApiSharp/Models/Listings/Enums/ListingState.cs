@@ -6,5 +6,6 @@ public enum ListingState
     inactive,
     sold_out,
     draft,
-    expired
+    expired,
+    edit
 }
