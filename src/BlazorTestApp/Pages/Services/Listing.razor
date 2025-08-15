@@ -180,10 +180,11 @@
 
     private async Task GetListingsByListingIdsAsync()
     {
+        var listingIds = receiptId.Split(',').ToList();
         var IdList = new List<long>();
-        IdList.Add(499552854);
-        IdList.Add(803745479);
-        IdList.Add(1141926638);
+
+        foreach (var listingId in listingIds)
+            IdList.Add(Int64.Parse(listingId));
 
         var includes = new List<ListingInclude>();
         includes.Add(ListingInclude.Images);
