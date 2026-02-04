@@ -12,11 +12,11 @@ namespace EtsyApiSharp.Services.ReceiptManagements;
 public class EtsyReceiptManagementService : IEtsyReceiptManagementService
 {
     private static IHttpClientFactory httpClientFactory = new DefaultHttpClientFactory();
-    private readonly string clientId;
+    private readonly string apiKey;
 
-    public EtsyReceiptManagementService(string clientId)
+    public EtsyReceiptManagementService(string clientId, string sharedSecret)
     {
-        this.clientId=clientId;
+        this.apiKey = $"{clientId}:{sharedSecret}";
     }
 
     public async Task<ApiResponse<ShopReceipt>> CreateReceiptShipmentAsync(
@@ -38,7 +38,7 @@ public class EtsyReceiptManagementService : IEtsyReceiptManagementService
             UriBuilder baseUri = new($"{Url.BaseUrls.BaseApiUrl}{Url.ReceiptUrls.GetShopReceipt(shopId: shopId, receiptId: receiptId)}");
             HttpRequestMessage request = new(HttpMethod.Get, baseUri.Uri);
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
-            request.Headers.Add("x-api-key", clientId);
+            request.Headers.Add("x-api-key", apiKey);
             var response = await httpClient.SendAsync(request);
             var result = await EtsyResponseParser.ParseResponseOfSingle<ShopReceipt>(response);
 
@@ -113,7 +113,7 @@ public class EtsyReceiptManagementService : IEtsyReceiptManagementService
 
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, baseUri.Uri);
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
-            request.Headers.Add("x-api-key", clientId);
+            request.Headers.Add("x-api-key", apiKey);
 
             var httpClient = httpClientFactory.CreateClient();
             var response = await httpClient.SendAsync(request);
@@ -147,7 +147,7 @@ public class EtsyReceiptManagementService : IEtsyReceiptManagementService
             UriBuilder baseUri = new($"{Url.BaseUrls.BaseApiUrl}{Url.ReceiptUrls.GetShopReceiptTransaction(shopId: shopId, transactionId: transactionId)}");
             HttpRequestMessage request = new(HttpMethod.Get, baseUri.Uri);
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
-            request.Headers.Add("x-api-key", clientId);
+            request.Headers.Add("x-api-key", apiKey);
 
             var httpClient = httpClientFactory.CreateClient();
             var response = await httpClient.SendAsync(request);
@@ -193,7 +193,7 @@ public class EtsyReceiptManagementService : IEtsyReceiptManagementService
             UriBuilder baseUri = new($"{Url.BaseUrls.BaseApiUrl}{Url.ReceiptUrls.GetShopReceiptTransactionsByListing(shopId: shopId, listingId: listingId)}");
             HttpRequestMessage request = new(HttpMethod.Get, baseUri.Uri);
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
-            request.Headers.Add("x-api-key", clientId);
+            request.Headers.Add("x-api-key", apiKey);
             var httpClient = httpClientFactory.CreateClient();
             var response = await httpClient.SendAsync(request);
             var result = await EtsyResponseParser.ParseResponseOfList<ShopReceiptTransaction>(response);
@@ -224,7 +224,7 @@ public class EtsyReceiptManagementService : IEtsyReceiptManagementService
             UriBuilder baseUri = new($"{Url.BaseUrls.BaseApiUrl}{Url.ReceiptUrls.GetShopReceiptTransactionsByReceipt(shopId: shopId, receiptId: receiptId)}");
             HttpRequestMessage request = new(HttpMethod.Get, baseUri.Uri);
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
-            request.Headers.Add("x-api-key", clientId);
+            request.Headers.Add("x-api-key", apiKey);
 
             var httpClient = httpClientFactory.CreateClient();
             var response = await httpClient.SendAsync(request);
@@ -276,7 +276,7 @@ public class EtsyReceiptManagementService : IEtsyReceiptManagementService
 
             HttpRequestMessage request = new(HttpMethod.Get, baseUri.Uri);
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
-            request.Headers.Add("x-api-key", clientId);
+            request.Headers.Add("x-api-key", apiKey);
 
             var httpClient = httpClientFactory.CreateClient();
             var response = await httpClient.SendAsync(request);
