@@ -19,11 +19,6 @@ public static class HttpContentHelper
     public static StringContent CreateJsonContent<T>(T data)
     {
         var json = JsonSerializer.Serialize(data);
-        var content = new StringContent(json, Encoding.UTF8);
-        content.Headers.ContentType = new MediaTypeHeaderValue("application/json")
-        {
-            CharSet = "utf-8"
-        };
-        return content;
+        return new StringContent(json, Encoding.UTF8, "application/json");
     }
 }

@@ -9,14 +9,10 @@ namespace EtsyApiSharp.Services.UserManagements;
 public class EtsyUserManagementService : IEtsyUserManagementService
 {
     private static IHttpClientFactory httpClientFactory = new DefaultHttpClientFactory();
-    private readonly string clientId;
-    private readonly string sharedSecret;
     private readonly string apiKey;
     
     public EtsyUserManagementService(string clientId, string sharedSecret)
     {
-        this.clientId = clientId;
-        this.sharedSecret = sharedSecret;
         this.apiKey = $"{clientId}:{sharedSecret}";
     }
     public async Task<ApiResponse<User>> GetUserAsync(string apiToken, long userId)

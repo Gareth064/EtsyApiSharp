@@ -13,14 +13,10 @@ namespace EtsyApiSharp.Services.ListingManagements;
 public class EtsyListingManagementService : IEtsyListingManagementService
 {
     private static IHttpClientFactory httpClientFactory = new DefaultHttpClientFactory();
-    private readonly string clientId;
-    private readonly string sharedSecret;
     private readonly string apiKey;
     
     public EtsyListingManagementService(string clientId, string sharedSecret)
     {
-        this.clientId = clientId;
-        this.sharedSecret = sharedSecret;
         this.apiKey = $"{clientId}:{sharedSecret}";
     }
 
