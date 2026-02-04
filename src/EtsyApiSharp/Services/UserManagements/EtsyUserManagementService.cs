@@ -10,9 +10,14 @@ public class EtsyUserManagementService : IEtsyUserManagementService
 {
     private static IHttpClientFactory httpClientFactory = new DefaultHttpClientFactory();
     private readonly string clientId;
-    public EtsyUserManagementService(string clientId)
+    private readonly string sharedSecret;
+    private readonly string apiKey;
+    
+    public EtsyUserManagementService(string clientId, string sharedSecret)
     {
-        this.clientId=clientId;
+        this.clientId = clientId;
+        this.sharedSecret = sharedSecret;
+        this.apiKey = $"{clientId}:{sharedSecret}";
     }
     public async Task<ApiResponse<User>> GetUserAsync(string apiToken, long userId)
     {
@@ -22,7 +27,7 @@ public class EtsyUserManagementService : IEtsyUserManagementService
             UriBuilder baseUri = new($"{Url.BaseUrls.BaseApiUrl}{Url.UserUrls.GetUser(userId: userId)}");
             HttpRequestMessage request = new(HttpMethod.Get, baseUri.Uri);
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
-            request.Headers.Add("x-api-key", clientId);
+            request.Headers.Add("x-api-key", apiKey);
             var response = await httpClient.SendAsync(request);
             var result = await EtsyResponseParser.ParseResponseOfSingle<User>(response);
 

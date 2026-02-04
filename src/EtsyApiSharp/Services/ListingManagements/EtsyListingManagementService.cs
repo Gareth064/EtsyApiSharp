@@ -14,9 +14,14 @@ public class EtsyListingManagementService : IEtsyListingManagementService
 {
     private static IHttpClientFactory httpClientFactory = new DefaultHttpClientFactory();
     private readonly string clientId;
-    public EtsyListingManagementService(string clientId)
+    private readonly string sharedSecret;
+    private readonly string apiKey;
+    
+    public EtsyListingManagementService(string clientId, string sharedSecret)
     {
-        this.clientId=clientId;
+        this.clientId = clientId;
+        this.sharedSecret = sharedSecret;
+        this.apiKey = $"{clientId}:{sharedSecret}";
     }
 
     public async Task<ApiResponse<EtsyListResponse<ShopListingWithAssociations>>> FindAllActiveListingsByShopAsync(
@@ -42,7 +47,7 @@ public class EtsyListingManagementService : IEtsyListingManagementService
 
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, baseUri.Uri);
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
-            request.Headers.Add("x-api-key", clientId);
+            request.Headers.Add("x-api-key", apiKey);
 
             var httpClient = httpClientFactory.CreateClient();
             var response = await httpClient.SendAsync(request);
@@ -106,7 +111,7 @@ public class EtsyListingManagementService : IEtsyListingManagementService
 
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, baseUri.Uri);
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
-            request.Headers.Add("x-api-key", clientId);
+            request.Headers.Add("x-api-key", apiKey);
 
             var httpClient = httpClientFactory.CreateClient();
             var response = await httpClient.SendAsync(request);
@@ -149,7 +154,7 @@ public class EtsyListingManagementService : IEtsyListingManagementService
 
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, baseUri.Uri);
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
-            request.Headers.Add("x-api-key", clientId);
+            request.Headers.Add("x-api-key", apiKey);
 
             var httpClient = httpClientFactory.CreateClient();
             var response = await httpClient.SendAsync(request);
@@ -194,7 +199,7 @@ public class EtsyListingManagementService : IEtsyListingManagementService
 
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, baseUri.Uri);
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
-            request.Headers.Add("x-api-key", clientId);
+            request.Headers.Add("x-api-key", apiKey);
 
             var httpClient = httpClientFactory.CreateClient();
             var response = await httpClient.SendAsync(request);
@@ -229,7 +234,7 @@ public class EtsyListingManagementService : IEtsyListingManagementService
 
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, baseUri.Uri);
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
-            request.Headers.Add("x-api-key", clientId);
+            request.Headers.Add("x-api-key", apiKey);
 
             var httpClient = httpClientFactory.CreateClient();
             var response = await httpClient.SendAsync(request);
@@ -263,7 +268,7 @@ public class EtsyListingManagementService : IEtsyListingManagementService
 
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, baseUri.Uri);
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
-            request.Headers.Add("x-api-key", clientId);
+            request.Headers.Add("x-api-key", apiKey);
 
             var httpClient = httpClientFactory.CreateClient();
             var response = await httpClient.SendAsync(request);
@@ -312,7 +317,7 @@ public class EtsyListingManagementService : IEtsyListingManagementService
 
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, baseUri.Uri);
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
-            request.Headers.Add("x-api-key", clientId);
+            request.Headers.Add("x-api-key", apiKey);
 
             var httpClient = httpClientFactory.CreateClient();
             var response = await httpClient.SendAsync(request);
@@ -378,7 +383,7 @@ public class EtsyListingManagementService : IEtsyListingManagementService
 
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, baseUri.Uri);
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
-            request.Headers.Add("x-api-key", clientId);
+            request.Headers.Add("x-api-key", apiKey);
 
             var httpClient = httpClientFactory.CreateClient();
             var response = await httpClient.SendAsync(request);
@@ -422,7 +427,7 @@ public class EtsyListingManagementService : IEtsyListingManagementService
 
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, baseUri.Uri);
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
-            request.Headers.Add("x-api-key", clientId);
+            request.Headers.Add("x-api-key", apiKey);
 
             var httpClient = httpClientFactory.CreateClient();
             var response = await httpClient.SendAsync(request);
@@ -475,7 +480,7 @@ public class EtsyListingManagementService : IEtsyListingManagementService
 
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, baseUri.Uri);
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
-            request.Headers.Add("x-api-key", clientId);
+            request.Headers.Add("x-api-key", apiKey);
 
             var httpClient = httpClientFactory.CreateClient();
             var response = await httpClient.SendAsync(request);
@@ -539,7 +544,7 @@ public class EtsyListingManagementService : IEtsyListingManagementService
 
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, baseUri.Uri);
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
-            request.Headers.Add("x-api-key", clientId);
+            request.Headers.Add("x-api-key", apiKey);
 
             var httpClient = httpClientFactory.CreateClient();
             var response = await httpClient.SendAsync(request);
@@ -572,7 +577,7 @@ public class EtsyListingManagementService : IEtsyListingManagementService
 
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, baseUri.Uri);
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
-            request.Headers.Add("x-api-key", clientId);
+            request.Headers.Add("x-api-key", apiKey);
 
             var httpClient = httpClientFactory.CreateClient();
             var response = await httpClient.SendAsync(request);

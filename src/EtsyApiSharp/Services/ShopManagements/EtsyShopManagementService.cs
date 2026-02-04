@@ -13,10 +13,14 @@ public class EtsyShopManagementService : IEtsyShopManagementService
 {
     private static IHttpClientFactory httpClientFactory = new DefaultHttpClientFactory();
     private readonly string clientId;
+    private readonly string sharedSecret;
+    private readonly string apiKey;
 
-    public EtsyShopManagementService(string clientId)
+    public EtsyShopManagementService(string clientId, string sharedSecret)
     {
-        this.clientId=clientId;
+        this.clientId = clientId;
+        this.sharedSecret = sharedSecret;
+        this.apiKey = $"{clientId}:{sharedSecret}";
     }
 
     public async Task<ApiResponse<EtsyListResponse<Shop>>> FindShopsAsync(
@@ -41,8 +45,8 @@ public class EtsyShopManagementService : IEtsyShopManagementService
                     baseUri.AddQueryParam("offset", filter.Offset.ToString());
             }
 
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, baseUri.Uri);//request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
-            request.Headers.Add("x-api-key", clientId);
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, baseUri.Uri);
+            request.Headers.Add("x-api-key", apiKey);
 
             var httpClient = httpClientFactory.CreateClient();
             var response = httpClient.SendAsync(request).Result;
@@ -75,7 +79,7 @@ public class EtsyShopManagementService : IEtsyShopManagementService
             try
             {
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
-                httpClient.DefaultRequestHeaders.Add("x-api-key", clientId);
+                httpClient.DefaultRequestHeaders.Add("x-api-key", apiKey);
                 UriBuilder baseUri = new($"{Url.BaseUrls.BaseApiUrl}{Url.ShopUrls.GetShop(shopId: shopId)}");
                 HttpRequestMessage request = new(HttpMethod.Get, baseUri.Uri);
                 var response = httpClient.SendAsync(request).Result;
@@ -121,7 +125,7 @@ public class EtsyShopManagementService : IEtsyShopManagementService
             UriBuilder baseUri = new($"{Url.BaseUrls.BaseApiUrl}{Url.ShopUrls.GetShopByOwnerUserId(userId: userId)}");
             HttpRequestMessage request = new(HttpMethod.Get, baseUri.Uri);
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
-            request.Headers.Add("x-api-key", clientId);
+            request.Headers.Add("x-api-key", apiKey);
             var httpClient = httpClientFactory.CreateClient();
             var response = await httpClient.SendAsync(request);
             var result = await EtsyResponseParser.ParseResponseOfSingle<Shop>(response);
