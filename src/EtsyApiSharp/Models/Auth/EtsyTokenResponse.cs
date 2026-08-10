@@ -15,4 +15,7 @@ public class EtsyTokenResponse
 
     [JsonPropertyName("refresh_token")]
     public string RefreshToken { get; set; }
+
+    [JsonPropertyName("scope")]
+    public string Scope { get; set; }
 }

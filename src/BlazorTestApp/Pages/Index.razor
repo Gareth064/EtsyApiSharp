@@ -1,6 +1,7 @@
 ﻿@page "/"
 @using BlazorTestApp.Components
 @using BlazorTestApp.Data
+@using EtsyApiSharp.Helpers
 @using EtsyApiSharp.Models
 @using EtsyApiSharp.Services.Auths
 @inject NavigationManager Navigation
@@ -25,8 +26,9 @@
     private void Authorise()
     {
         Console.WriteLine("starting");
-        AppState.CodeVerifier = "test";
-        var authUri = AuthService.BuildAuthorizationUrl(AppState.CodeVerifier);
+        AppState.CodeVerifier = AuthHelper.CreateCodeVerifier();
+        AppState.OAuthState = AuthHelper.CreateState();
+        var authUri = AuthService.BuildAuthorizationUrl(AppState.CodeVerifier, AppState.OAuthState);
         Console.WriteLine(authUri);
         Navigation.NavigateTo(authUri);
     }

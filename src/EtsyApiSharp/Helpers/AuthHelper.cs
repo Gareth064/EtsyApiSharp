@@ -1,19 +1,39 @@
-﻿using System.Security.Cryptography;
+using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace EtsyApiSharp.Helpers;
 
 public static class AuthHelper
 {
-    public static string CreateCodeChallenge(string str)
+    private static readonly Regex CodeVerifierPattern = new(
+        "^[A-Za-z0-9._~-]{43,128}$",
+        RegexOptions.CultureInvariant);
+
+    public static string CreateCodeVerifier() => Base64UrlEncode(RandomNumberGenerator.GetBytes(32));
+
+    public static string CreateState() => Base64UrlEncode(RandomNumberGenerator.GetBytes(32));
+
+    public static string CreateCodeChallenge(string codeVerifier)
     {
-        using (var sha256 = SHA256.Create())
+        ValidateCodeVerifier(codeVerifier);
+
+        var codeChallengeBytes = SHA256.HashData(Encoding.ASCII.GetBytes(codeVerifier));
+        return Base64UrlEncode(codeChallengeBytes);
+    }
+
+    internal static void ValidateCodeVerifier(string codeVerifier)
+    {
+        if (string.IsNullOrWhiteSpace(codeVerifier) || !CodeVerifierPattern.IsMatch(codeVerifier))
         {
-            var codeChallengeBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(str));
-            return Convert.ToBase64String(codeChallengeBytes)
-                .Replace('+', '-')
-                .Replace("=", "")
-                .Replace('/', '_');
+            throw new ArgumentException(
+                "The PKCE code verifier must contain 43 to 128 unreserved URI characters (A-Z, a-z, 0-9, '-', '.', '_', or '~').",
+                nameof(codeVerifier));
         }
     }
+
+    private static string Base64UrlEncode(byte[] value) => Convert.ToBase64String(value)
+        .TrimEnd('=')
+        .Replace('+', '-')
+        .Replace('/', '_');
 }

@@ -19,6 +19,11 @@
     {
         Console.WriteLine($"code: {code}");
         Console.WriteLine($"state: {state}");
+
+        if (string.IsNullOrEmpty(state) || state != AppState.OAuthState)
+            throw new InvalidOperationException("The OAuth state returned by Etsy did not match the authorization request.");
+
+        AppState.OAuthState = string.Empty;
         AppState.OnChange += StateHasChanged;
         AppState.AuthorizationCode = code;
         AppState.OnChange -= StateHasChanged;

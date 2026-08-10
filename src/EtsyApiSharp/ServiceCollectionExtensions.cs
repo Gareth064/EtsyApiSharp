@@ -10,14 +10,26 @@ namespace EtsyApiSharp;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddEtsyAuthServiceScoped(this IServiceCollection services, string clientId, string redirectUrl, List<Scope> scopes) =>
-        services.AddScoped<IEtsyAuthService, EtsyAuthService>(_ => new EtsyAuthService(clientId, redirectUrl, scopes));
+    public static IServiceCollection AddEtsyAuthServiceScoped(this IServiceCollection services, string clientId, string redirectUrl, IEnumerable<Scope> scopes)
+    {
+        services.AddHttpClient(EtsyAuthService.HttpClientName);
+        return services.AddScoped<IEtsyAuthService, EtsyAuthService>(provider => new EtsyAuthService(
+            provider.GetRequiredService<IHttpClientFactory>(), clientId, redirectUrl, scopes));
+    }
 
-    public static IServiceCollection AddEtsyAuthServiceTransient(this IServiceCollection services, string clientId, string redirectUrl, List<Scope> scopes) =>
-        services.AddTransient<IEtsyAuthService, EtsyAuthService>(_ => new EtsyAuthService(clientId, redirectUrl, scopes));
+    public static IServiceCollection AddEtsyAuthServiceTransient(this IServiceCollection services, string clientId, string redirectUrl, IEnumerable<Scope> scopes)
+    {
+        services.AddHttpClient(EtsyAuthService.HttpClientName);
+        return services.AddTransient<IEtsyAuthService, EtsyAuthService>(provider => new EtsyAuthService(
+            provider.GetRequiredService<IHttpClientFactory>(), clientId, redirectUrl, scopes));
+    }
 
-    public static IServiceCollection AddEtsyAuthServiceSingleton(this IServiceCollection services, string clientId, string redirectUrl, List<Scope> scopes) =>
-        services.AddSingleton<IEtsyAuthService, EtsyAuthService>(_ => new EtsyAuthService(clientId, redirectUrl, scopes));
+    public static IServiceCollection AddEtsyAuthServiceSingleton(this IServiceCollection services, string clientId, string redirectUrl, IEnumerable<Scope> scopes)
+    {
+        services.AddHttpClient(EtsyAuthService.HttpClientName);
+        return services.AddSingleton<IEtsyAuthService, EtsyAuthService>(provider => new EtsyAuthService(
+            provider.GetRequiredService<IHttpClientFactory>(), clientId, redirectUrl, scopes));
+    }
 
 
 
