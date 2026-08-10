@@ -28,6 +28,9 @@ public class Url
 
         public static string GetShopReceiptTransactionsByShop(long shopId) =>
             $"/v3/application/shops/{shopId}/transactions";
+
+        public static string CreateReceiptShipment(long shopId, long receiptId) =>
+            $"/v3/application/shops/{shopId}/receipts/{receiptId}/tracking";
     }
 
     public static class ListingUrls

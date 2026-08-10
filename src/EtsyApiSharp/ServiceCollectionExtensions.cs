@@ -33,14 +33,26 @@ public static class ServiceCollectionExtensions
 
 
 
-    public static IServiceCollection AddEtsyReceiptManagementServiceScoped(this IServiceCollection services, string clientId, string sharedSecret) =>
-services.AddScoped<IEtsyReceiptManagementService, EtsyReceiptManagementService>(_ => new EtsyReceiptManagementService(clientId, sharedSecret));
+    public static IServiceCollection AddEtsyReceiptManagementServiceScoped(this IServiceCollection services, string clientId, string sharedSecret)
+    {
+        services.AddHttpClient(EtsyReceiptManagementService.HttpClientName);
+        return services.AddScoped<IEtsyReceiptManagementService, EtsyReceiptManagementService>(provider => new EtsyReceiptManagementService(
+            provider.GetRequiredService<IHttpClientFactory>(), clientId, sharedSecret));
+    }
 
-    public static IServiceCollection AddEtsyReceiptManagementServiceTransient(this IServiceCollection services, string clientId, string sharedSecret) =>
-services.AddTransient<IEtsyReceiptManagementService, EtsyReceiptManagementService>(_ => new EtsyReceiptManagementService(clientId, sharedSecret));
+    public static IServiceCollection AddEtsyReceiptManagementServiceTransient(this IServiceCollection services, string clientId, string sharedSecret)
+    {
+        services.AddHttpClient(EtsyReceiptManagementService.HttpClientName);
+        return services.AddTransient<IEtsyReceiptManagementService, EtsyReceiptManagementService>(provider => new EtsyReceiptManagementService(
+            provider.GetRequiredService<IHttpClientFactory>(), clientId, sharedSecret));
+    }
 
-    public static IServiceCollection AddEtsyReceiptManagementServiceSingleton(this IServiceCollection services, string clientId, string sharedSecret) =>
-services.AddSingleton<IEtsyReceiptManagementService, EtsyReceiptManagementService>(_ => new EtsyReceiptManagementService(clientId, sharedSecret));
+    public static IServiceCollection AddEtsyReceiptManagementServiceSingleton(this IServiceCollection services, string clientId, string sharedSecret)
+    {
+        services.AddHttpClient(EtsyReceiptManagementService.HttpClientName);
+        return services.AddSingleton<IEtsyReceiptManagementService, EtsyReceiptManagementService>(provider => new EtsyReceiptManagementService(
+            provider.GetRequiredService<IHttpClientFactory>(), clientId, sharedSecret));
+    }
 
 
 
