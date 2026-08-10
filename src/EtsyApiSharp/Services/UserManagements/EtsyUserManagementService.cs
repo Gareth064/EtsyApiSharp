@@ -1,46 +1,69 @@
-﻿using EtsyApiSharp.Helpers;
-using EtsyApiSharp.Infrastructure;
+using EtsyApiSharp.Helpers;
 using EtsyApiSharp.Models;
 using EtsyApiSharp.Models.Common;
-using System.Diagnostics;
 using System.Net.Http.Headers;
 
 namespace EtsyApiSharp.Services.UserManagements;
+
 public class EtsyUserManagementService : IEtsyUserManagementService
 {
-    private static IHttpClientFactory httpClientFactory = new DefaultHttpClientFactory();
+    public const string HttpClientName = "EtsyApiSharp.Users";
+
     private readonly string apiKey;
-    
-    public EtsyUserManagementService(string clientId, string sharedSecret)
+    private readonly IHttpClientFactory httpClientFactory;
+
+    public EtsyUserManagementService(
+        IHttpClientFactory httpClientFactory,
+        string clientId,
+        string sharedSecret)
     {
-        this.apiKey = $"{clientId}:{sharedSecret}";
+        ArgumentNullException.ThrowIfNull(httpClientFactory);
+
+        if (string.IsNullOrWhiteSpace(clientId))
+            throw new ArgumentException("An Etsy API key keystring is required.", nameof(clientId));
+
+        if (string.IsNullOrWhiteSpace(sharedSecret))
+            throw new ArgumentException("An Etsy API shared secret is required.", nameof(sharedSecret));
+
+        this.httpClientFactory = httpClientFactory;
+        apiKey = $"{clientId}:{sharedSecret}";
     }
-    public async Task<ApiResponse<User>> GetUserAsync(string apiToken, long userId)
+
+    public Task<ApiResponse<User>> GetUserAsync(
+        string accessToken,
+        long userId,
+        CancellationToken cancellationToken = default)
     {
-        try
-        {
-            var httpClient = httpClientFactory.CreateClient();
-            UriBuilder baseUri = new($"{Url.BaseUrls.BaseApiUrl}{Url.UserUrls.GetUser(userId: userId)}");
-            HttpRequestMessage request = new(HttpMethod.Get, baseUri.Uri);
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
-            request.Headers.Add("x-api-key", apiKey);
-            var response = await httpClient.SendAsync(request);
-            var result = await EtsyResponseParser.ParseResponseOfSingle<User>(response);
+        if (userId < 1)
+            throw new ArgumentOutOfRangeException(nameof(userId), "The Etsy user ID must be greater than zero.");
 
-            return result;
-        }
-        catch (Exception ex)
-        {
-            Debug.WriteLine(ex.Message);
-            var result = new ApiResponse<User>
-            {
-                ResponseCode = 500,
-                Success = false,
-                Data = null,
-                Message = $"{ex.Message}"
-            };
+        return GetAsync<User>(accessToken, Url.UserUrls.GetUser(userId), cancellationToken);
+    }
 
-            return result;
-        }
+    public Task<ApiResponse<Self>> GetMeAsync(
+        string accessToken,
+        CancellationToken cancellationToken = default) =>
+        GetAsync<Self>(accessToken, Url.UserUrls.GetMe(), cancellationToken);
+
+    private async Task<ApiResponse<T>> GetAsync<T>(
+        string accessToken,
+        string relativeUrl,
+        CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(accessToken))
+            throw new ArgumentException("An Etsy OAuth access token is required.", nameof(accessToken));
+
+        using var request = new HttpRequestMessage(
+            HttpMethod.Get,
+            $"{Url.BaseUrls.BaseApiUrl}{relativeUrl}");
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+        request.Headers.Add("x-api-key", apiKey);
+
+        var httpClient = httpClientFactory.CreateClient(HttpClientName);
+        using var response = await httpClient.SendAsync(request, cancellationToken).ConfigureAwait(false);
+        response.RequestMessage ??= request;
+        return await EtsyResponseParser
+            .ParseResponseOfSingle<T>(response, cancellationToken)
+            .ConfigureAwait(false);
     }
 }

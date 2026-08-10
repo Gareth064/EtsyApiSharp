@@ -88,5 +88,8 @@ public class Url
     {
         public static string GetUser(long userId) =>
             $"/v3/application/users/{userId}";
+
+        public static string GetMe() =>
+            "/v3/application/users/me";
     }
 }

@@ -7,7 +7,7 @@ public class ApiResponse<T>
     public T? Data { get; set; }
     public string? Message { get; set; }
     public ResponseHeaders ResponseHeaders { get; set; } = new ResponseHeaders();
-    public string RequestedResource { get; set; }
+    public string RequestedResource { get; set; } = string.Empty;
 }
 
 public class ResponseHeaders
@@ -16,5 +16,5 @@ public class ResponseHeaders
     public int RemainingThisSecond { get; set; }
     public int LimitPerDay { get; set; }
     public int RemainingToday { get; set; }
-    public string EtsyRequestUuid { get; set; }
+    public string? EtsyRequestUuid { get; set; }
 }
