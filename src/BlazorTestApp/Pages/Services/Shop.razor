@@ -23,14 +23,14 @@
 
     private async Task GetShopByUserAsync()
     {
-        var result = await ShopService.GetShopByOwnerUserIdAsync(AppState.TokenResponse, ownerId);
+        var result = await ShopService.GetShopByOwnerUserIdAsync(ownerId);
 
         DisplayResultsOnScreen(result);
     }
 
     private async Task FindShopsByNameAsync()
     {
-        var result = await ShopService.FindShopsAsync(shopName,  null);
+        var result = await ShopService.FindShopsAsync(shopName);
 
         DisplayResultsOnScreen(result);
     }

@@ -66,14 +66,26 @@ services.AddTransient<IEtsyListingManagementService, EtsyListingManagementServic
 services.AddSingleton<IEtsyListingManagementService, EtsyListingManagementService>(_ => new EtsyListingManagementService(clientId, sharedSecret));
 
 
-    public static IServiceCollection AddEtsyShopManagementServiceScoped(this IServiceCollection services, string clientId, string sharedSecret) =>
-services.AddScoped<IEtsyShopManagementService, EtsyShopManagementService>(_ => new EtsyShopManagementService(clientId, sharedSecret));
+    public static IServiceCollection AddEtsyShopManagementServiceScoped(this IServiceCollection services, string clientId, string sharedSecret)
+    {
+        services.AddHttpClient(EtsyShopManagementService.HttpClientName);
+        return services.AddScoped<IEtsyShopManagementService, EtsyShopManagementService>(provider => new EtsyShopManagementService(
+            provider.GetRequiredService<IHttpClientFactory>(), clientId, sharedSecret));
+    }
 
-    public static IServiceCollection AddEtsyShopManagementServiceTransient(this IServiceCollection services, string clientId, string sharedSecret) =>
-services.AddTransient<IEtsyShopManagementService, EtsyShopManagementService>(_ => new EtsyShopManagementService(clientId, sharedSecret));
+    public static IServiceCollection AddEtsyShopManagementServiceTransient(this IServiceCollection services, string clientId, string sharedSecret)
+    {
+        services.AddHttpClient(EtsyShopManagementService.HttpClientName);
+        return services.AddTransient<IEtsyShopManagementService, EtsyShopManagementService>(provider => new EtsyShopManagementService(
+            provider.GetRequiredService<IHttpClientFactory>(), clientId, sharedSecret));
+    }
 
-    public static IServiceCollection AddEtsyShopManagementServiceSingleton(this IServiceCollection services, string clientId, string sharedSecret) =>
-services.AddSingleton<IEtsyShopManagementService, EtsyShopManagementService>(_ => new EtsyShopManagementService(clientId, sharedSecret));
+    public static IServiceCollection AddEtsyShopManagementServiceSingleton(this IServiceCollection services, string clientId, string sharedSecret)
+    {
+        services.AddHttpClient(EtsyShopManagementService.HttpClientName);
+        return services.AddSingleton<IEtsyShopManagementService, EtsyShopManagementService>(provider => new EtsyShopManagementService(
+            provider.GetRequiredService<IHttpClientFactory>(), clientId, sharedSecret));
+    }
 
 
     public static IServiceCollection AddEtsyUserManagementServiceScoped(this IServiceCollection services, string clientId, string sharedSecret)
