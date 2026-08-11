@@ -94,6 +94,29 @@ var draft = await listingService.CreateDraftListingAsync(
 
 The listing API was updated to remove unnecessary OAuth-token parameters from public endpoints. Update existing callers to supply a token only where the corresponding Etsy operation requires one. Upload APIs use `Stream`-based multipart requests; callers own the source stream and should not reuse it after the request completes.
 
+### Receipt service
+
+`IEtsyReceiptManagementService` implements all 8 operations currently grouped as Receipt Management in Etsy's OpenAPI 3.0.0 specification: receipt retrieval and filtering, receipt status updates, shipment tracking creation, and receipt transactions by listing, receipt, transaction, or shop.
+
+All receipt operations require both the `x-api-key` header and an OAuth access token. Read operations require `transactions_r`; `UpdateShopReceiptAsync` and `CreateReceiptShipmentAsync` require `transactions_w`. Receipt updates are sent as `application/x-www-form-urlencoded`; shipment tracking is sent as JSON. Every operation validates positive IDs, validates pagination where Etsy supports it, accepts a `CancellationToken`, and uses the named `EtsyReceiptManagementService.HttpClientName` client.
+
+```csharp
+var receipts = await receiptService.GetShopReceiptsAsync(
+    accessToken,
+    shopId,
+    new GetShopReceiptsFilter { WasPaid = true, Limit = 25 },
+    cancellationToken);
+
+var shipment = await receiptService.CreateReceiptShipmentAsync(
+    accessToken,
+    shopId,
+    receiptId,
+    new CreateReceiptShipmentRequest { TrackingCode = "TRACKING-CODE", CarrierName = "Carrier" },
+    cancellationToken: cancellationToken);
+```
+
+`TransactionVariation.QuestionId` and `ShopRefund.CreatedTimestamp` now reflect the current response schema (`question_id` and an `int64` timestamp respectively). `ShopRefund` reason, issuer note, and status are nullable because Etsy may omit them.
+
 ## Etsy API Resources
 
 - [Etsy Open API documentation](https://developers.etsy.com/documentation/)

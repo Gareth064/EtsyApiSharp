@@ -17,24 +17,24 @@ public class ShopRefund
     /// The date & time of the refund, in epoch seconds.
     /// </summary>
     [JsonPropertyName("created_timestamp")]
-    public int CreatedTimestamp { get; set; }
+    public long CreatedTimestamp { get; set; }
 
     /// <summary>
     /// The reason string given for the refund.
     /// </summary>
     [JsonPropertyName("reason")]
-    public string Reason { get; set; }
+    public string? Reason { get; set; }
 
     /// <summary>
     /// The note string created by the refund issuer.
     /// </summary>
     [JsonPropertyName("note_from_issuer")]
-    public string NoteFromIssuer { get; set; }
+    public string? NoteFromIssuer { get; set; }
 
     /// <summary>
     /// The status indication string for the refund.
     /// </summary>
     [JsonPropertyName("status")]
-    public string Status { get; set; }
+    public string? Status { get; set; }
 
 }

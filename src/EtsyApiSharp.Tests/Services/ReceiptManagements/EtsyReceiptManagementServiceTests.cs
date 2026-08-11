@@ -26,7 +26,7 @@ public class EtsyReceiptManagementServiceTests
             Assert.Equal("client-id:shared-secret", request.Headers.GetValues("x-api-key").Single());
             return Task.FromResult(JsonResponse(
                 HttpStatusCode.OK,
-                "{\"receipt_id\":456,\"created_timestamp\":3000000000,\"gift_sender\":\"Grace\"}"));
+                "{\"receipt_id\":456,\"created_timestamp\":3000000000,\"gift_sender\":\"Grace\",\"transactions\":[{\"variations\":[{\"question_id\":42}]}],\"refunds\":[{\"created_timestamp\":3000000000}]}"));
         });
         var factory = new StubHttpClientFactory(handler);
         var service = CreateService(factory);
@@ -38,6 +38,8 @@ public class EtsyReceiptManagementServiceTests
         Assert.Equal(456, result.Data?.ReceiptId);
         Assert.Equal(3000000000L, result.Data?.CreatedTimestamp);
         Assert.Equal("Grace", result.Data?.GiftSender);
+        Assert.Equal(42, result.Data?.Transactions.Single().Variations.Single().QuestionId);
+        Assert.Equal(3000000000L, result.Data?.Refunds.Single().CreatedTimestamp);
         Assert.Equal(
             "https://openapi.etsy.com/v3/application/shops/123/receipts/456?legacy=true",
             result.RequestedResource);
@@ -48,6 +50,9 @@ public class EtsyReceiptManagementServiceTests
     {
         var handler = new StubHttpMessageHandler(request =>
         {
+            Assert.Equal(HttpMethod.Get, request.Method);
+            AssertOAuthHeaders(request);
+            Assert.Equal("/v3/application/shops/123/receipts", request.RequestUri?.AbsolutePath);
             var query = request.RequestUri?.Query ?? string.Empty;
             Assert.Contains("limit=50", query);
             Assert.Contains("offset=5", query);
@@ -96,11 +101,13 @@ public class EtsyReceiptManagementServiceTests
     {
         var handler = new StubHttpMessageHandler(request =>
         {
+            Assert.Equal(HttpMethod.Get, request.Method);
+            AssertOAuthHeaders(request);
             Assert.Equal(
                 "https://openapi.etsy.com/v3/application/shops/123/listings/456/transactions" +
                 "?limit=100&offset=25&legacy=false",
                 request.RequestUri?.ToString());
-            return Task.FromResult(JsonResponse(HttpStatusCode.OK, "{\"count\":0,\"results\":[]}"));
+            return Task.FromResult(JsonResponse(HttpStatusCode.OK, "{\"count\":1,\"results\":[{\"transaction_id\":789}]}"));
         });
         var service = CreateService(new StubHttpClientFactory(handler));
         var filter = new GetShopReceiptTransactionsByListingFilter
@@ -117,7 +124,7 @@ public class EtsyReceiptManagementServiceTests
             filter);
 
         Assert.True(result.Success);
-        Assert.Empty(result.Data!.Results);
+        Assert.Equal(789, result.Data!.Results.Single().TransactionId);
     }
 
     [Fact]
@@ -126,6 +133,7 @@ public class EtsyReceiptManagementServiceTests
         var handler = new StubHttpMessageHandler(async request =>
         {
             Assert.Equal(HttpMethod.Put, request.Method);
+            AssertOAuthHeaders(request);
             Assert.Equal(
                 "https://openapi.etsy.com/v3/application/shops/123/receipts/456?legacy=false",
                 request.RequestUri?.ToString());
@@ -152,6 +160,7 @@ public class EtsyReceiptManagementServiceTests
         var handler = new StubHttpMessageHandler(async request =>
         {
             Assert.Equal(HttpMethod.Post, request.Method);
+            AssertOAuthHeaders(request);
             Assert.Equal(
                 "https://openapi.etsy.com/v3/application/shops/123/receipts/456/tracking",
                 request.RequestUri?.ToString());
@@ -195,35 +204,66 @@ public class EtsyReceiptManagementServiceTests
     }
 
     [Fact]
-    public async Task ReceiptTransactionMethods_ValidRequests_UseCurrentEtsyRoutes()
+    public async Task GetShopReceiptTransactionAsync_ValidRequest_SendsOAuthHeadersAndParsesTransaction()
     {
-        var requestedUrls = new Queue<string>();
         var handler = new StubHttpMessageHandler(request =>
         {
-            requestedUrls.Enqueue(request.RequestUri!.ToString());
-            var body = request.RequestUri.AbsolutePath.EndsWith("/789", StringComparison.Ordinal)
-                ? "{\"transaction_id\":789}"
-                : "{\"count\":0,\"results\":[]}";
-            return Task.FromResult(JsonResponse(HttpStatusCode.OK, body));
+            Assert.Equal(HttpMethod.Get, request.Method);
+            Assert.Equal(
+                "https://openapi.etsy.com/v3/application/shops/123/transactions/789",
+                request.RequestUri?.ToString());
+            AssertOAuthHeaders(request);
+            return Task.FromResult(JsonResponse(HttpStatusCode.OK, "{\"transaction_id\":789}"));
         });
         var service = CreateService(new StubHttpClientFactory(handler));
 
-        await service.GetShopReceiptTransactionAsync("123.access-token", 123, 789);
-        await service.GetShopReceiptTransactionsByReceiptAsync("123.access-token", 123, 456, legacy: true);
-        await service.GetShopReceiptTransactionsByShopAsync(
+        var result = await service.GetShopReceiptTransactionAsync("123.access-token", 123, 789);
+
+        Assert.True(result.Success);
+        Assert.Equal(789, result.Data?.TransactionId);
+    }
+
+    [Fact]
+    public async Task GetShopReceiptTransactionsByReceiptAsync_ValidRequest_SendsOAuthHeadersAndParsesTransactions()
+    {
+        var handler = new StubHttpMessageHandler(request =>
+        {
+            Assert.Equal(HttpMethod.Get, request.Method);
+            Assert.Equal(
+                "https://openapi.etsy.com/v3/application/shops/123/receipts/456/transactions?legacy=true",
+                request.RequestUri?.ToString());
+            AssertOAuthHeaders(request);
+            return Task.FromResult(JsonResponse(HttpStatusCode.OK, "{\"count\":1,\"results\":[{\"transaction_id\":789}]}"));
+        });
+        var service = CreateService(new StubHttpClientFactory(handler));
+
+        var result = await service.GetShopReceiptTransactionsByReceiptAsync("123.access-token", 123, 456, legacy: true);
+
+        Assert.True(result.Success);
+        Assert.Equal(789, result.Data?.Results.Single().TransactionId);
+    }
+
+    [Fact]
+    public async Task GetShopReceiptTransactionsByShopAsync_ValidRequest_SendsOAuthHeadersAndParsesTransactions()
+    {
+        var handler = new StubHttpMessageHandler(request =>
+        {
+            Assert.Equal(HttpMethod.Get, request.Method);
+            Assert.Equal(
+                "https://openapi.etsy.com/v3/application/shops/123/transactions?limit=10&offset=2&legacy=false",
+                request.RequestUri?.ToString());
+            AssertOAuthHeaders(request);
+            return Task.FromResult(JsonResponse(HttpStatusCode.OK, "{\"count\":1,\"results\":[{\"transaction_id\":789}]}"));
+        });
+        var service = CreateService(new StubHttpClientFactory(handler));
+
+        var result = await service.GetShopReceiptTransactionsByShopAsync(
             "123.access-token",
             123,
-            new GetShopReceiptTransactionsByShopFilter { Limit = 10, Offset = 2 });
+            new GetShopReceiptTransactionsByShopFilter { Limit = 10, Offset = 2, Legacy = false });
 
-        Assert.Equal(
-            "https://openapi.etsy.com/v3/application/shops/123/transactions/789",
-            requestedUrls.Dequeue());
-        Assert.Equal(
-            "https://openapi.etsy.com/v3/application/shops/123/receipts/456/transactions?legacy=true",
-            requestedUrls.Dequeue());
-        Assert.Equal(
-            "https://openapi.etsy.com/v3/application/shops/123/transactions?limit=10&offset=2",
-            requestedUrls.Dequeue());
+        Assert.True(result.Success);
+        Assert.Equal(789, result.Data?.Results.Single().TransactionId);
     }
 
     [Theory]
@@ -273,6 +313,23 @@ public class EtsyReceiptManagementServiceTests
     }
 
     [Fact]
+    public async Task ReceiptEndpoints_InvalidIdentifiersAndMissingToken_ThrowBeforeSendingARequest()
+    {
+        var service = CreateService();
+
+        await Assert.ThrowsAsync<ArgumentOutOfRangeException>(
+            () => service.GetShopReceiptAsync("123.access-token", 0, 456));
+        await Assert.ThrowsAsync<ArgumentOutOfRangeException>(
+            () => service.GetShopReceiptTransactionsByListingAsync("123.access-token", 123, 0));
+        await Assert.ThrowsAsync<ArgumentOutOfRangeException>(
+            () => service.GetShopReceiptTransactionAsync("123.access-token", 123, 0));
+        await Assert.ThrowsAsync<ArgumentException>(
+            () => service.GetShopReceiptsAsync(string.Empty, 123));
+        await Assert.ThrowsAsync<ArgumentNullException>(
+            () => service.CreateReceiptShipmentAsync("123.access-token", 123, 456, null!));
+    }
+
+    [Fact]
     public void AddEtsyReceiptManagementServiceTransient_RegisteredService_ResolvesFromDependencyInjection()
     {
         var services = new ServiceCollection();
@@ -294,6 +351,13 @@ public class EtsyReceiptManagementServiceTests
     {
         Content = new StringContent(body, Encoding.UTF8, "application/json")
     };
+
+    private static void AssertOAuthHeaders(HttpRequestMessage request)
+    {
+        Assert.Equal("Bearer", request.Headers.Authorization?.Scheme);
+        Assert.Equal("123.access-token", request.Headers.Authorization?.Parameter);
+        Assert.Equal("client-id:shared-secret", request.Headers.GetValues("x-api-key").Single());
+    }
 
     private sealed class StubHttpClientFactory : IHttpClientFactory
     {
