@@ -2,7 +2,7 @@
 EtsyApiSharp is a wrapper library for the Etsy v3 API
 
 ## Features
-- Built on the .Net6
+- Built on .NET 10
 - Services can be added individually and at different scopes in the DI framework. (Only register what you need)
 - Simple and easy to use
 - Fully compliant with Etsy API v3 request standards
@@ -56,4 +56,10 @@ This library follows the [Etsy API v3 Request Standards](https://developers.etsy
 - OAuth 2.0 Bearer token authorization
 - UTF-8 charset for JSON content
 - Compatible with both `https://api.etsy.com/v3/` and `https://openapi.etsy.com/v3/` endpoints
+
+## Etsy API Resources
+
+- [Etsy Open API documentation](https://developers.etsy.com/documentation/)
+- [Etsy Open API reference](https://developers.etsy.com/documentation/reference)
+- [Etsy Open API 3.0.0 specification](https://www.etsy.com/openapi/generated/oas/3.0.0.json)
 

@@ -2,9 +2,17 @@
 
 ## Project Structure & Module Organization
 
-The solution lives at `src/EtsyApiSharp.sln` and targets .NET 6. Production code is in `src/EtsyApiSharp/`: API services are grouped by Etsy domain under `Services/`, response and request DTOs under `Models/`, and shared HTTP, authentication, conversion, and extension code under `Helpers/` and `Infrastructure/`. `ServiceCollectionExtensions.cs` is the public dependency-injection entry point. `src/BlazorTestApp/` is a manual integration/demo application; its Razor pages are under `Pages/` and static assets under `wwwroot/`.
+The solution lives at `src/EtsyApiSharp.sln` and targets .NET 10. Production code is in `src/EtsyApiSharp/`: API services are grouped by Etsy domain under `Services/`, response and request DTOs under `Models/`, and shared HTTP, authentication, conversion, and extension code under `Helpers/` and `Infrastructure/`. `ServiceCollectionExtensions.cs` is the public dependency-injection entry point. `src/BlazorTestApp/` is a manual integration/demo application; its Razor pages are under `Pages/` and static assets under `wwwroot/`.
 
-There is currently no automated test project. Add one beside the existing projects (for example, `src/EtsyApiSharp.Tests/`) and include it in the solution.
+The xUnit test project is at `src/EtsyApiSharp.Tests/` and is included in the solution.
+
+## Etsy API Resources
+
+Use these official Etsy resources when implementing or reviewing API services:
+
+- [Etsy Open API documentation](https://developers.etsy.com/documentation/)
+- [Etsy Open API reference](https://developers.etsy.com/documentation/reference)
+- [Etsy Open API 3.0.0 specification](https://www.etsy.com/openapi/generated/oas/3.0.0.json)
 
 ## Build, Test, and Development Commands
 
@@ -22,7 +30,7 @@ Follow standard C# conventions: four-space indentation, file-scoped namespaces, 
 
 ## Testing Guidelines
 
-No test framework or coverage threshold is configured. For new behavior, add focused unit tests (prefer xUnit) named `MethodName_Scenario_ExpectedResult`. Cover URL/query construction, JSON converters, response parsing, and error paths. Mock HTTP boundaries; do not make routine tests depend on live Etsy accounts. Run `dotnet test` before opening a pull request.
+The test project uses xUnit. Add focused unit tests named `MethodName_Scenario_ExpectedResult`. Cover URL/query construction, JSON converters, response parsing, and error paths. Mock HTTP boundaries; do not make routine tests depend on live Etsy accounts. Run `dotnet test` before opening a pull request.
 
 ## Commit & Pull Request Guidelines
 
