@@ -7,16 +7,20 @@ List<Scope> scopes = new List<Scope> { Scope.shops_r, Scope.shops_w, Scope.cart_
 var builder = WebApplication.CreateBuilder(args);
 
 var configuration = builder.Configuration;
+var clientId = configuration["EtsyConfig:ClientId"]
+    ?? throw new InvalidOperationException("EtsyConfig:ClientId is required.");
+var sharedSecret = configuration["EtsyConfig:SharedSecret"]
+    ?? throw new InvalidOperationException("EtsyConfig:SharedSecret is required.");
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddHttpClient();
-builder.Services.AddEtsyAuthServiceSingleton(configuration.GetSection("EtsyConfig").GetValue<string>("ClientId"), "https://localhost:5001/secret/callback", scopes);
-builder.Services.AddEtsyReceiptManagementServiceTransient(configuration.GetSection("EtsyConfig").GetValue<string>("ClientId"), configuration.GetSection("EtsyConfig").GetValue<string>("SharedSecret"));
-builder.Services.AddEtsyListingManagementServiceTransient(configuration.GetSection("EtsyConfig").GetValue<string>("ClientId"), configuration.GetSection("EtsyConfig").GetValue<string>("SharedSecret"));
-builder.Services.AddEtsyShopManagementServiceScoped(configuration.GetSection("EtsyConfig").GetValue<string>("ClientId"), configuration.GetSection("EtsyConfig").GetValue<string>("SharedSecret"));
+builder.Services.AddEtsyAuthServiceSingleton(clientId, "https://localhost:5001/secret/callback", scopes);
+builder.Services.AddEtsyReceiptManagementServiceTransient(clientId, sharedSecret);
+builder.Services.AddEtsyListingManagementServiceTransient(clientId, sharedSecret);
+builder.Services.AddEtsyShopManagementServiceScoped(clientId, sharedSecret);
 
 
 var app = builder.Build();

@@ -63,7 +63,7 @@
     private async Task GetRecieptTransactionsByListingId()
     {
         var result = await ReceiptService.GetShopReceiptTransactionsByListingAsync(
-            apiToken: AppState.TokenResponse,
+            accessToken: AppState.TokenResponse,
             shopId: AppState.ShopId,
             listingId: Convert.ToInt64(listingId),
             new GetShopReceiptTransactionsByListingFilter());
@@ -74,9 +74,9 @@
     private async Task GetRecieptTransactionsByRecieptId()
     {
         var result = await ReceiptService.GetShopReceiptTransactionsByReceiptAsync(
-            apiToken: AppState.TokenResponse,
+            accessToken: AppState.TokenResponse,
             shopId: AppState.ShopId,
-            receiptid: Convert.ToInt64(recieptId));
+            receiptId: Convert.ToInt64(recieptId));
 
         DisplayResultsOnScreen(result);
     }
@@ -84,7 +84,7 @@
     private async Task GetTransaction()
     {
         var result = await ReceiptService.GetShopReceiptTransactionAsync(
-            apiToken: AppState.TokenResponse,
+            accessToken: AppState.TokenResponse,
             shopId: AppState.ShopId, 
             transactionId: Convert.ToInt64(transactionId));
 

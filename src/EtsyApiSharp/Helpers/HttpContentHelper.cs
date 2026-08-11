@@ -1,24 +1,26 @@
-using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace EtsyApiSharp.Helpers;
 
 /// <summary>
-/// Helper class for creating HTTP content with proper headers for Etsy API requests
+/// Creates HTTP content for Etsy API requests.
 /// </summary>
 public static class HttpContentHelper
 {
     /// <summary>
-    /// Creates StringContent with JSON data and proper Content-Type header including UTF-8 charset
-    /// as required by Etsy API v3 documentation
+    /// Serializes an object as UTF-8 JSON content.
     /// </summary>
-    /// <typeparam name="T">Type of the object to serialize</typeparam>
-    /// <param name="data">The object to serialize to JSON</param>
-    /// <returns>StringContent with application/json; charset=utf-8 content type</returns>
-    public static StringContent CreateJsonContent<T>(T data)
+    public static StringContent CreateJsonContent<T>(T data, bool ignoreNullValues = false)
     {
-        var json = JsonSerializer.Serialize(data);
+        var options = new JsonSerializerOptions
+        {
+            DefaultIgnoreCondition = ignoreNullValues
+                ? JsonIgnoreCondition.WhenWritingNull
+                : JsonIgnoreCondition.Never
+        };
+        var json = JsonSerializer.Serialize(data, options);
         return new StringContent(json, Encoding.UTF8, "application/json");
     }
 }

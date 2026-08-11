@@ -1,3 +1,6 @@
-﻿namespace EtsyApiSharp.Models.Filters;
+namespace EtsyApiSharp.Models.Filters;
 
-public class GetShopReceiptTransactionsByShopFilter : EtsyFilterBase { }
+public class GetShopReceiptTransactionsByShopFilter : EtsyFilterBase
+{
+    public bool? Legacy { get; set; }
+}

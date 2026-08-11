@@ -9,16 +9,24 @@
 @code {
     [Parameter]
     [SupplyParameterFromQuery]
-    public string code { get; set; }
+    public string? code { get; set; }
 
     [Parameter]
     [SupplyParameterFromQuery]
-    public string state { get; set; }
+    public string? state { get; set; }
 
-    protected override async void OnParametersSet()
+    protected override async Task OnParametersSetAsync()
     {
         Console.WriteLine($"code: {code}");
         Console.WriteLine($"state: {state}");
+
+        if (string.IsNullOrEmpty(state) || state != AppState.OAuthState)
+            throw new InvalidOperationException("The OAuth state returned by Etsy did not match the authorization request.");
+
+        if (string.IsNullOrWhiteSpace(code))
+            throw new InvalidOperationException("Etsy did not return an authorization code.");
+
+        AppState.OAuthState = string.Empty;
         AppState.OnChange += StateHasChanged;
         AppState.AuthorizationCode = code;
         AppState.OnChange -= StateHasChanged;

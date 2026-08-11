@@ -17,13 +17,13 @@ public class ShopReceiptTransaction
     /// The title string of the [listing](/documentation/reference#tag/ShopListing) purchased in this transaction.
     /// </summary>
     [JsonPropertyName("title")]
-    public string Title { get; set; }
+    public string? Title { get; set; }
 
     /// <summary>
     /// The description string of the [listing](/documentation/reference#tag/ShopListing) purchased in this transaction.
     /// </summary>
     [JsonPropertyName("description")]
-    public string Description { get; set; }
+    public string? Description { get; set; }
 
     /// <summary>
     /// The numeric user ID for the seller in this transaction.
@@ -41,31 +41,31 @@ public class ShopReceiptTransaction
     /// The transaction\'s creation date and time, in epoch seconds.
     /// </summary>
     [JsonPropertyName("create_timestamp")]
-    public int CreateTimestamp { get; set; }
+    public long CreateTimestamp { get; set; }
 
     /// <summary>
     /// The transaction\'s creation date and time, in epoch seconds.
     /// </summary>
     [JsonPropertyName("created_timestamp")]
-    public int CreatedTimestamp { get; set; }
+    public long CreatedTimestamp { get; set; }
 
     /// <summary>
     /// The transaction\'s paid date and time, in epoch seconds.
     /// </summary>
     [JsonPropertyName("paid_timestamp")]
-    public int? PaidTimestamp { get; set; }
+    public long? PaidTimestamp { get; set; }
 
     /// <summary>
     /// The transaction\'s shipping date and time, in epoch seconds.
     /// </summary>
     [JsonPropertyName("shipped_timestamp")]
-    public int? ShippedTimestamp { get; set; }
+    public long? ShippedTimestamp { get; set; }
 
     /// <summary>
     /// The numeric quantity of products purchased in this transaction.
     /// </summary>
     [JsonPropertyName("quantity")]
-    public int Quantity { get; set; }
+    public long Quantity { get; set; }
 
     /// <summary>
     /// The numeric ID of the primary [listing image](/documentation/reference#tag/ShopListing-Image) for this transaction.
@@ -113,7 +113,7 @@ public class ShopReceiptTransaction
     /// The SKU string for the product
     /// </summary>
     [JsonPropertyName("sku")]
-    public string Sku { get; set; }
+    public string? Sku { get; set; }
 
     /// <summary>
     /// A money object representing the price recorded the transaction.
@@ -149,31 +149,31 @@ public class ShopReceiptTransaction
     /// The minimum number of days for processing the listing.
     /// </summary>
     [JsonPropertyName("min_processing_days")]
-    public int? MinProcessingDays { get; set; }
+    public long? MinProcessingDays { get; set; }
 
     /// <summary>
     /// The maximum number of days for processing the listing.
     /// </summary>
     [JsonPropertyName("max_processing_days")]
-    public int? MaxProcessingDays { get; set; }
+    public long? MaxProcessingDays { get; set; }
 
     /// <summary>
     /// Name of the selected shipping method.
     /// </summary>
     [JsonPropertyName("shipping_method")]
-    public string ShippingMethod { get; set; }
+    public string? ShippingMethod { get; set; }
 
     /// <summary>
     /// The name of the shipping upgrade selected for this listing. Default value is null.
     /// </summary>
     [JsonPropertyName("shipping_upgrade")]
-    public string ShippingUpgrade { get; set; }
+    public string? ShippingUpgrade { get; set; }
 
     /// <summary>
     /// The date & time of the expected ship date, in epoch seconds.
     /// </summary>
     [JsonPropertyName("expected_ship_date")]
-    public int? ExpectedShipDate { get; set; }
+    public long? ExpectedShipDate { get; set; }
 
     /// <summary>
     /// The amount of the buyer coupon that was discounted in the shop's currency.

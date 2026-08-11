@@ -15,8 +15,8 @@
 <hr />
 
 @code {
-    [Parameter] public string ServiceTitle { get; set; }
-    [Parameter] public RenderFragment ChildContent { get; set; }
+    [Parameter] public string ServiceTitle { get; set; } = string.Empty;
+    [Parameter] public RenderFragment? ChildContent { get; set; }
     [Parameter] public bool ShowResultsPane { get; set; }
     [Parameter] public string? ResultsToDisplay { get; set; }
 

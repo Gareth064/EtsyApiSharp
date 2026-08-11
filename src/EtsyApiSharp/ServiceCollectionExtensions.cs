@@ -10,25 +10,49 @@ namespace EtsyApiSharp;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddEtsyAuthServiceScoped(this IServiceCollection services, string clientId, string redirectUrl, List<Scope> scopes) =>
-        services.AddScoped<IEtsyAuthService, EtsyAuthService>(_ => new EtsyAuthService(clientId, redirectUrl, scopes));
+    public static IServiceCollection AddEtsyAuthServiceScoped(this IServiceCollection services, string clientId, string redirectUrl, IEnumerable<Scope> scopes)
+    {
+        services.AddHttpClient(EtsyAuthService.HttpClientName);
+        return services.AddScoped<IEtsyAuthService, EtsyAuthService>(provider => new EtsyAuthService(
+            provider.GetRequiredService<IHttpClientFactory>(), clientId, redirectUrl, scopes));
+    }
 
-    public static IServiceCollection AddEtsyAuthServiceTransient(this IServiceCollection services, string clientId, string redirectUrl, List<Scope> scopes) =>
-        services.AddTransient<IEtsyAuthService, EtsyAuthService>(_ => new EtsyAuthService(clientId, redirectUrl, scopes));
+    public static IServiceCollection AddEtsyAuthServiceTransient(this IServiceCollection services, string clientId, string redirectUrl, IEnumerable<Scope> scopes)
+    {
+        services.AddHttpClient(EtsyAuthService.HttpClientName);
+        return services.AddTransient<IEtsyAuthService, EtsyAuthService>(provider => new EtsyAuthService(
+            provider.GetRequiredService<IHttpClientFactory>(), clientId, redirectUrl, scopes));
+    }
 
-    public static IServiceCollection AddEtsyAuthServiceSingleton(this IServiceCollection services, string clientId, string redirectUrl, List<Scope> scopes) =>
-        services.AddSingleton<IEtsyAuthService, EtsyAuthService>(_ => new EtsyAuthService(clientId, redirectUrl, scopes));
+    public static IServiceCollection AddEtsyAuthServiceSingleton(this IServiceCollection services, string clientId, string redirectUrl, IEnumerable<Scope> scopes)
+    {
+        services.AddHttpClient(EtsyAuthService.HttpClientName);
+        return services.AddSingleton<IEtsyAuthService, EtsyAuthService>(provider => new EtsyAuthService(
+            provider.GetRequiredService<IHttpClientFactory>(), clientId, redirectUrl, scopes));
+    }
 
 
 
-    public static IServiceCollection AddEtsyReceiptManagementServiceScoped(this IServiceCollection services, string clientId, string sharedSecret) =>
-services.AddScoped<IEtsyReceiptManagementService, EtsyReceiptManagementService>(_ => new EtsyReceiptManagementService(clientId, sharedSecret));
+    public static IServiceCollection AddEtsyReceiptManagementServiceScoped(this IServiceCollection services, string clientId, string sharedSecret)
+    {
+        services.AddHttpClient(EtsyReceiptManagementService.HttpClientName);
+        return services.AddScoped<IEtsyReceiptManagementService, EtsyReceiptManagementService>(provider => new EtsyReceiptManagementService(
+            provider.GetRequiredService<IHttpClientFactory>(), clientId, sharedSecret));
+    }
 
-    public static IServiceCollection AddEtsyReceiptManagementServiceTransient(this IServiceCollection services, string clientId, string sharedSecret) =>
-services.AddTransient<IEtsyReceiptManagementService, EtsyReceiptManagementService>(_ => new EtsyReceiptManagementService(clientId, sharedSecret));
+    public static IServiceCollection AddEtsyReceiptManagementServiceTransient(this IServiceCollection services, string clientId, string sharedSecret)
+    {
+        services.AddHttpClient(EtsyReceiptManagementService.HttpClientName);
+        return services.AddTransient<IEtsyReceiptManagementService, EtsyReceiptManagementService>(provider => new EtsyReceiptManagementService(
+            provider.GetRequiredService<IHttpClientFactory>(), clientId, sharedSecret));
+    }
 
-    public static IServiceCollection AddEtsyReceiptManagementServiceSingleton(this IServiceCollection services, string clientId, string sharedSecret) =>
-services.AddSingleton<IEtsyReceiptManagementService, EtsyReceiptManagementService>(_ => new EtsyReceiptManagementService(clientId, sharedSecret));
+    public static IServiceCollection AddEtsyReceiptManagementServiceSingleton(this IServiceCollection services, string clientId, string sharedSecret)
+    {
+        services.AddHttpClient(EtsyReceiptManagementService.HttpClientName);
+        return services.AddSingleton<IEtsyReceiptManagementService, EtsyReceiptManagementService>(provider => new EtsyReceiptManagementService(
+            provider.GetRequiredService<IHttpClientFactory>(), clientId, sharedSecret));
+    }
 
 
 
@@ -42,22 +66,46 @@ services.AddTransient<IEtsyListingManagementService, EtsyListingManagementServic
 services.AddSingleton<IEtsyListingManagementService, EtsyListingManagementService>(_ => new EtsyListingManagementService(clientId, sharedSecret));
 
 
-    public static IServiceCollection AddEtsyShopManagementServiceScoped(this IServiceCollection services, string clientId, string sharedSecret) =>
-services.AddScoped<IEtsyShopManagementService, EtsyShopManagementService>(_ => new EtsyShopManagementService(clientId, sharedSecret));
+    public static IServiceCollection AddEtsyShopManagementServiceScoped(this IServiceCollection services, string clientId, string sharedSecret)
+    {
+        services.AddHttpClient(EtsyShopManagementService.HttpClientName);
+        return services.AddScoped<IEtsyShopManagementService, EtsyShopManagementService>(provider => new EtsyShopManagementService(
+            provider.GetRequiredService<IHttpClientFactory>(), clientId, sharedSecret));
+    }
 
-    public static IServiceCollection AddEtsyShopManagementServiceTransient(this IServiceCollection services, string clientId, string sharedSecret) =>
-services.AddTransient<IEtsyShopManagementService, EtsyShopManagementService>(_ => new EtsyShopManagementService(clientId, sharedSecret));
+    public static IServiceCollection AddEtsyShopManagementServiceTransient(this IServiceCollection services, string clientId, string sharedSecret)
+    {
+        services.AddHttpClient(EtsyShopManagementService.HttpClientName);
+        return services.AddTransient<IEtsyShopManagementService, EtsyShopManagementService>(provider => new EtsyShopManagementService(
+            provider.GetRequiredService<IHttpClientFactory>(), clientId, sharedSecret));
+    }
 
-    public static IServiceCollection AddEtsyShopManagementServiceSingleton(this IServiceCollection services, string clientId, string sharedSecret) =>
-services.AddSingleton<IEtsyShopManagementService, EtsyShopManagementService>(_ => new EtsyShopManagementService(clientId, sharedSecret));
+    public static IServiceCollection AddEtsyShopManagementServiceSingleton(this IServiceCollection services, string clientId, string sharedSecret)
+    {
+        services.AddHttpClient(EtsyShopManagementService.HttpClientName);
+        return services.AddSingleton<IEtsyShopManagementService, EtsyShopManagementService>(provider => new EtsyShopManagementService(
+            provider.GetRequiredService<IHttpClientFactory>(), clientId, sharedSecret));
+    }
 
 
-    public static IServiceCollection AddEtsyUserManagementServiceScoped(this IServiceCollection services, string clientId, string sharedSecret) =>
-services.AddScoped<IEtsyUserManagementService, EtsyUserManagementService>(_ => new EtsyUserManagementService(clientId, sharedSecret));
+    public static IServiceCollection AddEtsyUserManagementServiceScoped(this IServiceCollection services, string clientId, string sharedSecret)
+    {
+        services.AddHttpClient(EtsyUserManagementService.HttpClientName);
+        return services.AddScoped<IEtsyUserManagementService, EtsyUserManagementService>(provider => new EtsyUserManagementService(
+            provider.GetRequiredService<IHttpClientFactory>(), clientId, sharedSecret));
+    }
 
-    public static IServiceCollection AddEtsyUserManagementServiceTransient(this IServiceCollection services, string clientId, string sharedSecret) =>
-services.AddTransient<IEtsyUserManagementService, EtsyUserManagementService>(_ => new EtsyUserManagementService(clientId, sharedSecret));
+    public static IServiceCollection AddEtsyUserManagementServiceTransient(this IServiceCollection services, string clientId, string sharedSecret)
+    {
+        services.AddHttpClient(EtsyUserManagementService.HttpClientName);
+        return services.AddTransient<IEtsyUserManagementService, EtsyUserManagementService>(provider => new EtsyUserManagementService(
+            provider.GetRequiredService<IHttpClientFactory>(), clientId, sharedSecret));
+    }
 
-    public static IServiceCollection AddEtsyUserManagementServiceSingleton(this IServiceCollection services, string clientId, string sharedSecret) =>
-services.AddSingleton<IEtsyUserManagementService, EtsyUserManagementService>(_ => new EtsyUserManagementService(clientId, sharedSecret));
+    public static IServiceCollection AddEtsyUserManagementServiceSingleton(this IServiceCollection services, string clientId, string sharedSecret)
+    {
+        services.AddHttpClient(EtsyUserManagementService.HttpClientName);
+        return services.AddSingleton<IEtsyUserManagementService, EtsyUserManagementService>(provider => new EtsyUserManagementService(
+            provider.GetRequiredService<IHttpClientFactory>(), clientId, sharedSecret));
+    }
 }

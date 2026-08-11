@@ -6,6 +6,7 @@ public static class AppState
 {
     public static long ShopId { get; set; }
     public static string CodeVerifier { get; set; }
+    public static string OAuthState { get; set; }
     private static string _accessToken;
     public static string TokenResponse
     {
