@@ -1,253 +1,220 @@
-﻿@page "/services/listing"
+@page "/services/listing"
 @using BlazorTestApp.Components
 @using BlazorTestApp.Data
 @using EtsyApiSharp.Models.Filters
 @using EtsyApiSharp.Models.Listings.Enums
-@using System.Text.Json
 @using EtsyApiSharp.Services.ListingManagements
+@using System.Text.Json
 @inject IEtsyListingManagementService ListingService
 
-<ServiceTemplate ServiceTitle="Listing Services" ShowResultsPane="true" ResultsToDisplay=@resultToDisplay>
-    <input @bind="listingId" />
-    <button @onclick="GetListingAsync">Listing by Listing ID</button>
-    <button @onclick="GetListingImagesAsync">Listing Images by Listing ID</button>
-    <button @onclick="GetListingPropertiesAsync">Listing Properties by Listing ID</button>
+<ServiceTemplate ServiceTitle="Listing Services" ShowResultsPane="true" ResultsToDisplay="@resultToDisplay">
+    <input @bind="listingId" placeholder="Listing ID" />
+    <button @onclick="GetListingAsync">Get listing</button>
+    <button @onclick="GetListingImagesAsync">Get listing images</button>
+    <button @onclick="GetListingPropertiesAsync">Get listing properties</button>
     <br />
+    <input @bind="listingImageId" placeholder="Listing image ID" />
+    <button @onclick="GetListingImageAsync">Get listing image</button>
     <br />
-    <input @bind="listingImageId" />
-    <button @onclick="GetListingImageAsync">Listing Image By Image ID By Listing ID</button>
+    <input @bind="propertyId" placeholder="Property ID" />
+    <button @onclick="GetListingPropertyAsync">Get listing property</button>
     <br />
+    <input @bind="shopId" placeholder="Shop ID (defaults to authorised shop)" />
+    <button @onclick="GetFeaturedListingsByShopAsync">Featured listings</button>
+    <button @onclick="FindAllActiveListingsByShopAsync">Active shop listings</button>
+    <button @onclick="GetListingsByShopAsync">Shop listings (OAuth)</button>
     <br />
-    <input @bind="propertyId" />
-    <button @onclick="GetListingPropertyAsync">Listing Property By Property ID</button>
+    <input @bind="sectionIds" placeholder="Section IDs, comma separated" />
+    <button @onclick="GetListingsByShopSectionIdAsync">Listings by section</button>
     <br />
+    <input @bind="receiptId" placeholder="Receipt ID" />
+    <button @onclick="GetListingsByShopReceiptAsync">Receipt listings (OAuth)</button>
     <br />
-    <input @bind="shopId" />
-    <button @onclick="GetFeaturedListingsByShopAsync">Featured Listings By Shop ID</button>
-    <button @onclick="FindAllActiveListingsByShopAsync">Active Listings By Shop ID</button>
-    <button @onclick="GetListingsByShopAsync">Listings By Shop ID</button>
+    <input @bind="listingIds" placeholder="Listing IDs, comma separated" />
+    <button @onclick="GetListingsByListingIdsAsync">Listings by IDs</button>
     <br />
-    <input @bind="sectionIds" />(Comma seperated)
-    <button @onclick="GetListingsByShopSectionIdAsync">Listings By Section IDs</button>
+    <input @bind="taxonomyId" placeholder="Taxonomy ID" />
+    <button @onclick="GetSellerTaxonomyNodesAsync">Seller taxonomy</button>
+    <button @onclick="GetSellerTaxonomyPropertiesAsync">Seller taxonomy properties</button>
+    <button @onclick="GetBuyerTaxonomyNodesAsync">Buyer taxonomy</button>
+    <button @onclick="GetBuyerTaxonomyPropertiesAsync">Buyer taxonomy properties</button>
     <br />
+    <input @bind="returnPolicyId" placeholder="Return policy ID" />
+    <button @onclick="GetListingsByReturnPolicyAsync">Return policy listings (OAuth)</button>
+    <button @onclick="GetListingsShippingByIdsAsync">Listing shipping by IDs (OAuth)</button>
     <br />
-    <button @onclick="FindAllListingsActiveAsync">All Active Listings</button>
+    <input @bind="listingFileId" placeholder="Listing file ID" />
+    <button @onclick="GetListingFilesAsync">Listing files (OAuth)</button>
+    <button @onclick="GetListingFileAsync">Listing file (OAuth)</button>
     <br />
+    <input @bind="productId" placeholder="Product ID" />
+    <input @bind="offeringId" placeholder="Offering ID" />
+    <button @onclick="GetListingInventoryAsync">Listing inventory (OAuth)</button>
+    <button @onclick="GetListingsInventoryByIdsAsync">Inventory by listing IDs (OAuth)</button>
+    <button @onclick="GetListingProductAsync">Listing product (OAuth)</button>
+    <button @onclick="GetListingOfferingAsync">Listing offering</button>
     <br />
-    <input @bind="receiptId" />
-    <button @onclick="GetListingsByShopReceiptAsync">Get Listings by Receipt ID</button>
+    <input @bind="language" placeholder="Language (for example, fr)" />
+    <button @onclick="GetListingPersonalizationAsync">Listing personalization</button>
+    <button @onclick="GetListingTranslationAsync">Listing translation</button>
+    <button @onclick="GetListingVariationImagesAsync">Variation images</button>
     <br />
+    <input @bind="videoId" placeholder="Video ID" />
+    <button @onclick="GetListingVideoAsync">Listing video</button>
+    <button @onclick="GetListingVideosAsync">Listing videos</button>
+    <p>Creation, updates, deletes, and uploads are available through the service contract and require deliberate request payloads; this harness exposes non-destructive retrieval operations only.</p>
     <br />
-    <button @onclick="GetListingsByListingIdsAsync">Get Listings By Listing IDs</button>
+    <button @onclick="FindAllListingsActiveAsync">All active listings</button>
 </ServiceTemplate>
 
 @code {
-    string resultToDisplay = string.Empty;
-    string listingId = "";
-    string listingImageId = "";
-    string receiptId = "";
-    string propertyId = "";
-    string shopId = string.Empty;
-    string sectionIds = string.Empty;
+    private string resultToDisplay = string.Empty;
+    private string listingId = string.Empty;
+    private string listingImageId = string.Empty;
+    private string listingIds = string.Empty;
+    private string receiptId = string.Empty;
+    private string propertyId = string.Empty;
+    private string shopId = string.Empty;
+    private string sectionIds = string.Empty;
+    private string taxonomyId = string.Empty;
+    private string returnPolicyId = string.Empty;
+    private string listingFileId = string.Empty;
+    private string productId = string.Empty;
+    private string offeringId = string.Empty;
+    private string language = "en";
+    private string videoId = string.Empty;
 
-    private async Task GetListingAsync()
+    private async Task GetListingAsync() => await DisplayAsync(ListingService.GetListingAsync(
+        GetRequiredId(listingId, "listing ID"),
+        new[] { ListingInclude.Images, ListingInclude.Shipping, ListingInclude.Shop, ListingInclude.User, ListingInclude.Inventory }));
+
+    private async Task GetFeaturedListingsByShopAsync() => await DisplayAsync(ListingService.GetFeaturedListingsByShopAsync(
+        GetShopId(), new GetFeaturedListingsByShopFilter { Limit = 1 }));
+
+    private async Task FindAllListingsActiveAsync() => await DisplayAsync(ListingService.FindAllListingsActiveAsync(
+        new FindAllListingsActiveFilter { Limit = 10 }));
+
+    private async Task FindAllActiveListingsByShopAsync() => await DisplayAsync(ListingService.FindAllActiveListingsByShopAsync(
+        GetShopId(), new FindAllActiveListingsByShopFilter { Limit = 10 }));
+
+    private async Task GetListingsByShopAsync() => await DisplayAsync(ListingService.GetListingsByShopAsync(
+        AppState.TokenResponse,
+        GetShopId(),
+        new[] { ListingInclude.Images, ListingInclude.Shipping, ListingInclude.Shop, ListingInclude.User, ListingInclude.Inventory },
+        new GetListingsByShopFilter { SortOn = ListingSortOn.updated, SortOrder = ListingSortOrder.desc }));
+
+    private async Task GetListingsByShopReceiptAsync() => await DisplayAsync(ListingService.GetListingsByShopReceiptAsync(
+        AppState.TokenResponse,
+        GetShopId(),
+        GetRequiredId(receiptId, "receipt ID"),
+        new GetListingsByShopReceiptFilter { Limit = 10 }));
+
+    private async Task GetListingPropertiesAsync() => await DisplayAsync(ListingService.GetListingPropertiesAsync(
+        GetShopId(), GetRequiredId(listingId, "listing ID")));
+
+    private async Task GetListingPropertyAsync() => await DisplayAsync(ListingService.GetListingPropertyAsync(
+        GetRequiredId(listingId, "listing ID"), GetRequiredId(propertyId, "property ID")));
+
+    private async Task GetListingsByListingIdsAsync() => await DisplayAsync(ListingService.GetListingsByListingIdsAsync(
+        GetRequiredIds(listingIds, "listing IDs"),
+        new[] { ListingInclude.Images, ListingInclude.Shipping, ListingInclude.Shop, ListingInclude.User }));
+
+    private async Task GetListingsByShopSectionIdAsync() => await DisplayAsync(ListingService.GetListingsByShopSectionIdAsync(
+        GetShopId(), GetRequiredIds(sectionIds, "section IDs")));
+
+    private async Task GetListingImageAsync() => await DisplayAsync(ListingService.GetListingImageAsync(
+        GetRequiredId(listingId, "listing ID"), GetRequiredId(listingImageId, "listing image ID")));
+
+    private async Task GetListingImagesAsync() => await DisplayAsync(ListingService.GetListingImagesAsync(
+        GetRequiredId(listingId, "listing ID")));
+
+    private async Task GetSellerTaxonomyNodesAsync() => await DisplayAsync(ListingService.GetSellerTaxonomyNodesAsync());
+
+    private async Task GetSellerTaxonomyPropertiesAsync() => await DisplayAsync(ListingService.GetPropertiesByTaxonomyIdAsync(
+        GetRequiredId(taxonomyId, "taxonomy ID")));
+
+    private async Task GetBuyerTaxonomyNodesAsync() => await DisplayAsync(ListingService.GetBuyerTaxonomyNodesAsync());
+
+    private async Task GetBuyerTaxonomyPropertiesAsync() => await DisplayAsync(ListingService.GetPropertiesByBuyerTaxonomyIdAsync(
+        GetRequiredId(taxonomyId, "taxonomy ID")));
+
+    private async Task GetListingsByReturnPolicyAsync() => await DisplayAsync(ListingService.GetListingsByShopReturnPolicyAsync(
+        AppState.TokenResponse, GetShopId(), GetRequiredId(returnPolicyId, "return policy ID")));
+
+    private async Task GetListingsShippingByIdsAsync() => await DisplayAsync(ListingService.GetListingsShippingByListingIdsAsync(
+        AppState.TokenResponse, GetRequiredIds(listingIds, "listing IDs")));
+
+    private async Task GetListingFilesAsync() => await DisplayAsync(ListingService.GetAllListingFilesAsync(
+        AppState.TokenResponse, GetShopId(), GetRequiredId(listingId, "listing ID")));
+
+    private async Task GetListingFileAsync() => await DisplayAsync(ListingService.GetListingFileAsync(
+        AppState.TokenResponse, GetShopId(), GetRequiredId(listingId, "listing ID"), GetRequiredId(listingFileId, "listing file ID")));
+
+    private async Task GetListingInventoryAsync() => await DisplayAsync(ListingService.GetListingInventoryAsync(
+        AppState.TokenResponse, GetRequiredId(listingId, "listing ID")));
+
+    private async Task GetListingsInventoryByIdsAsync() => await DisplayAsync(ListingService.GetListingsInventoryByListingIdsAsync(
+        AppState.TokenResponse, GetRequiredIds(listingIds, "listing IDs")));
+
+    private async Task GetListingProductAsync() => await DisplayAsync(ListingService.GetListingProductAsync(
+        AppState.TokenResponse, GetRequiredId(listingId, "listing ID"), GetRequiredId(productId, "product ID")));
+
+    private async Task GetListingOfferingAsync() => await DisplayAsync(ListingService.GetListingOfferingAsync(
+        GetRequiredId(listingId, "listing ID"), GetRequiredId(productId, "product ID"), GetRequiredId(offeringId, "offering ID")));
+
+    private async Task GetListingPersonalizationAsync() => await DisplayAsync(ListingService.GetListingPersonalizationAsync(
+        GetRequiredId(listingId, "listing ID")));
+
+    private async Task GetListingTranslationAsync() => await DisplayAsync(ListingService.GetListingTranslationAsync(
+        GetShopId(), GetRequiredId(listingId, "listing ID"), GetRequiredLanguage()));
+
+    private async Task GetListingVariationImagesAsync() => await DisplayAsync(ListingService.GetListingVariationImagesAsync(
+        GetShopId(), GetRequiredId(listingId, "listing ID")));
+
+    private async Task GetListingVideoAsync() => await DisplayAsync(ListingService.GetListingVideoAsync(
+        GetRequiredId(listingId, "listing ID"), GetRequiredId(videoId, "video ID")));
+
+    private async Task GetListingVideosAsync() => await DisplayAsync(ListingService.GetListingVideosAsync(
+        GetRequiredId(listingId, "listing ID")));
+
+    private long GetShopId() => string.IsNullOrWhiteSpace(shopId)
+        ? AppState.ShopId
+        : GetRequiredId(shopId, "shop ID");
+
+    private static long GetRequiredId(string value, string name) => long.TryParse(value, out var id) && id > 0
+        ? id
+        : throw new InvalidOperationException($"A positive {name} is required.");
+
+    private string GetRequiredLanguage() => string.IsNullOrWhiteSpace(language)
+        ? throw new InvalidOperationException("A language is required.")
+        : language;
+
+    private static IReadOnlyCollection<long> GetRequiredIds(string value, string name)
     {
-        var includes = new List<ListingInclude>();
-        includes.Add(ListingInclude.Images);
-        includes.Add(ListingInclude.Shipping);
-        includes.Add(ListingInclude.Shop);
-        includes.Add(ListingInclude.User);
-        includes.Add(ListingInclude.Inventory);
-
-        var result = await ListingService.GetListingAsync(
-            AppState.TokenResponse,
-            Convert.ToInt64(listingId),
-            includes
-        );
-
-        DisplayResultsOnScreen(result);
+        var ids = value.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Select(id => long.TryParse(id, out var parsedId) && parsedId > 0 ? parsedId : 0)
+            .ToArray();
+        if (ids.Length == 0 || ids.Any(id => id == 0))
+            throw new InvalidOperationException($"One or more positive {name} are required.");
+        return ids;
     }
 
-    private async Task GetFeaturedListingsByShopAsync()
+    private async Task DisplayAsync<T>(Task<T> operation)
     {
-        var filter = new GetFeaturedListingsByShopFilter();
-        filter.Limit = 1;
-
-        if (String.IsNullOrEmpty(shopId))
+        try
         {
-            shopId = AppState.ShopId.ToString();
+            DisplayResultsOnScreen(await operation);
         }
-
-        var result = await ListingService.GetFeaturedListingsByShopAsync(
-            AppState.TokenResponse,
-            Convert.ToInt64(shopId),
-            filter);
-
-        DisplayResultsOnScreen(result);
-    }
-
-    private async Task FindAllListingsActiveAsync()
-    {
-        var filter = new FindAllListingsActiveFilter();
-
-        var result = await ListingService.FindAllListingsActiveAsync(
-            AppState.TokenResponse,
-            filter);
-
-        DisplayResultsOnScreen(result);
-    }
-
-    private async Task FindAllActiveListingsByShopAsync()
-    {
-        var filter = new FindAllActiveListingsByShopFilter();
-
-        if (String.IsNullOrEmpty(shopId))
-            shopId = AppState.ShopId.ToString();
-
-        var result = await ListingService.FindAllActiveListingsByShopAsync(
-            AppState.TokenResponse,
-            Convert.ToInt64(shopId),
-            filter);
-
-        DisplayResultsOnScreen(result);
-    }
-
-    private async Task GetListingsByShopAsync()
-    {
-        var filter = new GetListingsByShopFilter();
-        filter.SortOn = ListingSortOn.updated;
-        filter.SortOrder = ListingSortOrder.desc;
-        var includes = new List<ListingInclude>();
-        includes.Add(ListingInclude.Images);
-        includes.Add(ListingInclude.Shipping);
-        includes.Add(ListingInclude.Shop);
-        includes.Add(ListingInclude.User);
-        includes.Add(ListingInclude.Inventory);
-
-        if (String.IsNullOrEmpty(shopId))
-            shopId = AppState.ShopId.ToString();
-
-        var result = await ListingService.GetListingsByShopAsync(
-            AppState.TokenResponse,
-            Convert.ToInt64(shopId),
-            includes,
-            filter);
-
-        DisplayResultsOnScreen(result);
-    }
-
-    private async Task GetListingsByShopReceiptAsync()
-    {
-        var filter = new GetListingsByShopReceiptFilter();
-        filter.Limit = 1;
-
-        if (String.IsNullOrEmpty(shopId))
+        catch (Exception exception)
         {
-            shopId = AppState.ShopId.ToString();
+            resultToDisplay = exception.Message;
         }
-
-        var result = await ListingService.GetListingsByShopReceiptAsync(
-            AppState.TokenResponse,
-            Convert.ToInt64(shopId),
-            Convert.ToInt64(receiptId),
-            filter);
-
-        DisplayResultsOnScreen(result);
-    }
-
-    private async Task GetListingPropertiesAsync()
-    {
-        if (String.IsNullOrEmpty(shopId))
-            shopId = AppState.ShopId.ToString();
-
-        var result = await ListingService.GetListingPropertiesAsync(
-            AppState.TokenResponse,
-            Convert.ToInt64(shopId),
-            Convert.ToInt64(listingId));
-
-        DisplayResultsOnScreen(result);
-    }
-
-    private async Task GetListingPropertyAsync()
-    {
-        var result = await ListingService.GetListingPropertyAsync(
-            AppState.TokenResponse,
-            Convert.ToInt64(shopId),
-            Convert.ToInt64(propertyId));
-
-        DisplayResultsOnScreen(result);
-    }
-
-    private async Task GetListingsByListingIdsAsync()
-    {
-        var listingIds = receiptId.Split(',').ToList();
-        var IdList = new List<long>();
-
-        foreach (var listingId in listingIds)
-            IdList.Add(Int64.Parse(listingId));
-
-        var includes = new List<ListingInclude>();
-        includes.Add(ListingInclude.Images);
-        includes.Add(ListingInclude.Shipping);
-        includes.Add(ListingInclude.Shop);
-        includes.Add(ListingInclude.User);
-
-        var result = await ListingService.GetListingsByListingIdsAsync(
-            AppState.TokenResponse,
-            IdList,
-            includes
-        );
-
-        DisplayResultsOnScreen(result);
-    }
-
-    private async Task GetListingsByShopSectionIdAsync()
-    {
-        var IdList = new List<long>();
-        var ids = sectionIds.Split(',');
-
-        foreach (var id in ids)
-        {
-            IdList.Add(Int64.Parse(id));
-        }
-
-        var result = await ListingService.GetListingsByShopSectionIdAsync(
-            AppState.TokenResponse,
-            Convert.ToInt64(shopId),
-            IdList,
-            null);
-
-        DisplayResultsOnScreen(result);
-    }
-
-    private async Task GetListingImageAsync()
-    {
-        var result = await ListingService.GetListingImageAsync(
-            AppState.TokenResponse,
-            Convert.ToInt64(listingId),
-            Convert.ToInt64(listingImageId)
-        );
-
-        DisplayResultsOnScreen(result);
-    }
-
-    private async Task GetListingImagesAsync()
-    {
-        var result = await ListingService.GetListingImagesAsync(
-            AppState.TokenResponse,
-            Convert.ToInt64(listingId));
-
-        DisplayResultsOnScreen(result);
     }
 
     private void DisplayResultsOnScreen<T>(T result)
     {
-        var tempString = JsonSerializer.Serialize(result);
-        var jDoc = JsonDocument.Parse(tempString);
-
-        resultToDisplay = JsonSerializer.Serialize(jDoc,
-            new JsonSerializerOptions { WriteIndented = true });
-
-        Console.WriteLine(resultToDisplay);
+        var json = JsonSerializer.Serialize(result);
+        using var document = JsonDocument.Parse(json);
+        resultToDisplay = JsonSerializer.Serialize(document, new JsonSerializerOptions { WriteIndented = true });
     }
 }

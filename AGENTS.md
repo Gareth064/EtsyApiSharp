@@ -39,3 +39,9 @@ Recent commits use short, imperative summaries such as `Add HttpContentHelper...
 ## Security & Configuration
 
 Never commit Etsy client IDs, shared secrets, OAuth tokens, or authorization codes. Supply `EtsyConfig:ClientId` and `EtsyConfig:SharedSecret` through user secrets or environment variables (for example, `EtsyConfig__ClientId`). Use disposable test credentials for manual integration checks.
+
+## Listing API maintenance
+
+Treat the Etsy OpenAPI 3.0.0 specification as the source of truth for all Listing Management routes, request parameters, response types, and OAuth scopes. Maintain the complete 46-operation surface across listing lifecycle, files, images, inventory, offerings, products, personalization, translations, variation images, videos, and both taxonomies. Public operations use the `x-api-key` header; add a bearer token only when the operation declares an OAuth scope in the specification. Keep the service on its named `IHttpClientFactory` client, validate IDs and pagination before issuing a request, encode query parameters safely, and expose cancellation through every asynchronous method.
+
+When listing-service behavior changes, update `src/BlazorTestApp/Pages/Services/Listing.razor`. Mock HTTP boundaries in tests and cover the changed route, query/authentication behavior, response parsing, invalid input, cancellation, and DI registration.

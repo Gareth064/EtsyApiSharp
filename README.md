@@ -57,6 +57,43 @@ This library follows the [Etsy API v3 Request Standards](https://developers.etsy
 - UTF-8 charset for JSON content
 - Compatible with both `https://api.etsy.com/v3/` and `https://openapi.etsy.com/v3/` endpoints
 
+### Listing service
+
+`IEtsyListingManagementService` implements all 46 operations currently grouped as Listing Management in Etsy's OpenAPI 3.0.0 specification: listing and taxonomy queries, listing lifecycle and properties, files, images, inventory, offerings, products, personalization, translations, variation images, and videos.
+
+Every method validates positive Etsy IDs, validates pagination (`limit` 1–100 and a non-negative `offset`), accepts a `CancellationToken`, and uses the named `EtsyListingManagementService.HttpClientName` client. The service applies Etsy's operation-level authentication: public reads send only `x-api-key`; protected reads and writes require the access token and scope declared by Etsy (`listings_r`, `listings_w`, `listings_d`, `transactions_r`, or `shops_r`).
+
+```csharp
+var listing = await listingService.GetListingAsync(
+    listingId,
+    new[] { ListingInclude.Images, ListingInclude.Inventory },
+    language: "en",
+    cancellationToken: cancellationToken);
+
+var shopListings = await listingService.GetListingsByShopAsync(
+    accessToken,
+    shopId,
+    filter: new GetListingsByShopFilter { State = ListingState.active },
+    cancellationToken: cancellationToken);
+
+var draft = await listingService.CreateDraftListingAsync(
+    accessToken,
+    shopId,
+    new CreateDraftListingRequest
+    {
+        Quantity = 1,
+        Title = "Example listing",
+        Description = "Example description",
+        Price = 10.00m,
+        WhoMade = ListingWhoMade.i_did,
+        WhenMade = ListingWhenMadeConstant._MadeToOrder,
+        TaxonomyId = taxonomyId
+    },
+    cancellationToken);
+```
+
+The listing API was updated to remove unnecessary OAuth-token parameters from public endpoints. Update existing callers to supply a token only where the corresponding Etsy operation requires one. Upload APIs use `Stream`-based multipart requests; callers own the source stream and should not reuse it after the request completes.
+
 ## Etsy API Resources
 
 - [Etsy Open API documentation](https://developers.etsy.com/documentation/)

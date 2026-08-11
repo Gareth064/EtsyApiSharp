@@ -1,3 +1,6 @@
-﻿namespace EtsyApiSharp.Models.Filters;
+namespace EtsyApiSharp.Models.Filters;
 
-public class GetFeaturedListingsByShopFilter : EtsyFilterBase { }
+public class GetFeaturedListingsByShopFilter : EtsyFilterBase
+{
+    public bool? Legacy { get; set; }
+}

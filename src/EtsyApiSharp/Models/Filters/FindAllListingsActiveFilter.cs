@@ -1,4 +1,4 @@
-﻿using EtsyApiSharp.Models.Listings.Enums;
+using EtsyApiSharp.Models.Listings.Enums;
 
 namespace EtsyApiSharp.Models.Filters;
 
@@ -11,4 +11,7 @@ public class FindAllListingsActiveFilter : EtsyFilterBase
     public double? MaxPrice { get; set; }
     public long? TaxonomyId { get; set; }
     public string? ShopLocation { get; set; }
+    public bool? IsSafe { get; set; }
+    public string? Currency { get; set; }
+    public string? BuyerCountry { get; set; }
 }

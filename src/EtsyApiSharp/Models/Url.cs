@@ -70,6 +70,84 @@ public class Url
 
         public static string GetListingImages(long listingId) =>
             $"/v3/application/listings/{listingId}/images";
+
+        public static string GetSellerTaxonomyNodes() =>
+            "/v3/application/seller-taxonomy/nodes";
+
+        public static string GetPropertiesByTaxonomyId(long taxonomyId) =>
+            $"/v3/application/seller-taxonomy/nodes/{taxonomyId}/properties";
+
+        public static string GetBuyerTaxonomyNodes() =>
+            "/v3/application/buyer-taxonomy/nodes";
+
+        public static string GetPropertiesByBuyerTaxonomyId(long taxonomyId) =>
+            $"/v3/application/buyer-taxonomy/nodes/{taxonomyId}/properties";
+
+        public static string CreateDraftListing(long shopId) =>
+            $"/v3/application/shops/{shopId}/listings";
+
+        public static string UpdateListing(long shopId, long listingId) =>
+            $"/v3/application/shops/{shopId}/listings/{listingId}";
+
+        public static string DeleteListing(long listingId) =>
+            $"/v3/application/listings/{listingId}";
+
+        public static string GetListingsByShopReturnPolicy(long shopId, long returnPolicyId) =>
+            $"/v3/application/shops/{shopId}/policies/return/{returnPolicyId}/listings";
+
+        public static string GetListingsShippingByListingIds() =>
+            "/v3/application/listings/batch/shipping";
+
+        public static string UpdateListingProperty(long shopId, long listingId, long propertyId) =>
+            $"/v3/application/shops/{shopId}/listings/{listingId}/properties/{propertyId}";
+
+        public static string GetAllListingFiles(long shopId, long listingId) =>
+            $"/v3/application/shops/{shopId}/listings/{listingId}/files";
+
+        public static string GetListingFile(long shopId, long listingId, long listingFileId) =>
+            $"/v3/application/shops/{shopId}/listings/{listingId}/files/{listingFileId}";
+
+        public static string UploadListingImage(long shopId, long listingId) =>
+            $"/v3/application/shops/{shopId}/listings/{listingId}/images";
+
+        public static string DeleteListingImage(long shopId, long listingId, long listingImageId) =>
+            $"/v3/application/shops/{shopId}/listings/{listingId}/images/{listingImageId}";
+
+        public static string GetListingInventory(long listingId) =>
+            $"/v3/application/listings/{listingId}/inventory";
+
+        public static string GetListingsInventoryByListingIds() =>
+            "/v3/application/listings/batch/inventory";
+
+        public static string GetListingOffering(long listingId, long productId, long offeringId) =>
+            $"/v3/application/listings/{listingId}/products/{productId}/offerings/{offeringId}";
+
+        public static string GetListingProduct(long listingId, long productId) =>
+            $"/v3/application/listings/{listingId}/inventory/products/{productId}";
+
+        public static string GetListingPersonalization(long listingId) =>
+            $"/v3/application/listings/{listingId}/personalization";
+
+        public static string UpdateListingPersonalization(long shopId, long listingId) =>
+            $"/v3/application/shops/{shopId}/listings/{listingId}/personalization";
+
+        public static string GetListingTranslation(long shopId, long listingId, string language) =>
+            $"/v3/application/shops/{shopId}/listings/{listingId}/translations/{language}";
+
+        public static string GetListingVariationImages(long shopId, long listingId) =>
+            $"/v3/application/shops/{shopId}/listings/{listingId}/variation-images";
+
+        public static string GetListingVideo(long listingId, long videoId) =>
+            $"/v3/application/listings/{listingId}/videos/{videoId}";
+
+        public static string GetListingVideos(long listingId) =>
+            $"/v3/application/listings/{listingId}/videos";
+
+        public static string UploadListingVideo(long shopId, long listingId) =>
+            $"/v3/application/shops/{shopId}/listings/{listingId}/videos";
+
+        public static string DeleteListingVideo(long shopId, long listingId, long videoId) =>
+            $"/v3/application/shops/{shopId}/listings/{listingId}/videos/{videoId}";
     }
 
     public static class ShopUrls
