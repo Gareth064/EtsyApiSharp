@@ -94,6 +94,22 @@ var draft = await listingService.CreateDraftListingAsync(
 
 The listing API was updated to remove unnecessary OAuth-token parameters from public endpoints. Update existing callers to supply a token only where the corresponding Etsy operation requires one. Upload APIs use `Stream`-based multipart requests; callers own the source stream and should not reuse it after the request completes.
 
+### Shop service
+
+`IEtsyShopManagementService` implements all 10 operations currently grouped as Shop Management in Etsy's OpenAPI 3.0.0 specification: shop lookup and search, shop updates, production partners, and shop-section creation, retrieval, update, and deletion.
+
+Public reads (`GetShopAsync`, `GetShopByOwnerUserIdAsync`, `FindShopsAsync`, `GetShopSectionsAsync`, and `GetShopSectionAsync`) send only `x-api-key`. `GetShopProductionPartnersAsync` requires `shops_r`; `UpdateShopAsync` requires both `shops_r` and `shops_w`; section creation, update, and deletion require `shops_w`. The write methods use `application/x-www-form-urlencoded` bodies. All methods validate positive IDs, accept a `CancellationToken`, and use the named `EtsyShopManagementService.HttpClientName` client.
+
+```csharp
+var sections = await shopService.GetShopSectionsAsync(shopId, cancellationToken);
+
+var section = await shopService.CreateShopSectionAsync(
+    accessToken,
+    shopId,
+    new CreateShopSectionRequest { Title = "Seasonal" },
+    cancellationToken);
+```
+
 ### Receipt service
 
 `IEtsyReceiptManagementService` implements all 8 operations currently grouped as Receipt Management in Etsy's OpenAPI 3.0.0 specification: receipt retrieval and filtering, receipt status updates, shipment tracking creation, and receipt transactions by listing, receipt, transaction, or shop.

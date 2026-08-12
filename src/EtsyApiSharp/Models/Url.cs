@@ -163,6 +163,15 @@ public class Url
 
         public static string FindShops() =>
             $"/v3/application/shops";
+
+        public static string GetShopProductionPartners(long shopId) =>
+            $"/v3/application/shops/{shopId}/production-partners";
+
+        public static string GetShopSections(long shopId) =>
+            $"/v3/application/shops/{shopId}/sections";
+
+        public static string GetShopSection(long shopId, long shopSectionId) =>
+            $"/v3/application/shops/{shopId}/sections/{shopSectionId}";
     }
 
     public static class UserUrls

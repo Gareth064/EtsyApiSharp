@@ -17,12 +17,12 @@ public class ShopProductionPartner
     /// The name or title of the production partner.
     /// </summary>
     [JsonPropertyName("partner_name")]
-    public string PartnerName { get; set; }
+    public string? PartnerName { get; set; }
 
     /// <summary>
     /// A string representing the production partner location.
     /// </summary>
     [JsonPropertyName("location")]
-    public string Location { get; set; }
+    public string? Location { get; set; }
 
 }

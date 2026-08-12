@@ -1,48 +1,77 @@
-﻿@page "/services/shop"
+@page "/services/shop"
 @using BlazorTestApp.Components
-@using BlazorTestApp.Data;
-@using EtsyApiSharp.Services.ShopManagements;
-@using System.Text.Json;
+@using BlazorTestApp.Data
+@using EtsyApiSharp.Models.Filters
+@using EtsyApiSharp.Services.ShopManagements
+@using System.Text.Json
 @inject IEtsyShopManagementService ShopService
 
-<ServiceTemplate ServiceTitle="Shop Services" ShowResultsPane="true" ResultsToDisplay=@resultToDisplay>
-    <input @bind="ownerId" />
-    <button @onclick="GetShopByUserAsync">Get Shop by OwnerID</button>
+<ServiceTemplate ServiceTitle="Shop Services" ShowResultsPane="true" ResultsToDisplay="@resultToDisplay">
+    <input @bind="shopId" placeholder="Shop ID (defaults to authorised shop)" />
+    <button @onclick="GetShopAsync">Get shop</button>
+    <button @onclick="GetShopSectionsAsync">Shop sections</button>
+    <button @onclick="GetProductionPartnersAsync">Production partners (OAuth)</button>
     <br />
+    <input @bind="shopSectionId" placeholder="Shop section ID" />
+    <button @onclick="GetShopSectionAsync">Get shop section</button>
     <br />
-    <input @bind="shopName" />
-    <button @onclick="FindShopsByNameAsync">Find Shops by Name</button>
-
+    <input @bind="ownerId" placeholder="Owner ID" />
+    <button @onclick="GetShopByUserAsync">Get shop by owner</button>
+    <br />
+    <input @bind="shopName" placeholder="Shop name" />
+    <button @onclick="FindShopsByNameAsync">Find shops by name</button>
+    <p>All ten Shop Management operations are available through the typed service. This harness exposes the six non-destructive retrieval operations; shop and section writes require deliberate request payloads in application code.</p>
 </ServiceTemplate>
 
-
 @code {
-    string resultToDisplay = string.Empty;
-    long ownerId = 62971666;
-    string shopName = "";
+    private string resultToDisplay = string.Empty;
+    private string shopId = string.Empty;
+    private string shopSectionId = string.Empty;
+    private long ownerId = 62971666;
+    private string shopName = string.Empty;
 
-    private async Task GetShopByUserAsync()
+    private async Task GetShopAsync() => await DisplayAsync(ShopService.GetShopAsync(GetShopId()));
+
+    private async Task GetShopSectionsAsync() => await DisplayAsync(ShopService.GetShopSectionsAsync(GetShopId()));
+
+    private async Task GetProductionPartnersAsync() => await DisplayAsync(ShopService.GetShopProductionPartnersAsync(
+        AppState.TokenResponse,
+        GetShopId()));
+
+    private async Task GetShopSectionAsync() => await DisplayAsync(ShopService.GetShopSectionAsync(
+        GetShopId(),
+        GetRequiredId(shopSectionId, "shop section ID")));
+
+    private async Task GetShopByUserAsync() => await DisplayAsync(ShopService.GetShopByOwnerUserIdAsync(ownerId));
+
+    private async Task FindShopsByNameAsync() => await DisplayAsync(ShopService.FindShopsAsync(
+        shopName,
+        new FindShopsByNameFilter { Limit = 10 }));
+
+    private long GetShopId() => string.IsNullOrWhiteSpace(shopId)
+        ? AppState.ShopId
+        : GetRequiredId(shopId, "shop ID");
+
+    private static long GetRequiredId(string value, string name) => long.TryParse(value, out var id) && id > 0
+        ? id
+        : throw new InvalidOperationException($"A positive {name} is required.");
+
+    private async Task DisplayAsync<T>(Task<T> operation)
     {
-        var result = await ShopService.GetShopByOwnerUserIdAsync(ownerId);
-
-        DisplayResultsOnScreen(result);
-    }
-
-    private async Task FindShopsByNameAsync()
-    {
-        var result = await ShopService.FindShopsAsync(shopName);
-
-        DisplayResultsOnScreen(result);
+        try
+        {
+            DisplayResultsOnScreen(await operation);
+        }
+        catch (Exception exception)
+        {
+            resultToDisplay = exception.Message;
+        }
     }
 
     private void DisplayResultsOnScreen<T>(T result)
     {
-        var tempString = JsonSerializer.Serialize(result);
-        var jDoc = JsonDocument.Parse(tempString);
-
-        resultToDisplay = JsonSerializer.Serialize(jDoc,
-            new JsonSerializerOptions { WriteIndented = true });
-
-        Console.WriteLine(resultToDisplay);
+        var json = JsonSerializer.Serialize(result);
+        using var document = JsonDocument.Parse(json);
+        resultToDisplay = JsonSerializer.Serialize(document, new JsonSerializerOptions { WriteIndented = true });
     }
 }

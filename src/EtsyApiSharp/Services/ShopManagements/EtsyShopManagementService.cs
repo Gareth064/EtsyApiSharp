@@ -129,6 +129,77 @@ public class EtsyShopManagementService : IEtsyShopManagementService
             cancellationToken);
     }
 
+    public Task<ApiResponse<EtsyListResponse<ShopProductionPartner>>> GetShopProductionPartnersAsync(
+        string accessToken,
+        long shopId,
+        CancellationToken cancellationToken = default)
+    {
+        ValidateAccessToken(accessToken);
+        ValidateId(shopId, nameof(shopId));
+
+        return SendListAsync<ShopProductionPartner>(HttpMethod.Get, Url.ShopUrls.GetShopProductionPartners(shopId), null, accessToken, null, cancellationToken);
+    }
+
+    public Task<ApiResponse<ShopSection>> CreateShopSectionAsync(
+        string accessToken,
+        long shopId,
+        CreateShopSectionRequest section,
+        CancellationToken cancellationToken = default)
+    {
+        ValidateAccessToken(accessToken);
+        ValidateId(shopId, nameof(shopId));
+        ArgumentNullException.ThrowIfNull(section);
+        ValidateSectionTitle(section.Title, nameof(section));
+
+        return SendAsync<ShopSection>(HttpMethod.Post, Url.ShopUrls.GetShopSections(shopId), null, accessToken, CreateSectionContent(section.Title), cancellationToken);
+    }
+
+    public Task<ApiResponse<EtsyListResponse<ShopSection>>> GetShopSectionsAsync(
+        long shopId,
+        CancellationToken cancellationToken = default)
+    {
+        ValidateId(shopId, nameof(shopId));
+        return SendListAsync<ShopSection>(HttpMethod.Get, Url.ShopUrls.GetShopSections(shopId), null, null, null, cancellationToken);
+    }
+
+    public Task<ApiResponse<object>> DeleteShopSectionAsync(
+        string accessToken,
+        long shopId,
+        long shopSectionId,
+        CancellationToken cancellationToken = default)
+    {
+        ValidateAccessToken(accessToken);
+        ValidateId(shopId, nameof(shopId));
+        ValidateId(shopSectionId, nameof(shopSectionId));
+        return SendAsync<object>(HttpMethod.Delete, Url.ShopUrls.GetShopSection(shopId, shopSectionId), null, accessToken, null, cancellationToken);
+    }
+
+    public Task<ApiResponse<ShopSection>> GetShopSectionAsync(
+        long shopId,
+        long shopSectionId,
+        CancellationToken cancellationToken = default)
+    {
+        ValidateId(shopId, nameof(shopId));
+        ValidateId(shopSectionId, nameof(shopSectionId));
+        return SendAsync<ShopSection>(HttpMethod.Get, Url.ShopUrls.GetShopSection(shopId, shopSectionId), null, null, null, cancellationToken);
+    }
+
+    public Task<ApiResponse<ShopSection>> UpdateShopSectionAsync(
+        string accessToken,
+        long shopId,
+        long shopSectionId,
+        UpdateShopSectionRequest section,
+        CancellationToken cancellationToken = default)
+    {
+        ValidateAccessToken(accessToken);
+        ValidateId(shopId, nameof(shopId));
+        ValidateId(shopSectionId, nameof(shopSectionId));
+        ArgumentNullException.ThrowIfNull(section);
+        ValidateSectionTitle(section.Title, nameof(section));
+
+        return SendAsync<ShopSection>(HttpMethod.Put, Url.ShopUrls.GetShopSection(shopId, shopSectionId), null, accessToken, CreateSectionContent(section.Title), cancellationToken);
+    }
+
     private async Task<ApiResponse<T>> SendAsync<T>(
         HttpMethod method,
         string relativeUrl,
@@ -155,6 +226,30 @@ public class EtsyShopManagementService : IEtsyShopManagementService
             .ConfigureAwait(false);
     }
 
+    private async Task<ApiResponse<EtsyListResponse<T>>> SendListAsync<T>(
+        HttpMethod method,
+        string relativeUrl,
+        IReadOnlyDictionary<string, string>? query,
+        string? accessToken,
+        HttpContent? content,
+        CancellationToken cancellationToken)
+    {
+        using var request = new HttpRequestMessage(method, BuildUri(relativeUrl, query))
+        {
+            Content = content
+        };
+
+        if (accessToken is not null)
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+        request.Headers.Add("x-api-key", apiKey);
+
+        var httpClient = httpClientFactory.CreateClient(HttpClientName);
+        using var response = await httpClient.SendAsync(request, cancellationToken).ConfigureAwait(false);
+        response.RequestMessage ??= request;
+        return await EtsyResponseParser.ParseResponseOfList<T>(response, cancellationToken).ConfigureAwait(false);
+    }
+
     private static Uri BuildUri(
         string relativeUrl,
         IReadOnlyDictionary<string, string>? query)
@@ -177,6 +272,9 @@ public class EtsyShopManagementService : IEtsyShopManagementService
             formData[name] = value;
     }
 
+    private static FormUrlEncodedContent CreateSectionContent(string? title) => new(
+        [new KeyValuePair<string, string>("title", title!)]);
+
     private static void ValidatePagination(EtsyFilterBase? filter)
     {
         if (filter is null)
@@ -193,6 +291,12 @@ public class EtsyShopManagementService : IEtsyShopManagementService
     {
         if (string.IsNullOrWhiteSpace(accessToken))
             throw new ArgumentException("An Etsy OAuth access token is required.", nameof(accessToken));
+    }
+
+    private static void ValidateSectionTitle(string? title, string parameterName)
+    {
+        if (string.IsNullOrWhiteSpace(title))
+            throw new ArgumentException("A shop section title is required.", parameterName);
     }
 
     private static void ValidateId(long id, string parameterName)

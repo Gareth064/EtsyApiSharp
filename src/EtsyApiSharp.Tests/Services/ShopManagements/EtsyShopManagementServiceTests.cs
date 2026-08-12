@@ -111,6 +111,122 @@ public class EtsyShopManagementServiceTests
     }
 
     [Fact]
+    public async Task GetShopProductionPartnersAsync_ValidRequest_SendsShopsReadOAuthAndParsesList()
+    {
+        var handler = new StubHttpMessageHandler(request =>
+        {
+            Assert.Equal(HttpMethod.Get, request.Method);
+            Assert.Equal("https://openapi.etsy.com/v3/application/shops/123/production-partners", request.RequestUri?.ToString());
+            Assert.Equal("Bearer 123.access-token", request.Headers.Authorization?.ToString());
+            Assert.Equal("client-id:shared-secret", request.Headers.GetValues("x-api-key").Single());
+            return Task.FromResult(JsonResponse(HttpStatusCode.OK, "{\"count\":1,\"results\":[{\"production_partner_id\":7,\"partner_name\":\"Printer\",\"location\":\"London\"}]}"));
+        });
+        var service = CreateService(new StubHttpClientFactory(handler));
+
+        var result = await service.GetShopProductionPartnersAsync("123.access-token", 123);
+
+        Assert.True(result.Success);
+        Assert.Equal(7, result.Data?.Results.Single().ProductionPartnerId);
+        Assert.Equal("Printer", result.Data?.Results.Single().PartnerName);
+    }
+
+    [Fact]
+    public async Task CreateShopSectionAsync_ValidRequest_SendsShopsWriteOAuthAndFormEncodedTitle()
+    {
+        var handler = new StubHttpMessageHandler(async request =>
+        {
+            Assert.Equal(HttpMethod.Post, request.Method);
+            Assert.Equal("https://openapi.etsy.com/v3/application/shops/123/sections", request.RequestUri?.ToString());
+            Assert.Equal("Bearer 123.access-token", request.Headers.Authorization?.ToString());
+            Assert.Equal("application/x-www-form-urlencoded", request.Content?.Headers.ContentType?.MediaType);
+            Assert.Equal("title=New+%26+Noteworthy", await request.Content!.ReadAsStringAsync());
+            return JsonResponse(HttpStatusCode.OK, "{\"shop_section_id\":9,\"title\":\"New & Noteworthy\"}");
+        });
+        var service = CreateService(new StubHttpClientFactory(handler));
+
+        var result = await service.CreateShopSectionAsync("123.access-token", 123, new CreateShopSectionRequest { Title = "New & Noteworthy" });
+
+        Assert.True(result.Success);
+        Assert.Equal(9, result.Data?.ShopSectionId);
+    }
+
+    [Fact]
+    public async Task GetShopSectionsAsync_ValidRequest_UsesApiKeyWithoutOAuthAndParsesList()
+    {
+        var handler = new StubHttpMessageHandler(request =>
+        {
+            Assert.Equal(HttpMethod.Get, request.Method);
+            Assert.Equal("https://openapi.etsy.com/v3/application/shops/123/sections", request.RequestUri?.ToString());
+            Assert.Null(request.Headers.Authorization);
+            Assert.Equal("client-id:shared-secret", request.Headers.GetValues("x-api-key").Single());
+            return Task.FromResult(JsonResponse(HttpStatusCode.OK, "{\"count\":1,\"results\":[{\"shop_section_id\":9,\"title\":\"Featured\",\"rank\":3000000000,\"active_listing_count\":4000000000}]}"));
+        });
+        var service = CreateService(new StubHttpClientFactory(handler));
+
+        var result = await service.GetShopSectionsAsync(123);
+
+        Assert.True(result.Success);
+        Assert.Equal(3000000000L, result.Data?.Results.Single().Rank);
+        Assert.Equal(4000000000L, result.Data?.Results.Single().ActiveListingCount);
+    }
+
+    [Fact]
+    public async Task DeleteShopSectionAsync_ValidRequest_SendsShopsWriteOAuthAndParsesEmptyResponse()
+    {
+        var handler = new StubHttpMessageHandler(request =>
+        {
+            Assert.Equal(HttpMethod.Delete, request.Method);
+            Assert.Equal("https://openapi.etsy.com/v3/application/shops/123/sections/9", request.RequestUri?.ToString());
+            Assert.Equal("Bearer 123.access-token", request.Headers.Authorization?.ToString());
+            return Task.FromResult(new HttpResponseMessage(HttpStatusCode.NoContent));
+        });
+        var service = CreateService(new StubHttpClientFactory(handler));
+
+        var result = await service.DeleteShopSectionAsync("123.access-token", 123, 9);
+
+        Assert.True(result.Success);
+        Assert.Equal(204, result.ResponseCode);
+        Assert.Null(result.Data);
+    }
+
+    [Fact]
+    public async Task GetShopSectionAsync_ValidRequest_UsesApiKeyWithoutOAuthAndParsesSection()
+    {
+        var handler = new StubHttpMessageHandler(request =>
+        {
+            Assert.Equal(HttpMethod.Get, request.Method);
+            Assert.Equal("https://openapi.etsy.com/v3/application/shops/123/sections/9", request.RequestUri?.ToString());
+            Assert.Null(request.Headers.Authorization);
+            return Task.FromResult(JsonResponse(HttpStatusCode.OK, "{\"shop_section_id\":9,\"title\":\"Featured\"}"));
+        });
+        var service = CreateService(new StubHttpClientFactory(handler));
+
+        var result = await service.GetShopSectionAsync(123, 9);
+
+        Assert.True(result.Success);
+        Assert.Equal("Featured", result.Data?.Title);
+    }
+
+    [Fact]
+    public async Task UpdateShopSectionAsync_ValidRequest_SendsShopsWriteOAuthAndFormEncodedTitle()
+    {
+        var handler = new StubHttpMessageHandler(async request =>
+        {
+            Assert.Equal(HttpMethod.Put, request.Method);
+            Assert.Equal("https://openapi.etsy.com/v3/application/shops/123/sections/9", request.RequestUri?.ToString());
+            Assert.Equal("Bearer 123.access-token", request.Headers.Authorization?.ToString());
+            Assert.Equal("title=Seasonal", await request.Content!.ReadAsStringAsync());
+            return JsonResponse(HttpStatusCode.OK, "{\"shop_section_id\":9,\"title\":\"Seasonal\"}");
+        });
+        var service = CreateService(new StubHttpClientFactory(handler));
+
+        var result = await service.UpdateShopSectionAsync("123.access-token", 123, 9, new UpdateShopSectionRequest { Title = "Seasonal" });
+
+        Assert.True(result.Success);
+        Assert.Equal("Seasonal", result.Data?.Title);
+    }
+
+    [Fact]
     public async Task GetShopAsync_EtsyError_ReturnsActualStatusAndMessage()
     {
         var handler = new StubHttpMessageHandler(_ => Task.FromResult(JsonResponse(
@@ -177,6 +293,29 @@ public class EtsyShopManagementServiceTests
             new UpdateShopRequest { Title = "New title" }));
     }
 
+    [Theory]
+    [InlineData(0)]
+    [InlineData(-1)]
+    public async Task ShopSectionOperations_NonPositiveIds_ThrowArgumentOutOfRangeException(long id)
+    {
+        var service = CreateService();
+
+        await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => service.GetShopSectionsAsync(id));
+        await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => service.GetShopSectionAsync(123, id));
+        await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => service.DeleteShopSectionAsync("123.access-token", id, 9));
+        await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => service.UpdateShopSectionAsync("123.access-token", 123, id, new UpdateShopSectionRequest { Title = "Title" }));
+    }
+
+    [Fact]
+    public async Task ShopSectionWrites_BlankTitleOrToken_ThrowArgumentException()
+    {
+        var service = CreateService();
+
+        await Assert.ThrowsAsync<ArgumentException>(() => service.CreateShopSectionAsync("123.access-token", 123, new CreateShopSectionRequest()));
+        await Assert.ThrowsAsync<ArgumentException>(() => service.UpdateShopSectionAsync("123.access-token", 123, 9, new UpdateShopSectionRequest { Title = " " }));
+        await Assert.ThrowsAsync<ArgumentException>(() => service.GetShopProductionPartnersAsync(" ", 123));
+    }
+
     [Fact]
     public async Task GetShopAsync_CancelledRequest_PropagatesCancellation()
     {
@@ -191,6 +330,22 @@ public class EtsyShopManagementServiceTests
 
         await Assert.ThrowsAnyAsync<OperationCanceledException>(
             () => service.GetShopAsync(123, cancellationSource.Token));
+    }
+
+    [Fact]
+    public async Task GetShopSectionsAsync_CancelledRequest_PropagatesCancellation()
+    {
+        var handler = new StubHttpMessageHandler(async (_, cancellationToken) =>
+        {
+            await Task.Delay(Timeout.InfiniteTimeSpan, cancellationToken);
+            throw new InvalidOperationException("The cancelled request unexpectedly completed.");
+        });
+        var service = CreateService(new StubHttpClientFactory(handler));
+        using var cancellationSource = new CancellationTokenSource();
+        cancellationSource.Cancel();
+
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(
+            () => service.GetShopSectionsAsync(123, cancellationSource.Token));
     }
 
     [Fact]

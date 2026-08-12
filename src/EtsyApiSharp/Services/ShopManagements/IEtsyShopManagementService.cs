@@ -36,4 +36,43 @@ public interface IEtsyShopManagementService
         string shopName,
         FindShopsByNameFilter? filter = null,
         CancellationToken cancellationToken = default);
+
+    /// <summary>Retrieves a shop's production partners. Requires the <c>shops_r</c> OAuth scope.</summary>
+    Task<ApiResponse<EtsyListResponse<ShopProductionPartner>>> GetShopProductionPartnersAsync(
+        string accessToken,
+        long shopId,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>Creates a shop section. Requires the <c>shops_w</c> OAuth scope.</summary>
+    Task<ApiResponse<ShopSection>> CreateShopSectionAsync(
+        string accessToken,
+        long shopId,
+        CreateShopSectionRequest section,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>Retrieves a shop's sections. This operation does not require OAuth.</summary>
+    Task<ApiResponse<EtsyListResponse<ShopSection>>> GetShopSectionsAsync(
+        long shopId,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>Deletes a shop section. Requires the <c>shops_w</c> OAuth scope.</summary>
+    Task<ApiResponse<object>> DeleteShopSectionAsync(
+        string accessToken,
+        long shopId,
+        long shopSectionId,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>Retrieves a shop section. This operation does not require OAuth.</summary>
+    Task<ApiResponse<ShopSection>> GetShopSectionAsync(
+        long shopId,
+        long shopSectionId,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>Updates a shop section. Requires the <c>shops_w</c> OAuth scope.</summary>
+    Task<ApiResponse<ShopSection>> UpdateShopSectionAsync(
+        string accessToken,
+        long shopId,
+        long shopSectionId,
+        UpdateShopSectionRequest section,
+        CancellationToken cancellationToken = default);
 }
