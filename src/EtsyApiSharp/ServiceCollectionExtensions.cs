@@ -1,6 +1,7 @@
 ﻿using EtsyApiSharp.Models;
 using EtsyApiSharp.Services.Auths;
 using EtsyApiSharp.Services.ListingManagements;
+using EtsyApiSharp.Services.PaymentManagements;
 using EtsyApiSharp.Services.ReceiptManagements;
 using EtsyApiSharp.Services.ShopManagements;
 using EtsyApiSharp.Services.UserManagements;
@@ -60,6 +61,27 @@ public static class ServiceCollectionExtensions
     {
         services.AddHttpClient(EtsyListingManagementService.HttpClientName);
         return services.AddScoped<IEtsyListingManagementService, EtsyListingManagementService>(provider => new EtsyListingManagementService(
+            provider.GetRequiredService<IHttpClientFactory>(), clientId, sharedSecret));
+    }
+
+    public static IServiceCollection AddEtsyPaymentManagementServiceScoped(this IServiceCollection services, string clientId, string sharedSecret)
+    {
+        services.AddHttpClient(EtsyPaymentManagementService.HttpClientName);
+        return services.AddScoped<IEtsyPaymentManagementService, EtsyPaymentManagementService>(provider => new EtsyPaymentManagementService(
+            provider.GetRequiredService<IHttpClientFactory>(), clientId, sharedSecret));
+    }
+
+    public static IServiceCollection AddEtsyPaymentManagementServiceTransient(this IServiceCollection services, string clientId, string sharedSecret)
+    {
+        services.AddHttpClient(EtsyPaymentManagementService.HttpClientName);
+        return services.AddTransient<IEtsyPaymentManagementService, EtsyPaymentManagementService>(provider => new EtsyPaymentManagementService(
+            provider.GetRequiredService<IHttpClientFactory>(), clientId, sharedSecret));
+    }
+
+    public static IServiceCollection AddEtsyPaymentManagementServiceSingleton(this IServiceCollection services, string clientId, string sharedSecret)
+    {
+        services.AddHttpClient(EtsyPaymentManagementService.HttpClientName);
+        return services.AddSingleton<IEtsyPaymentManagementService, EtsyPaymentManagementService>(provider => new EtsyPaymentManagementService(
             provider.GetRequiredService<IHttpClientFactory>(), clientId, sharedSecret));
     }
 

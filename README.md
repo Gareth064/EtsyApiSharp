@@ -23,6 +23,7 @@ services.AddEtsyAuthServiceScoped(clientId, redirectUrl, scopes);
 services.AddEtsyShopManagementServiceScoped(clientId, sharedSecret);
 services.AddEtsyListingManagementServiceScoped(clientId, sharedSecret);
 services.AddEtsyReceiptManagementServiceScoped(clientId, sharedSecret);
+services.AddEtsyPaymentManagementServiceScoped(clientId, sharedSecret);
 services.AddEtsyUserManagementServiceScoped(clientId, sharedSecret);
 ```
 
@@ -132,6 +133,31 @@ var shipment = await receiptService.CreateReceiptShipmentAsync(
 ```
 
 `TransactionVariation.QuestionId` and `ShopRefund.CreatedTimestamp` now reflect the current response schema (`question_id` and an `int64` timestamp respectively). `ShopRefund` reason, issuer note, and status are nullable because Etsy may omit them.
+
+### Payment service
+
+`IEtsyPaymentManagementService` implements all 5 Payment Management operations currently listed in Etsy's OpenAPI 3.0.0 specification: single and ranged payment-account ledger entries, payments for ledger entries, a receipt's payment, and shop payments by ID.
+
+Every Payment Management operation is a non-destructive read that requires both `x-api-key` and an OAuth access token with `transactions_r`. The service validates positive IDs, the required ledger-entry timestamp range (Unix timestamps on or after 2000-01-01 UTC), and pagination (`limit` 1–100 and a non-negative `offset`). It uses `EtsyPaymentManagementService.HttpClientName` and safely encodes comma-separated ID queries. `Payment`, `PaymentAccountLedgerEntry`, and `PaymentAdjustment` now expose the current int64 timestamps and newly documented payment-adjustment and ledger fields. **Compatibility:** several previously `int` public properties are now `long` (and nullable fields are now nullable), so callers that explicitly assign these values to narrower non-nullable types must update.
+
+```csharp
+var ledgerEntries = await paymentService.GetShopPaymentAccountLedgerEntriesAsync(
+    accessToken,
+    shopId,
+    new GetShopPaymentAccountLedgerEntriesFilter
+    {
+        MinCreated = DateTimeOffset.UtcNow.AddDays(-30).ToUnixTimeSeconds(),
+        MaxCreated = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+        Limit = 25
+    },
+    cancellationToken);
+
+var payments = await paymentService.GetPaymentsAsync(
+    accessToken,
+    shopId,
+    new long[] { paymentId },
+    cancellationToken);
+```
 
 ## Etsy API Resources
 

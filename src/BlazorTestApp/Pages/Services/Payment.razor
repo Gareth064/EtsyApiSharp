@@ -1,0 +1,84 @@
+@page "/services/payment"
+@using BlazorTestApp.Components
+@using BlazorTestApp.Data
+@using EtsyApiSharp.Models.Filters
+@using EtsyApiSharp.Services.PaymentManagements
+@using System.Text.Json
+@inject IEtsyPaymentManagementService PaymentService
+
+<ServiceTemplate ServiceTitle="Payment Services" ShowResultsPane="true" ResultsToDisplay="@resultToDisplay">
+    <input @bind="shopId" placeholder="Shop ID (defaults to authorised shop)" />
+    <button @onclick="GetLedgerEntriesAsync">Ledger entries (OAuth)</button>
+    <br />
+    <input @bind="ledgerEntryId" placeholder="Ledger entry ID" />
+    <button @onclick="GetLedgerEntryAsync">Ledger entry (OAuth)</button>
+    <br />
+    <input @bind="ledgerEntryIds" placeholder="Ledger entry IDs (comma-separated)" />
+    <button @onclick="GetLedgerEntryPaymentsAsync">Ledger payments (OAuth)</button>
+    <br />
+    <input @bind="receiptId" placeholder="Receipt ID" />
+    <button @onclick="GetPaymentByReceiptAsync">Receipt payment (OAuth)</button>
+    <br />
+    <input @bind="paymentIds" placeholder="Payment IDs (comma-separated)" />
+    <button @onclick="GetPaymentsAsync">Shop payments (OAuth)</button>
+    <p>All five Payment Management operations are non-destructive reads and require the <code>transactions_r</code> OAuth scope.</p>
+</ServiceTemplate>
+
+@code {
+    private string resultToDisplay = string.Empty;
+    private string shopId = string.Empty;
+    private string ledgerEntryId = string.Empty;
+    private string ledgerEntryIds = string.Empty;
+    private string receiptId = string.Empty;
+    private string paymentIds = string.Empty;
+
+    private async Task GetLedgerEntryAsync() => await DisplayAsync(PaymentService.GetShopPaymentAccountLedgerEntryAsync(
+        AppState.TokenResponse, GetShopId(), GetRequiredId(ledgerEntryId, "ledger entry ID")));
+
+    private async Task GetLedgerEntriesAsync()
+    {
+        var now = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+        await DisplayAsync(PaymentService.GetShopPaymentAccountLedgerEntriesAsync(
+            AppState.TokenResponse,
+            GetShopId(),
+            new GetShopPaymentAccountLedgerEntriesFilter { MinCreated = now - 2_592_000, MaxCreated = now, Limit = 10 }));
+    }
+
+    private async Task GetLedgerEntryPaymentsAsync() => await DisplayAsync(PaymentService.GetPaymentAccountLedgerEntryPaymentsAsync(
+        AppState.TokenResponse, GetShopId(), GetRequiredIds(ledgerEntryIds, "ledger entry IDs")));
+
+    private async Task GetPaymentByReceiptAsync() => await DisplayAsync(PaymentService.GetShopPaymentByReceiptIdAsync(
+        AppState.TokenResponse, GetShopId(), GetRequiredId(receiptId, "receipt ID")));
+
+    private async Task GetPaymentsAsync() => await DisplayAsync(PaymentService.GetPaymentsAsync(
+        AppState.TokenResponse, GetShopId(), GetRequiredIds(paymentIds, "payment IDs")));
+
+    private long GetShopId() => string.IsNullOrWhiteSpace(shopId) ? AppState.ShopId : GetRequiredId(shopId, "shop ID");
+
+    private static long GetRequiredId(string value, string name) => long.TryParse(value, out var id) && id > 0
+        ? id
+        : throw new InvalidOperationException($"A positive {name} is required.");
+
+    private static IReadOnlyCollection<long> GetRequiredIds(string value, string name)
+    {
+        var ids = value.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Select(part => long.TryParse(part, out var id) && id > 0 ? id : 0)
+            .ToArray();
+        return ids.Length > 0 && ids.All(id => id > 0)
+            ? ids
+            : throw new InvalidOperationException($"At least one positive {name} is required.");
+    }
+
+    private async Task DisplayAsync<T>(Task<T> operation)
+    {
+        try { DisplayResultsOnScreen(await operation); }
+        catch (Exception exception) { resultToDisplay = exception.Message; }
+    }
+
+    private void DisplayResultsOnScreen<T>(T result)
+    {
+        var json = JsonSerializer.Serialize(result);
+        using var document = JsonDocument.Parse(json);
+        resultToDisplay = JsonSerializer.Serialize(document, new JsonSerializerOptions { WriteIndented = true });
+    }
+}

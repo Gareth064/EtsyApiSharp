@@ -33,6 +33,24 @@ public class Url
             $"/v3/application/shops/{shopId}/receipts/{receiptId}/tracking";
     }
 
+    public static class PaymentUrls
+    {
+        public static string GetShopPaymentAccountLedgerEntry(long shopId, long ledgerEntryId) =>
+            $"/v3/application/shops/{shopId}/payment-account/ledger-entries/{ledgerEntryId}";
+
+        public static string GetShopPaymentAccountLedgerEntries(long shopId) =>
+            $"/v3/application/shops/{shopId}/payment-account/ledger-entries";
+
+        public static string GetPaymentAccountLedgerEntryPayments(long shopId) =>
+            $"/v3/application/shops/{shopId}/payment-account/ledger-entries/payments";
+
+        public static string GetShopPaymentByReceiptId(long shopId, long receiptId) =>
+            $"/v3/application/shops/{shopId}/receipts/{receiptId}/payments";
+
+        public static string GetPayments(long shopId) =>
+            $"/v3/application/shops/{shopId}/payments";
+    }
+
     public static class ListingUrls
     {
         public static string GetListing(long listingId) =>
