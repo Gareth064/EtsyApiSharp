@@ -23,6 +23,7 @@ builder.Services.AddEtsyPaymentManagementServiceTransient(clientId, sharedSecret
 builder.Services.AddEtsyReviewManagementServiceTransient(clientId, sharedSecret);
 builder.Services.AddEtsyListingManagementServiceTransient(clientId, sharedSecret);
 builder.Services.AddEtsyShopManagementServiceScoped(clientId, sharedSecret);
+builder.Services.AddEtsyShippingManagementServiceTransient(clientId, sharedSecret);
 
 
 var app = builder.Build();

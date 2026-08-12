@@ -60,6 +60,30 @@ public class Url
             $"/v3/application/shops/{shopId}/reviews";
     }
 
+    public static class ShippingUrls
+    {
+        public static string GetShippingCarriers() =>
+            "/v3/application/shipping-carriers";
+
+        public static string GetShopShippingProfiles(long shopId) =>
+            $"/v3/application/shops/{shopId}/shipping-profiles";
+
+        public static string GetShopShippingProfile(long shopId, long shippingProfileId) =>
+            $"/v3/application/shops/{shopId}/shipping-profiles/{shippingProfileId}";
+
+        public static string GetShopShippingProfileDestinations(long shopId, long shippingProfileId) =>
+            $"/v3/application/shops/{shopId}/shipping-profiles/{shippingProfileId}/destinations";
+
+        public static string GetShopShippingProfileDestination(long shopId, long shippingProfileId, long destinationId) =>
+            $"/v3/application/shops/{shopId}/shipping-profiles/{shippingProfileId}/destinations/{destinationId}";
+
+        public static string GetShopShippingProfileUpgrades(long shopId, long shippingProfileId) =>
+            $"/v3/application/shops/{shopId}/shipping-profiles/{shippingProfileId}/upgrades";
+
+        public static string GetShopShippingProfileUpgrade(long shopId, long shippingProfileId, long upgradeId) =>
+            $"/v3/application/shops/{shopId}/shipping-profiles/{shippingProfileId}/upgrades/{upgradeId}";
+    }
+
     public static class ListingUrls
     {
         public static string GetListing(long listingId) =>

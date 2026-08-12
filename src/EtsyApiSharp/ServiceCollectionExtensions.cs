@@ -5,6 +5,7 @@ using EtsyApiSharp.Services.PaymentManagements;
 using EtsyApiSharp.Services.ReceiptManagements;
 using EtsyApiSharp.Services.ReviewManagements;
 using EtsyApiSharp.Services.ShopManagements;
+using EtsyApiSharp.Services.ShippingManagements;
 using EtsyApiSharp.Services.UserManagements;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -140,6 +141,27 @@ public static class ServiceCollectionExtensions
     {
         services.AddHttpClient(EtsyShopManagementService.HttpClientName);
         return services.AddSingleton<IEtsyShopManagementService, EtsyShopManagementService>(provider => new EtsyShopManagementService(
+            provider.GetRequiredService<IHttpClientFactory>(), clientId, sharedSecret));
+    }
+
+    public static IServiceCollection AddEtsyShippingManagementServiceScoped(this IServiceCollection services, string clientId, string sharedSecret)
+    {
+        services.AddHttpClient(EtsyShippingManagementService.HttpClientName);
+        return services.AddScoped<IEtsyShippingManagementService, EtsyShippingManagementService>(provider => new EtsyShippingManagementService(
+            provider.GetRequiredService<IHttpClientFactory>(), clientId, sharedSecret));
+    }
+
+    public static IServiceCollection AddEtsyShippingManagementServiceTransient(this IServiceCollection services, string clientId, string sharedSecret)
+    {
+        services.AddHttpClient(EtsyShippingManagementService.HttpClientName);
+        return services.AddTransient<IEtsyShippingManagementService, EtsyShippingManagementService>(provider => new EtsyShippingManagementService(
+            provider.GetRequiredService<IHttpClientFactory>(), clientId, sharedSecret));
+    }
+
+    public static IServiceCollection AddEtsyShippingManagementServiceSingleton(this IServiceCollection services, string clientId, string sharedSecret)
+    {
+        services.AddHttpClient(EtsyShippingManagementService.HttpClientName);
+        return services.AddSingleton<IEtsyShippingManagementService, EtsyShippingManagementService>(provider => new EtsyShippingManagementService(
             provider.GetRequiredService<IHttpClientFactory>(), clientId, sharedSecret));
     }
 

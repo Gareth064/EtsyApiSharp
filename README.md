@@ -21,6 +21,7 @@ services.AddEtsyAuthServiceScoped(clientId, redirectUrl, scopes);
 
 // Register Management Services
 services.AddEtsyShopManagementServiceScoped(clientId, sharedSecret);
+services.AddEtsyShippingManagementServiceScoped(clientId, sharedSecret);
 services.AddEtsyListingManagementServiceScoped(clientId, sharedSecret);
 services.AddEtsyReceiptManagementServiceScoped(clientId, sharedSecret);
 services.AddEtsyPaymentManagementServiceScoped(clientId, sharedSecret);
@@ -111,6 +112,38 @@ var section = await shopService.CreateShopSectionAsync(
     new CreateShopSectionRequest { Title = "Seasonal" },
     cancellationToken);
 ```
+
+### Shipping service
+
+`IEtsyShippingManagementService` implements all 14 operations currently grouped as Shipping Management (the `Shop ShippingProfile` tag) in Etsy's OpenAPI 3.0.0 specification: shipping-carrier lookup; shipping-profile creation, retrieval, update, and deletion; and the equivalent destination and upgrade operations.
+
+`GetShippingCarriersAsync` is a public read and sends only `x-api-key`. All shipping-profile, destination, and upgrade reads require `shops_r`; their writes require `shops_w`. Write operations use `application/x-www-form-urlencoded` bodies. Every method validates IDs and documented request relationships, accepts a `CancellationToken`, safely encodes the destination-pagination query, and uses the named `EtsyShippingManagementService.HttpClientName` client.
+
+```csharp
+var carriers = await shippingService.GetShippingCarriersAsync("GB", cancellationToken);
+
+var profiles = await shippingService.GetShopShippingProfilesAsync(
+    accessToken,
+    shopId,
+    cancellationToken);
+
+var profile = await shippingService.CreateShopShippingProfileAsync(
+    accessToken,
+    shopId,
+    new CreateShopShippingProfileRequest
+    {
+        Title = "Standard shipping",
+        OriginCountryIso = "GB",
+        PrimaryCost = 3.50f,
+        SecondaryCost = 1.00f,
+        DestinationCountryIso = "US",
+        MinDeliveryDays = 5,
+        MaxDeliveryDays = 10
+    },
+    cancellationToken);
+```
+
+**Compatibility:** Shipping Management is newly exposed as its own typed service. The existing `ShopShippingProfile`, destination, upgrade, and carrier response models are now paired with create/update request models and typed `shops_r`/`shops_w` operations.
 
 ### Receipt service
 
