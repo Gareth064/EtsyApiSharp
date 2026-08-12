@@ -51,6 +51,15 @@ public class Url
             $"/v3/application/shops/{shopId}/payments";
     }
 
+    public static class ReviewUrls
+    {
+        public static string GetReviewsByListing(long listingId) =>
+            $"/v3/application/listings/{listingId}/reviews";
+
+        public static string GetReviewsByShop(long shopId) =>
+            $"/v3/application/shops/{shopId}/reviews";
+    }
+
     public static class ListingUrls
     {
         public static string GetListing(long listingId) =>

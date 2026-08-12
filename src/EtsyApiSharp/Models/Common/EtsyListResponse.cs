@@ -5,8 +5,8 @@ namespace EtsyApiSharp.Models.Common;
 public class EtsyListResponse<T>
 {
     [JsonPropertyName("count")]
-    public int Count { get; set; }
+    public long Count { get; set; }
 
     [JsonPropertyName("results")]
-    public List<T> Results { get; set; }
+    public List<T> Results { get; set; } = [];
 }

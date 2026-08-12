@@ -24,6 +24,7 @@ services.AddEtsyShopManagementServiceScoped(clientId, sharedSecret);
 services.AddEtsyListingManagementServiceScoped(clientId, sharedSecret);
 services.AddEtsyReceiptManagementServiceScoped(clientId, sharedSecret);
 services.AddEtsyPaymentManagementServiceScoped(clientId, sharedSecret);
+services.AddEtsyReviewManagementServiceScoped(clientId, sharedSecret);
 services.AddEtsyUserManagementServiceScoped(clientId, sharedSecret);
 ```
 
@@ -158,6 +159,27 @@ var payments = await paymentService.GetPaymentsAsync(
     new long[] { paymentId },
     cancellationToken);
 ```
+
+### Review service
+
+`IEtsyReviewManagementService` implements both operations currently grouped as Review Management in Etsy's OpenAPI 3.0.0 specification: reviews by listing and reviews by shop.
+
+Both operations are public, non-destructive reads that send only `x-api-key`; Etsy declares no OAuth scope for either one. They validate positive IDs, pagination (`limit` 1–100 and a non-negative `offset`), and supplied review creation timestamps (Unix timestamps on or after 2000-01-01 UTC). The service uses `EtsyReviewManagementService.HttpClientName` and accepts a `CancellationToken` on every method.
+
+```csharp
+var listingReviews = await reviewService.GetReviewsByListingAsync(
+    listingId,
+    new GetReviewsFilter
+    {
+        MinCreated = DateTimeOffset.UtcNow.AddDays(-30).ToUnixTimeSeconds(),
+        Limit = 25
+    },
+    cancellationToken);
+
+var shopReviews = await reviewService.GetReviewsByShopAsync(shopId, cancellationToken: cancellationToken);
+```
+
+**Compatibility:** `EtsyListResponse<T>.Count`, review timestamps, and review ratings now use `long`, matching Etsy's documented `int64` response fields. `ListingReview.Review` and review image URLs are nullable because Etsy may omit them; `TransactionReview` now also exposes the documented `created_timestamp` and `updated_timestamp` fields.
 
 ## Etsy API Resources
 

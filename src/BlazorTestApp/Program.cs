@@ -20,6 +20,7 @@ builder.Services.AddHttpClient();
 builder.Services.AddEtsyAuthServiceSingleton(clientId, "https://localhost:5001/secret/callback", scopes);
 builder.Services.AddEtsyReceiptManagementServiceTransient(clientId, sharedSecret);
 builder.Services.AddEtsyPaymentManagementServiceTransient(clientId, sharedSecret);
+builder.Services.AddEtsyReviewManagementServiceTransient(clientId, sharedSecret);
 builder.Services.AddEtsyListingManagementServiceTransient(clientId, sharedSecret);
 builder.Services.AddEtsyShopManagementServiceScoped(clientId, sharedSecret);
 

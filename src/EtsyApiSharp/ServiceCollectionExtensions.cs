@@ -3,6 +3,7 @@ using EtsyApiSharp.Services.Auths;
 using EtsyApiSharp.Services.ListingManagements;
 using EtsyApiSharp.Services.PaymentManagements;
 using EtsyApiSharp.Services.ReceiptManagements;
+using EtsyApiSharp.Services.ReviewManagements;
 using EtsyApiSharp.Services.ShopManagements;
 using EtsyApiSharp.Services.UserManagements;
 using Microsoft.Extensions.DependencyInjection;
@@ -82,6 +83,27 @@ public static class ServiceCollectionExtensions
     {
         services.AddHttpClient(EtsyPaymentManagementService.HttpClientName);
         return services.AddSingleton<IEtsyPaymentManagementService, EtsyPaymentManagementService>(provider => new EtsyPaymentManagementService(
+            provider.GetRequiredService<IHttpClientFactory>(), clientId, sharedSecret));
+    }
+
+    public static IServiceCollection AddEtsyReviewManagementServiceScoped(this IServiceCollection services, string clientId, string sharedSecret)
+    {
+        services.AddHttpClient(EtsyReviewManagementService.HttpClientName);
+        return services.AddScoped<IEtsyReviewManagementService, EtsyReviewManagementService>(provider => new EtsyReviewManagementService(
+            provider.GetRequiredService<IHttpClientFactory>(), clientId, sharedSecret));
+    }
+
+    public static IServiceCollection AddEtsyReviewManagementServiceTransient(this IServiceCollection services, string clientId, string sharedSecret)
+    {
+        services.AddHttpClient(EtsyReviewManagementService.HttpClientName);
+        return services.AddTransient<IEtsyReviewManagementService, EtsyReviewManagementService>(provider => new EtsyReviewManagementService(
+            provider.GetRequiredService<IHttpClientFactory>(), clientId, sharedSecret));
+    }
+
+    public static IServiceCollection AddEtsyReviewManagementServiceSingleton(this IServiceCollection services, string clientId, string sharedSecret)
+    {
+        services.AddHttpClient(EtsyReviewManagementService.HttpClientName);
+        return services.AddSingleton<IEtsyReviewManagementService, EtsyReviewManagementService>(provider => new EtsyReviewManagementService(
             provider.GetRequiredService<IHttpClientFactory>(), clientId, sharedSecret));
     }
 
