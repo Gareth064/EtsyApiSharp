@@ -58,6 +58,12 @@ Treat the Etsy OpenAPI 3.0.0 specification as the source of truth for all Shop M
 
 When shop-service behavior changes, update `src/BlazorTestApp/Pages/Services/Shop.razor` for all non-destructive reads. Mock HTTP boundaries in tests and cover each route, method, query or form serialization, authentication behavior, response parsing, invalid input, cancellation, and DI registration.
 
+## Shop Policy API maintenance
+
+Treat the Etsy OpenAPI 3.0.0 specification as the source of truth for all Shop Policy Management routes, form payloads, response types, and OAuth scopes. Maintain the complete 6-operation surface across return-policy consolidation, creation, collection and single-policy retrieval, update, and deletion. `GetShopReturnPoliciesAsync` and `GetShopReturnPolicyAsync` are public and send only `x-api-key`; consolidation, creation, update, and deletion require `shops_w`. Keep the service on its named `IHttpClientFactory` client, validate IDs and documented return-deadline values, encode forms safely, and expose cancellation through every asynchronous method.
+
+When shop-policy-service behavior changes, update `src/BlazorTestApp/Pages/Services/ShopPolicy.razor` for both non-destructive reads. Keep return-policy writes available through the typed service, but do not add prefilled live-shop mutation buttons unless a safe payload UI is practical. Mock HTTP boundaries in tests and cover every route, method, form serialization, authentication behavior, response parsing, invalid input, cancellation, and DI registration.
+
 ## Payment API maintenance
 
 Treat the Etsy OpenAPI 3.0.0 specification as the source of truth for all Payment Management routes, query parameters, response types, and OAuth scopes. Maintain the complete 5-operation surface across single and ranged payment-account ledger entries, payments by ledger-entry IDs, receipt payments, and payments by shop/payment IDs. Every Payment Management operation requires `x-api-key` and OAuth with `transactions_r`; no Payment Management route is public or mutating. Keep the service on its named `IHttpClientFactory` client, validate IDs, required timestamp ranges, ID collections, and pagination before issuing a request, encode query parameters safely, and expose cancellation through every asynchronous method.

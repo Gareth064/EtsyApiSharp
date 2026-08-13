@@ -21,6 +21,7 @@ services.AddEtsyAuthServiceScoped(clientId, redirectUrl, scopes);
 
 // Register Management Services
 services.AddEtsyShopManagementServiceScoped(clientId, sharedSecret);
+services.AddEtsyShopPolicyManagementServiceScoped(clientId, sharedSecret);
 services.AddEtsyShippingManagementServiceScoped(clientId, sharedSecret);
 services.AddEtsyListingManagementServiceScoped(clientId, sharedSecret);
 services.AddEtsyReceiptManagementServiceScoped(clientId, sharedSecret);
@@ -112,6 +113,29 @@ var section = await shopService.CreateShopSectionAsync(
     new CreateShopSectionRequest { Title = "Seasonal" },
     cancellationToken);
 ```
+
+### Shop Policy service
+
+`IEtsyShopPolicyManagementService` implements all 6 operations currently grouped as Shop Policy Management (the `Shop Return Policy` tag) in Etsy's OpenAPI 3.0.0 specification: return-policy consolidation, creation, collection and single-policy retrieval, update, and deletion.
+
+`GetShopReturnPoliciesAsync` and `GetShopReturnPolicyAsync` are public reads and send only `x-api-key`. Consolidation, creation, update, and deletion require `x-api-key` plus an OAuth access token with `shops_w`. Write operations use `application/x-www-form-urlencoded` bodies. Every method validates positive IDs, validates the documented return-deadline values (7, 14, 21, 30, 45, 60, or 90 days), accepts a `CancellationToken`, and uses the named `EtsyShopPolicyManagementService.HttpClientName` client.
+
+```csharp
+var policies = await shopPolicyService.GetShopReturnPoliciesAsync(shopId, cancellationToken);
+
+var policy = await shopPolicyService.CreateShopReturnPolicyAsync(
+    accessToken,
+    shopId,
+    new CreateShopReturnPolicyRequest
+    {
+        AcceptsReturns = true,
+        AcceptsExchanges = false,
+        ReturnDeadline = 30
+    },
+    cancellationToken);
+```
+
+**Compatibility:** Shop Policy Management is newly available as a separate typed service. Existing Shop Management and Listing Management APIs are unchanged; `GetListingsByShopReturnPolicyAsync` remains part of Listing Management because Etsy groups that operation there.
 
 ### Shipping service
 

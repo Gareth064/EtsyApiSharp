@@ -5,6 +5,7 @@ using EtsyApiSharp.Services.PaymentManagements;
 using EtsyApiSharp.Services.ReceiptManagements;
 using EtsyApiSharp.Services.ReviewManagements;
 using EtsyApiSharp.Services.ShopManagements;
+using EtsyApiSharp.Services.ShopPolicyManagements;
 using EtsyApiSharp.Services.ShippingManagements;
 using EtsyApiSharp.Services.UserManagements;
 using Microsoft.Extensions.DependencyInjection;
@@ -141,6 +142,27 @@ public static class ServiceCollectionExtensions
     {
         services.AddHttpClient(EtsyShopManagementService.HttpClientName);
         return services.AddSingleton<IEtsyShopManagementService, EtsyShopManagementService>(provider => new EtsyShopManagementService(
+            provider.GetRequiredService<IHttpClientFactory>(), clientId, sharedSecret));
+    }
+
+    public static IServiceCollection AddEtsyShopPolicyManagementServiceScoped(this IServiceCollection services, string clientId, string sharedSecret)
+    {
+        services.AddHttpClient(EtsyShopPolicyManagementService.HttpClientName);
+        return services.AddScoped<IEtsyShopPolicyManagementService, EtsyShopPolicyManagementService>(provider => new EtsyShopPolicyManagementService(
+            provider.GetRequiredService<IHttpClientFactory>(), clientId, sharedSecret));
+    }
+
+    public static IServiceCollection AddEtsyShopPolicyManagementServiceTransient(this IServiceCollection services, string clientId, string sharedSecret)
+    {
+        services.AddHttpClient(EtsyShopPolicyManagementService.HttpClientName);
+        return services.AddTransient<IEtsyShopPolicyManagementService, EtsyShopPolicyManagementService>(provider => new EtsyShopPolicyManagementService(
+            provider.GetRequiredService<IHttpClientFactory>(), clientId, sharedSecret));
+    }
+
+    public static IServiceCollection AddEtsyShopPolicyManagementServiceSingleton(this IServiceCollection services, string clientId, string sharedSecret)
+    {
+        services.AddHttpClient(EtsyShopPolicyManagementService.HttpClientName);
+        return services.AddSingleton<IEtsyShopPolicyManagementService, EtsyShopPolicyManagementService>(provider => new EtsyShopPolicyManagementService(
             provider.GetRequiredService<IHttpClientFactory>(), clientId, sharedSecret));
     }
 

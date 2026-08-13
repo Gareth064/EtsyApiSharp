@@ -6,6 +6,7 @@ using EtsyApiSharp.Services.PaymentManagements;
 using EtsyApiSharp.Services.ReceiptManagements;
 using EtsyApiSharp.Services.ReviewManagements;
 using EtsyApiSharp.Services.ShopManagements;
+using EtsyApiSharp.Services.ShopPolicyManagements;
 using EtsyApiSharp.Services.ShippingManagements;
 using EtsyApiSharp.Services.UserManagements;
 
@@ -59,6 +60,13 @@ builder.Services.AddScoped<IEtsyShopManagementService>(provider =>
 {
     var settings = provider.GetRequiredService<RuntimeEtsySettings>();
     return new EtsyShopManagementService(provider.GetRequiredService<IHttpClientFactory>(), settings.ClientIdForService, settings.SharedSecretForService);
+});
+
+builder.Services.AddHttpClient(EtsyShopPolicyManagementService.HttpClientName);
+builder.Services.AddTransient<IEtsyShopPolicyManagementService>(provider =>
+{
+    var settings = provider.GetRequiredService<RuntimeEtsySettings>();
+    return new EtsyShopPolicyManagementService(provider.GetRequiredService<IHttpClientFactory>(), settings.ClientIdForService, settings.SharedSecretForService);
 });
 
 builder.Services.AddHttpClient(EtsyShippingManagementService.HttpClientName);

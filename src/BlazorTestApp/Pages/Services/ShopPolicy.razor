@@ -1,0 +1,54 @@
+@page "/services/shop-policy"
+@using BlazorTestApp.Components
+@using BlazorTestApp.Data
+@using EtsyApiSharp.Services.ShopPolicyManagements
+@using System.Text.Json
+@inject IEtsyShopPolicyManagementService ShopPolicyService
+
+<ServiceTemplate ServiceTitle="Shop Policy Services" ShowResultsPane="true" ResultsToDisplay="@resultToDisplay">
+    <input @bind="shopId" placeholder="Shop ID (defaults to authorised shop)" />
+    <button @onclick="GetReturnPoliciesAsync">Return policies</button>
+    <br />
+    <input @bind="returnPolicyId" placeholder="Return policy ID" />
+    <button @onclick="GetReturnPolicyAsync">Return policy</button>
+    <p>All six Shop Policy Management operations are available through the typed service. This harness exposes its two non-destructive API-key-only reads; return-policy writes require deliberate request payloads in application code.</p>
+</ServiceTemplate>
+
+@code {
+    private string resultToDisplay = string.Empty;
+    private string shopId = string.Empty;
+    private string returnPolicyId = string.Empty;
+
+    private async Task GetReturnPoliciesAsync() => await DisplayAsync(ShopPolicyService.GetShopReturnPoliciesAsync(GetShopId()));
+
+    private async Task GetReturnPolicyAsync() => await DisplayAsync(ShopPolicyService.GetShopReturnPolicyAsync(
+        GetShopId(),
+        GetRequiredId(returnPolicyId, "return policy ID")));
+
+    private long GetShopId() => string.IsNullOrWhiteSpace(shopId)
+        ? AppState.ShopId
+        : GetRequiredId(shopId, "shop ID");
+
+    private static long GetRequiredId(string value, string name) => long.TryParse(value, out var id) && id > 0
+        ? id
+        : throw new InvalidOperationException($"A positive {name} is required.");
+
+    private async Task DisplayAsync<T>(Task<T> operation)
+    {
+        try
+        {
+            DisplayResultsOnScreen(await operation);
+        }
+        catch (Exception exception)
+        {
+            resultToDisplay = exception.Message;
+        }
+    }
+
+    private void DisplayResultsOnScreen<T>(T result)
+    {
+        var json = JsonSerializer.Serialize(result);
+        using var document = JsonDocument.Parse(json);
+        resultToDisplay = JsonSerializer.Serialize(document, new JsonSerializerOptions { WriteIndented = true });
+    }
+}

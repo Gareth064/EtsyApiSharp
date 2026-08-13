@@ -239,4 +239,16 @@ public class Url
         public static string GetUserAddress(long userAddressId) =>
             $"/v3/application/user/addresses/{userAddressId}";
     }
+
+    public static class ShopPolicyUrls
+    {
+        public static string GetShopReturnPolicies(long shopId) =>
+            $"/v3/application/shops/{shopId}/policies/return";
+
+        public static string GetShopReturnPolicy(long shopId, long returnPolicyId) =>
+            $"/v3/application/shops/{shopId}/policies/return/{returnPolicyId}";
+
+        public static string ConsolidateShopReturnPolicies(long shopId) =>
+            $"/v3/application/shops/{shopId}/policies/return/consolidate";
+    }
 }
