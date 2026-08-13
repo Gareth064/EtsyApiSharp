@@ -1,5 +1,7 @@
 @using BlazorTestApp.Data
 @inject RuntimeEtsySettings EtsySettings
+@inject ShopWorkspaceState ShopWorkspace
+@inject IJSRuntime JSRuntime
 
 @inherits LayoutComponentBase
 
@@ -25,8 +27,10 @@
                     <span>Active shop</span>
                     <select @onchange="ShopChanged" aria-label="Active shop">
                         <option value="" selected="@(AppState.ShopId == 0)">Choose a shop</option>
-                        <option value="17255024" selected="@(AppState.ShopId == 17255024)">Template Runner</option>
-                        <option value="10919014" selected="@(AppState.ShopId == 10919014)">Lavender Eight</option>
+                        @foreach (var shop in ShopWorkspace.Shops)
+                        {
+                            <option value="@shop.Id" selected="@(AppState.ShopId == shop.Id)">@shop.Name</option>
+                        }
                     </select>
                 </label>
             </div>
@@ -42,7 +46,19 @@
 @code {
     protected override void OnInitialized()
     {
-        EtsySettings.Changed += StateHasChanged;
+        EtsySettings.Changed += OnSettingsChanged;
+        ShopWorkspace.Changed += OnSettingsChanged;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+            await ShopWorkspace.LoadAsync(JSRuntime);
+    }
+
+    private void OnSettingsChanged()
+    {
+        _ = InvokeAsync(StateHasChanged);
     }
 
     private void ShopChanged(ChangeEventArgs e)
@@ -53,6 +69,7 @@
 
     public void Dispose()
     {
-        EtsySettings.Changed -= StateHasChanged;
+        EtsySettings.Changed -= OnSettingsChanged;
+        ShopWorkspace.Changed -= OnSettingsChanged;
     }
 }

@@ -71,4 +71,5 @@ public sealed class RuntimeEtsySettings
 
         Changed?.Invoke();
     }
+
 }

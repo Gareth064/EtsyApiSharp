@@ -15,6 +15,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddSingleton<RuntimeEtsySettings>();
+builder.Services.AddScoped<ShopWorkspaceState>();
 builder.Services.AddHttpClient();
 
 builder.Services.AddHttpClient(EtsyAuthService.HttpClientName);
