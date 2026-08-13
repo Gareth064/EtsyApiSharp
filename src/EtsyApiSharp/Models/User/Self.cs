@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 namespace EtsyApiSharp.Models;
 
 /// <summary>
-/// Identifies the Etsy user and shop associated with an OAuth access token.
+/// Represents basic information for the user making an authenticated request.
 /// </summary>
 public class Self
 {

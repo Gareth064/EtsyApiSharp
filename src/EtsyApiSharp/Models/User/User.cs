@@ -14,7 +14,8 @@ public class User
     public long UserId { get; set; }
 
     /// <summary>
-    /// An email address string for the user's primary email address.
+    /// An email address string for the user's primary email address. Etsy grants access to this
+    /// field case-by-case for qualifying third-party integrations.
     /// </summary>
     [JsonPropertyName("primary_email")]
     public string? PrimaryEmail { get; set; }

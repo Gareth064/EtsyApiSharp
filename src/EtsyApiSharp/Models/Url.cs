@@ -232,5 +232,11 @@ public class Url
 
         public static string GetMe() =>
             "/v3/application/users/me";
+
+        public static string GetUserAddresses() =>
+            "/v3/application/user/addresses";
+
+        public static string GetUserAddress(long userAddressId) =>
+            $"/v3/application/user/addresses/{userAddressId}";
     }
 }

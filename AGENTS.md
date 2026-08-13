@@ -70,6 +70,12 @@ Treat the Etsy OpenAPI 3.0.0 specification as the source of truth for all Review
 
 When review-service behavior changes, update `src/BlazorTestApp/Pages/Services/Review.razor` for all non-destructive reads. Mock HTTP boundaries in tests and cover each route, method, query/authentication behavior, response parsing, invalid input, cancellation, and DI registration.
 
+## User API maintenance
+
+Treat the Etsy OpenAPI 3.0.0 specification as the source of truth for all User Management routes, query parameters, response types, and OAuth scopes. Maintain the complete 5-operation surface: user-profile lookup, lookup of the authenticated user's user/shop IDs, user-address collection and single-address retrieval, and user-address deletion. Every User Management operation requires `x-api-key` and OAuth: `GetUserAsync` requires `email_r`, `GetMeAsync` requires `shops_r`, and all address operations (including deletion) currently require `address_r`. No User Management operation is public. Keep the service on its named `IHttpClientFactory` client, validate IDs, pagination, and required access tokens before issuing a request, encode query parameters safely, and expose cancellation through every asynchronous method.
+
+When user-service behavior changes, update `src/BlazorTestApp/Pages/Services/User.razor` for all four non-destructive reads. Keep address deletion available through the typed service, but do not add a prefilled live deletion button unless a safe confirmation UI is practical. Mock HTTP boundaries in tests and cover each route, method, query/authentication behavior, response parsing, invalid input, cancellation, and DI registration.
+
 ## Shipping API maintenance
 
 Treat the Etsy OpenAPI 3.0.0 specification as the source of truth for all Shipping Management routes, form parameters, response types, and OAuth scopes. Maintain the complete 14-operation surface across public shipping-carrier lookup, shipping profiles, profile destinations, and profile upgrades. `GetShippingCarriersAsync` is public and sends only `x-api-key`; profile, destination, and upgrade reads require `shops_r`; their writes require `shops_w`. Keep the service on its named `IHttpClientFactory` client, validate IDs, country codes, documented cost/delivery-time relationships, and pagination before issuing a request, encode form/query parameters safely, and expose cancellation through every asynchronous method.

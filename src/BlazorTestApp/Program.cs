@@ -7,9 +7,10 @@ using EtsyApiSharp.Services.ReceiptManagements;
 using EtsyApiSharp.Services.ReviewManagements;
 using EtsyApiSharp.Services.ShopManagements;
 using EtsyApiSharp.Services.ShippingManagements;
+using EtsyApiSharp.Services.UserManagements;
 
 var builder = WebApplication.CreateBuilder(args);
-var scopes = new[] { Scope.shops_r, Scope.shops_w, Scope.cart_r, Scope.listings_w, Scope.listings_r, Scope.email_r, Scope.transactions_r };
+var scopes = new[] { Scope.address_r, Scope.shops_r, Scope.shops_w, Scope.cart_r, Scope.listings_w, Scope.listings_r, Scope.email_r, Scope.transactions_r };
 
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
@@ -65,6 +66,13 @@ builder.Services.AddTransient<IEtsyShippingManagementService>(provider =>
 {
     var settings = provider.GetRequiredService<RuntimeEtsySettings>();
     return new EtsyShippingManagementService(provider.GetRequiredService<IHttpClientFactory>(), settings.ClientIdForService, settings.SharedSecretForService);
+});
+
+builder.Services.AddHttpClient(EtsyUserManagementService.HttpClientName);
+builder.Services.AddTransient<IEtsyUserManagementService>(provider =>
+{
+    var settings = provider.GetRequiredService<RuntimeEtsySettings>();
+    return new EtsyUserManagementService(provider.GetRequiredService<IHttpClientFactory>(), settings.ClientIdForService, settings.SharedSecretForService);
 });
 
 var app = builder.Build();

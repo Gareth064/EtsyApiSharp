@@ -35,7 +35,7 @@ public class UserAddress
     /// The second line of the user's address.
     /// </summary>
     [JsonPropertyName("second_line")]
-    public string SecondLine { get; set; }
+    public string? SecondLine { get; set; }
 
     /// <summary>
     /// The city field of the user's address.
@@ -47,25 +47,25 @@ public class UserAddress
     /// The state field of the user's address.
     /// </summary>
     [JsonPropertyName("state")]
-    public string State { get; set; }
+    public string? State { get; set; }
 
     /// <summary>
     /// The zip code field of the user's address.
     /// </summary>
     [JsonPropertyName("zip")]
-    public string Zip { get; set; }
+    public string? Zip { get; set; }
 
     /// <summary>
     /// The ISO code of the country in this address.
     /// </summary>
     [JsonPropertyName("iso_country_code")]
-    public string IsoCountryCode { get; set; }
+    public string? IsoCountryCode { get; set; }
 
     /// <summary>
     /// The name of the user's country.
     /// </summary>
     [JsonPropertyName("country_name")]
-    public string CountryName { get; set; }
+    public string? CountryName { get; set; }
 
     /// <summary>
     /// Is this the user's default shipping address.

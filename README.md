@@ -214,6 +214,25 @@ var shopReviews = await reviewService.GetReviewsByShopAsync(shopId, cancellation
 
 **Compatibility:** `EtsyListResponse<T>.Count`, review timestamps, and review ratings now use `long`, matching Etsy's documented `int64` response fields. `ListingReview.Review` and review image URLs are nullable because Etsy may omit them; `TransactionReview` now also exposes the documented `created_timestamp` and `updated_timestamp` fields.
 
+### User service
+
+`IEtsyUserManagementService` implements all 5 operations currently grouped as User Management in Etsy's OpenAPI 3.0.0 specification: user-profile and authenticated user/shop-ID lookups, address collection and single-address retrieval, and address deletion.
+
+Every operation requires `x-api-key` and OAuth. `GetUserAsync` requires `email_r` and Etsy limits profiles to the authenticated user or linked buyers; `GetMeAsync` requires `shops_r`; and the three address operations require `address_r` (including deletion, as currently declared by Etsy's specification). Address-list retrieval validates pagination (`limit` 1–100 and non-negative `offset`); all methods validate IDs where applicable, reject missing access tokens, accept a `CancellationToken`, and use the named `EtsyUserManagementService.HttpClientName` client. There are no public User Management operations.
+
+```csharp
+var me = await userService.GetMeAsync(accessToken, cancellationToken);
+
+var user = await userService.GetUserAsync(
+    accessToken,
+    me.Data!.UserId,
+    cancellationToken);
+
+var addresses = await userService.GetUserAddressesAsync(accessToken, cancellationToken: cancellationToken);
+```
+
+**Compatibility:** three User Address endpoints are newly available. `UserAddress` location fields that Etsy may omit are now nullable; `User.PrimaryEmail` remains nullable because Etsy returns it only for integrations granted field-level access.
+
 ## Etsy API Resources
 
 - [Etsy Open API documentation](https://developers.etsy.com/documentation/)
