@@ -1,44 +1,45 @@
-﻿@page "/"
+@page "/"
 @using BlazorTestApp.Components
 @using BlazorTestApp.Data
 @using EtsyApiSharp.Helpers
-@using EtsyApiSharp.Models
 @using EtsyApiSharp.Services.Auths
 @inject NavigationManager Navigation
 @inject IEtsyAuthService AuthService
 
-<ServiceTemplate ServiceTitle="Auth Services" ShowResultsPane="false" ResultsToDisplay="">
-<button @onclick="Authorise">Get Authorization Code</button>
-<br />
-<label>Authorization Code: </label><label>@AppState.AuthorizationCode</label>
-<br />
-<br />
-<br />
-<button @onclick="GetAccessToken">Get Access Token</button>
-<br />
-<label>Access Token: </label><label>@AppState.TokenResponse</label>
+<section class="welcome-banner">
+    <div>
+        <p class="eyebrow">Welcome back</p>
+        <h1>Keep your shop moving.</h1>
+        <p>Connect an Etsy account, select a shop, and test the API surfaces that support your seller workflow.</p>
+    </div>
+    <div class="welcome-illustration" aria-hidden="true"><span>✦</span><span>✳</span><span>●</span></div>
+</section>
+
+<ServiceTemplate ServiceTitle="Connect your account" ShowResultsPane="false" ResultsToDisplay="">
+    <button @onclick="Authorise">Connect with Etsy</button>
+    <div class="credential-value">
+        <span>Authorization code</span>
+        <code>@(string.IsNullOrWhiteSpace(AppState.AuthorizationCode) ? "Waiting for authorization" : "Authorization received")</code>
+    </div>
+    <button @onclick="GetAccessToken">Get access token</button>
+    <div class="credential-value">
+        <span>Access token</span>
+        <code>@(string.IsNullOrWhiteSpace(AppState.TokenResponse) ? "Not connected" : "Connected")</code>
+    </div>
 </ServiceTemplate>
 
-
 @code {
-    List<Scope> scopes = new List<Scope> { Scope.shops_r, Scope.shops_w, Scope.cart_r, Scope.listings_w, Scope.listings_r, Scope.email_r, Scope.transactions_r };
-
     private void Authorise()
     {
-        Console.WriteLine("starting");
         AppState.CodeVerifier = AuthHelper.CreateCodeVerifier();
         AppState.OAuthState = AuthHelper.CreateState();
-        var authUri = AuthService.BuildAuthorizationUrl(AppState.CodeVerifier, AppState.OAuthState);
-        Console.WriteLine(authUri);
-        Navigation.NavigateTo(authUri);
+        Navigation.NavigateTo(AuthService.BuildAuthorizationUrl(AppState.CodeVerifier, AppState.OAuthState));
     }
 
     private async Task GetAccessToken()
     {
         var token = await AuthService.GetFirstAccessTokenAsync(AppState.AuthorizationCode, AppState.CodeVerifier);
-        AppState.OnChange += StateHasChanged;
         AppState.TokenResponse = token.AccessToken;
-        AppState.OnChange -= StateHasChanged;
+        await InvokeAsync(StateHasChanged);
     }
-
 }

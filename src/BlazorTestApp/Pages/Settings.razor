@@ -1,0 +1,96 @@
+@page "/settings"
+@using BlazorTestApp.Data
+@inject RuntimeEtsySettings EtsySettings
+
+<PageTitle>Settings · Etsy API Workspace</PageTitle>
+
+<section class="settings-page">
+    <header class="service-heading">
+        <p class="eyebrow">Workspace settings</p>
+        <h1>Connect your Etsy app.</h1>
+        <p>Credentials are kept in memory for this running test app only. They are not read from or saved to app settings.</p>
+    </header>
+
+    <section class="workspace-card settings-card">
+        <div class="card-heading">
+            <span class="card-icon">⚙</span>
+            <div>
+                <h2>Etsy API credentials</h2>
+                <p>Use the keystring and shared secret from your Etsy developer app.</p>
+            </div>
+        </div>
+
+        <EditForm Model="settingsForm" OnSubmit="Save">
+            <div class="settings-fields">
+                <label>
+                    <span>API keystring</span>
+                    <InputText @bind-Value="settingsForm.ClientId" autocomplete="off" placeholder="Your Etsy API keystring" />
+                </label>
+                <label>
+                    <span>Shared secret</span>
+                    <InputText @bind-Value="settingsForm.SharedSecret" type="password" autocomplete="new-password" placeholder="Your Etsy shared secret" />
+                </label>
+            </div>
+
+            @if (!string.IsNullOrWhiteSpace(message))
+            {
+                <p class="settings-message" role="status">@message</p>
+            }
+
+            <div class="settings-actions">
+                <button type="submit">Save credentials</button>
+                @if (EtsySettings.IsConfigured)
+                {
+                    <button type="button" class="secondary-action" @onclick="Clear">Clear credentials</button>
+                }
+            </div>
+        </EditForm>
+
+        <div class="runtime-note">
+            <span class="status-dot @(EtsySettings.IsConfigured ? "is-ready" : string.Empty)"></span>
+            <span>@(EtsySettings.IsConfigured ? "Credentials are available for this app session." : "No credentials are currently loaded.")</span>
+        </div>
+    </section>
+</section>
+
+@code {
+    private readonly SettingsForm settingsForm = new();
+    private string? message;
+
+    protected override void OnInitialized()
+    {
+        settingsForm.ClientId = EtsySettings.ClientId;
+    }
+
+    private void Save(EditContext _)
+    {
+        try
+        {
+            EtsySettings.Configure(settingsForm.ClientId, settingsForm.SharedSecret);
+            AppState.TokenResponse = string.Empty;
+            AppState.AuthorizationCode = string.Empty;
+            settingsForm.SharedSecret = string.Empty;
+            message = "Credentials saved for this running app. Connect with Etsy to start a new session.";
+        }
+        catch (ArgumentException exception)
+        {
+            message = exception.Message;
+        }
+    }
+
+    private void Clear()
+    {
+        EtsySettings.Clear();
+        AppState.TokenResponse = string.Empty;
+        AppState.AuthorizationCode = string.Empty;
+        settingsForm.ClientId = string.Empty;
+        settingsForm.SharedSecret = string.Empty;
+        message = "Credentials cleared from this running app.";
+    }
+
+    private sealed class SettingsForm
+    {
+        public string ClientId { get; set; } = string.Empty;
+        public string SharedSecret { get; set; } = string.Empty;
+    }
+}

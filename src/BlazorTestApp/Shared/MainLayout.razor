@@ -1,34 +1,58 @@
-﻿@using BlazorTestApp.Data
+@using BlazorTestApp.Data
+@inject RuntimeEtsySettings EtsySettings
 
 @inherits LayoutComponentBase
 
-<PageTitle>BlazorTestApp</PageTitle>
+<PageTitle>Etsy API Workspace</PageTitle>
 
-<div class="page">
-    <div class="sidebar">
+<div class="app-shell">
+    <aside class="sidebar">
         <NavMenu />
-    </div>
+    </aside>
 
-    <main>
-        <div class="top-row px-4">
-                <select @onchange=ShopChanged>
-                    <option value="" selected="selected">Choose Shop</option>
-                    <option value="17255024">Template Runner</option>
-                    <option value="10919014">Lavender Eight</option>
-                </select>
-        </div>
-        <article class="content px-4">
+    <main class="workspace">
+        <header class="workspace-header">
+            <div class="workspace-context">
+                <span class="workspace-kicker">Seller workspace</span>
+                <span class="workspace-title">API test bench</span>
+            </div>
+            <div class="workspace-tools">
+                <span class="connection-state @(string.IsNullOrWhiteSpace(AppState.TokenResponse) ? "is-idle" : "is-connected")">
+                    <span class="status-dot"></span>
+                    @(EtsySettings.IsConfigured ? (string.IsNullOrWhiteSpace(AppState.TokenResponse) ? "Ready to connect" : "Connected") : "Set up credentials")
+                </span>
+                <label class="shop-picker">
+                    <span>Active shop</span>
+                    <select @onchange="ShopChanged" aria-label="Active shop">
+                        <option value="" selected="@(AppState.ShopId == 0)">Choose a shop</option>
+                        <option value="17255024" selected="@(AppState.ShopId == 17255024)">Template Runner</option>
+                        <option value="10919014" selected="@(AppState.ShopId == 10919014)">Lavender Eight</option>
+                    </select>
+                </label>
+            </div>
+        </header>
+        <article class="content">
             @Body
         </article>
     </main>
 </div>
 
+@implements IDisposable
+
 @code {
+    protected override void OnInitialized()
+    {
+        EtsySettings.Changed += StateHasChanged;
+    }
+
     private void ShopChanged(ChangeEventArgs e)
     {
-        var shopId = Convert.ToInt64(e.Value);
-        AppState.OnChange += StateHasChanged;
-        AppState.ShopId = shopId;
-        AppState.OnChange -= StateHasChanged;        
+        AppState.ShopId = long.TryParse(e.Value?.ToString(), out var shopId) ? shopId : 0;
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        EtsySettings.Changed -= StateHasChanged;
     }
 }
