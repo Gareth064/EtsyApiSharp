@@ -1,10 +1,10 @@
 using System.Text.Json.Serialization;
 
 namespace EtsyApiSharp.Models;
-
 /// <summary>
-/// Represents a refund, which applies to a prior Etsy payment. All monetary amounts are in USD pennies unless otherwise specified.
+/// Represents Payment Adjustment.
 /// </summary>
+
 public class PaymentAdjustment
 {
     /// <summary>

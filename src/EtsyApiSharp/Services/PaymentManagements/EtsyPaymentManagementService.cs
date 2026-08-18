@@ -10,11 +10,17 @@ namespace EtsyApiSharp.Services.PaymentManagements;
 /// <inheritdoc />
 public class EtsyPaymentManagementService : IEtsyPaymentManagementService
 {
+    /// <summary>
+    /// The Http Client Name value.
+    /// </summary>
     public const string HttpClientName = "EtsyApiSharp.Payments";
 
     private const long MinimumEtsyTimestamp = 946684800;
     private readonly string apiKey;
     private readonly IHttpClientFactory httpClientFactory;
+    /// <summary>
+    /// Initializes a new instance of the EtsyPaymentManagementService class.
+    /// </summary>
 
     public EtsyPaymentManagementService(IHttpClientFactory httpClientFactory, string clientId, string sharedSecret)
     {
@@ -27,6 +33,9 @@ public class EtsyPaymentManagementService : IEtsyPaymentManagementService
         this.httpClientFactory = httpClientFactory;
         apiKey = $"{clientId}:{sharedSecret}";
     }
+    /// <summary>
+    /// Executes the Get Shop Payment Account Ledger Entry operation.
+    /// </summary>
 
     public Task<ApiResponse<PaymentAccountLedgerEntry>> GetShopPaymentAccountLedgerEntryAsync(
         string accessToken, long shopId, long ledgerEntryId, CancellationToken cancellationToken = default)
@@ -36,6 +45,9 @@ public class EtsyPaymentManagementService : IEtsyPaymentManagementService
         return SendAsync<PaymentAccountLedgerEntry>(HttpMethod.Get,
             Url.PaymentUrls.GetShopPaymentAccountLedgerEntry(shopId, ledgerEntryId), null, accessToken, cancellationToken);
     }
+    /// <summary>
+    /// Executes the Get Shop Payment Account Ledger Entries operation.
+    /// </summary>
 
     public Task<ApiResponse<EtsyListResponse<PaymentAccountLedgerEntry>>> GetShopPaymentAccountLedgerEntriesAsync(
         string accessToken, long shopId, GetShopPaymentAccountLedgerEntriesFilter filter, CancellationToken cancellationToken = default)
@@ -51,6 +63,9 @@ public class EtsyPaymentManagementService : IEtsyPaymentManagementService
         return SendAsync<EtsyListResponse<PaymentAccountLedgerEntry>>(HttpMethod.Get,
             Url.PaymentUrls.GetShopPaymentAccountLedgerEntries(shopId), query, accessToken, cancellationToken);
     }
+    /// <summary>
+    /// Executes the Get Payment Account Ledger Entry Payments operation.
+    /// </summary>
 
     public Task<ApiResponse<EtsyListResponse<Payment>>> GetPaymentAccountLedgerEntryPaymentsAsync(
         string accessToken, long shopId, IReadOnlyCollection<long> ledgerEntryIds, CancellationToken cancellationToken = default)
@@ -60,6 +75,9 @@ public class EtsyPaymentManagementService : IEtsyPaymentManagementService
         return SendAsync<EtsyListResponse<Payment>>(HttpMethod.Get,
             Url.PaymentUrls.GetPaymentAccountLedgerEntryPayments(shopId), CreateIdsQuery("ledger_entry_ids", ledgerEntryIds), accessToken, cancellationToken);
     }
+    /// <summary>
+    /// Executes the Get Shop Payment By Receipt Id operation.
+    /// </summary>
 
     public Task<ApiResponse<EtsyListResponse<Payment>>> GetShopPaymentByReceiptIdAsync(
         string accessToken, long shopId, long receiptId, CancellationToken cancellationToken = default)
@@ -69,6 +87,9 @@ public class EtsyPaymentManagementService : IEtsyPaymentManagementService
         return SendAsync<EtsyListResponse<Payment>>(HttpMethod.Get,
             Url.PaymentUrls.GetShopPaymentByReceiptId(shopId, receiptId), null, accessToken, cancellationToken);
     }
+    /// <summary>
+    /// Executes the Get Payments operation.
+    /// </summary>
 
     public Task<ApiResponse<EtsyListResponse<Payment>>> GetPaymentsAsync(
         string accessToken, long shopId, IReadOnlyCollection<long> paymentIds, CancellationToken cancellationToken = default)

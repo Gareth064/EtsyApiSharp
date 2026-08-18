@@ -6,13 +6,22 @@ using System.Globalization;
 using System.Net.Http.Headers;
 
 namespace EtsyApiSharp.Services.ShopManagements;
+/// <summary>
+/// Represents Etsy Shop Management Service.
+/// </summary>
 
 public class EtsyShopManagementService : IEtsyShopManagementService
 {
+    /// <summary>
+    /// The Http Client Name value.
+    /// </summary>
     public const string HttpClientName = "EtsyApiSharp.Shops";
 
     private readonly string apiKey;
     private readonly IHttpClientFactory httpClientFactory;
+    /// <summary>
+    /// Initializes a new instance of the EtsyShopManagementService class.
+    /// </summary>
 
     public EtsyShopManagementService(
         IHttpClientFactory httpClientFactory,
@@ -30,6 +39,9 @@ public class EtsyShopManagementService : IEtsyShopManagementService
         this.httpClientFactory = httpClientFactory;
         apiKey = $"{clientId}:{sharedSecret}";
     }
+    /// <summary>
+    /// Executes the Get Shop By Owner User Id operation.
+    /// </summary>
 
     public Task<ApiResponse<Shop>> GetShopByOwnerUserIdAsync(
         long userId,
@@ -45,6 +57,9 @@ public class EtsyShopManagementService : IEtsyShopManagementService
             null,
             cancellationToken);
     }
+    /// <summary>
+    /// Executes the Get Shop operation.
+    /// </summary>
 
     public Task<ApiResponse<Shop>> GetShopAsync(
         long shopId,
@@ -60,6 +75,9 @@ public class EtsyShopManagementService : IEtsyShopManagementService
             null,
             cancellationToken);
     }
+    /// <summary>
+    /// Executes the Update Shop operation.
+    /// </summary>
 
     public Task<ApiResponse<Shop>> UpdateShopAsync(
         string accessToken,
@@ -95,6 +113,9 @@ public class EtsyShopManagementService : IEtsyShopManagementService
             new FormUrlEncodedContent(formData),
             cancellationToken);
     }
+    /// <summary>
+    /// Executes the Find Shops operation.
+    /// </summary>
 
     public Task<ApiResponse<EtsyListResponse<Shop>>> FindShopsAsync(
         string shopName,
@@ -128,6 +149,9 @@ public class EtsyShopManagementService : IEtsyShopManagementService
             null,
             cancellationToken);
     }
+    /// <summary>
+    /// Executes the Get Shop Production Partners operation.
+    /// </summary>
 
     public Task<ApiResponse<EtsyListResponse<ShopProductionPartner>>> GetShopProductionPartnersAsync(
         string accessToken,
@@ -139,6 +163,9 @@ public class EtsyShopManagementService : IEtsyShopManagementService
 
         return SendListAsync<ShopProductionPartner>(HttpMethod.Get, Url.ShopUrls.GetShopProductionPartners(shopId), null, accessToken, null, cancellationToken);
     }
+    /// <summary>
+    /// Executes the Create Shop Section operation.
+    /// </summary>
 
     public Task<ApiResponse<ShopSection>> CreateShopSectionAsync(
         string accessToken,
@@ -153,6 +180,9 @@ public class EtsyShopManagementService : IEtsyShopManagementService
 
         return SendAsync<ShopSection>(HttpMethod.Post, Url.ShopUrls.GetShopSections(shopId), null, accessToken, CreateSectionContent(section.Title), cancellationToken);
     }
+    /// <summary>
+    /// Executes the Get Shop Sections operation.
+    /// </summary>
 
     public Task<ApiResponse<EtsyListResponse<ShopSection>>> GetShopSectionsAsync(
         long shopId,
@@ -161,6 +191,9 @@ public class EtsyShopManagementService : IEtsyShopManagementService
         ValidateId(shopId, nameof(shopId));
         return SendListAsync<ShopSection>(HttpMethod.Get, Url.ShopUrls.GetShopSections(shopId), null, null, null, cancellationToken);
     }
+    /// <summary>
+    /// Executes the Delete Shop Section operation.
+    /// </summary>
 
     public Task<ApiResponse<object>> DeleteShopSectionAsync(
         string accessToken,
@@ -173,6 +206,9 @@ public class EtsyShopManagementService : IEtsyShopManagementService
         ValidateId(shopSectionId, nameof(shopSectionId));
         return SendAsync<object>(HttpMethod.Delete, Url.ShopUrls.GetShopSection(shopId, shopSectionId), null, accessToken, null, cancellationToken);
     }
+    /// <summary>
+    /// Executes the Get Shop Section operation.
+    /// </summary>
 
     public Task<ApiResponse<ShopSection>> GetShopSectionAsync(
         long shopId,
@@ -183,6 +219,9 @@ public class EtsyShopManagementService : IEtsyShopManagementService
         ValidateId(shopSectionId, nameof(shopSectionId));
         return SendAsync<ShopSection>(HttpMethod.Get, Url.ShopUrls.GetShopSection(shopId, shopSectionId), null, null, null, cancellationToken);
     }
+    /// <summary>
+    /// Executes the Update Shop Section operation.
+    /// </summary>
 
     public Task<ApiResponse<ShopSection>> UpdateShopSectionAsync(
         string accessToken,

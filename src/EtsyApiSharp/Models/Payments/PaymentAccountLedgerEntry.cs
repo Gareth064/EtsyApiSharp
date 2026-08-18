@@ -1,10 +1,10 @@
 using System.Text.Json.Serialization;
 
 namespace EtsyApiSharp.Models;
-
 /// <summary>
-/// Represents an entry in a shop's ledger.
+/// Represents Payment Account Ledger Entry.
 /// </summary>
+
 public class PaymentAccountLedgerEntry
 {
     /// <summary>

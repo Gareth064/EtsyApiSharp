@@ -6,12 +6,12 @@ namespace EtsyApiSharp.Models.Filters;
 public class GetShopPaymentAccountLedgerEntriesFilter : EtsyFilterBase
 {
     /// <summary>
-    /// Gets or sets the earliest creation time, as a Unix timestamp. Required by Etsy.
+    /// Gets or sets the Min Created.
     /// </summary>
     public long MinCreated { get; set; }
-
     /// <summary>
-    /// Gets or sets the latest creation time, as a Unix timestamp. Required by Etsy.
+    /// Gets or sets the Max Created.
     /// </summary>
+
     public long MaxCreated { get; set; }
 }

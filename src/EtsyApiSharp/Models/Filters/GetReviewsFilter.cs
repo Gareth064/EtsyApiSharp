@@ -6,12 +6,12 @@ namespace EtsyApiSharp.Models.Filters;
 public class GetReviewsFilter : EtsyFilterBase
 {
     /// <summary>
-    /// Gets or sets the earliest review creation time, as a Unix timestamp.
+    /// Gets or sets the Min Created.
     /// </summary>
     public long? MinCreated { get; set; }
-
     /// <summary>
-    /// Gets or sets the latest review creation time, as a Unix timestamp.
+    /// Gets or sets the Max Created.
     /// </summary>
+
     public long? MaxCreated { get; set; }
 }

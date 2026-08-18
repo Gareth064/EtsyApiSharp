@@ -3,6 +3,9 @@ using EtsyApiSharp.Models.Common;
 using EtsyApiSharp.Models.Filters;
 
 namespace EtsyApiSharp.Services.ShopManagements;
+/// <summary>
+/// Represents I Etsy Shop Management Service.
+/// </summary>
 
 public interface IEtsyShopManagementService
 {

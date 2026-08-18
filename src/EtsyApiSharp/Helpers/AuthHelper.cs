@@ -3,16 +3,28 @@ using System.Text;
 using System.Text.RegularExpressions;
 
 namespace EtsyApiSharp.Helpers;
+/// <summary>
+/// Represents Auth Helper.
+/// </summary>
 
 public static class AuthHelper
 {
     private static readonly Regex CodeVerifierPattern = new(
         "^[A-Za-z0-9._~-]{43,128}$",
         RegexOptions.CultureInvariant);
+    /// <summary>
+    /// Executes the Create Code Verifier operation.
+    /// </summary>
 
     public static string CreateCodeVerifier() => Base64UrlEncode(RandomNumberGenerator.GetBytes(32));
+    /// <summary>
+    /// Executes the Create State operation.
+    /// </summary>
 
     public static string CreateState() => Base64UrlEncode(RandomNumberGenerator.GetBytes(32));
+    /// <summary>
+    /// Executes the Create Code Challenge operation.
+    /// </summary>
 
     public static string CreateCodeChallenge(string codeVerifier)
     {

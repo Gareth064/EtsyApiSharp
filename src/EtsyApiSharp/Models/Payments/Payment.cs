@@ -1,10 +1,10 @@
 using System.Text.Json.Serialization;
 
 namespace EtsyApiSharp.Models;
-
 /// <summary>
-/// Represents a payment made with Etsy Payments. All monetary amounts are in USD pennies unless otherwise specified.
+/// Represents Payment.
 /// </summary>
+
 public class Payment
 {
     /// <summary>

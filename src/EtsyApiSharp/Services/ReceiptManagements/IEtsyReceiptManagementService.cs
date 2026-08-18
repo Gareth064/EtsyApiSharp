@@ -3,6 +3,9 @@ using EtsyApiSharp.Models.Common;
 using EtsyApiSharp.Models.Filters;
 
 namespace EtsyApiSharp.Services.ReceiptManagements;
+/// <summary>
+/// Represents I Etsy Receipt Management Service.
+/// </summary>
 
 public interface IEtsyReceiptManagementService
 {

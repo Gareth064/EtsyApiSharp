@@ -7,14 +7,23 @@ using System.Globalization;
 using System.Net.Http.Headers;
 
 namespace EtsyApiSharp.Services.ReceiptManagements;
+/// <summary>
+/// Represents Etsy Receipt Management Service.
+/// </summary>
 
 public class EtsyReceiptManagementService : IEtsyReceiptManagementService
 {
+    /// <summary>
+    /// The Http Client Name value.
+    /// </summary>
     public const string HttpClientName = "EtsyApiSharp.Receipts";
 
     private const long MinimumEtsyTimestamp = 946684800;
     private readonly string apiKey;
     private readonly IHttpClientFactory httpClientFactory;
+    /// <summary>
+    /// Initializes a new instance of the EtsyReceiptManagementService class.
+    /// </summary>
 
     public EtsyReceiptManagementService(
         IHttpClientFactory httpClientFactory,
@@ -32,6 +41,9 @@ public class EtsyReceiptManagementService : IEtsyReceiptManagementService
         this.httpClientFactory = httpClientFactory;
         apiKey = $"{clientId}:{sharedSecret}";
     }
+    /// <summary>
+    /// Executes the Get Shop Receipt operation.
+    /// </summary>
 
     public Task<ApiResponse<ShopReceipt>> GetShopReceiptAsync(
         string accessToken,
@@ -51,6 +63,9 @@ public class EtsyReceiptManagementService : IEtsyReceiptManagementService
             null,
             cancellationToken);
     }
+    /// <summary>
+    /// Executes the Get Shop Receipts operation.
+    /// </summary>
 
     public Task<ApiResponse<EtsyListResponse<ShopReceipt>>> GetShopReceiptsAsync(
         string accessToken,
@@ -69,6 +84,9 @@ public class EtsyReceiptManagementService : IEtsyReceiptManagementService
             null,
             cancellationToken);
     }
+    /// <summary>
+    /// Executes the Update Shop Receipt operation.
+    /// </summary>
 
     public Task<ApiResponse<ShopReceipt>> UpdateShopReceiptAsync(
         string accessToken,
@@ -97,6 +115,9 @@ public class EtsyReceiptManagementService : IEtsyReceiptManagementService
             new FormUrlEncodedContent(formData),
             cancellationToken);
     }
+    /// <summary>
+    /// Executes the Create Receipt Shipment operation.
+    /// </summary>
 
     public Task<ApiResponse<ShopReceipt>> CreateReceiptShipmentAsync(
         string accessToken,
@@ -118,6 +139,9 @@ public class EtsyReceiptManagementService : IEtsyReceiptManagementService
             HttpContentHelper.CreateJsonContent(shipment, ignoreNullValues: true),
             cancellationToken);
     }
+    /// <summary>
+    /// Executes the Get Shop Receipt Transaction operation.
+    /// </summary>
 
     public Task<ApiResponse<ShopReceiptTransaction>> GetShopReceiptTransactionAsync(
         string accessToken,
@@ -136,6 +160,9 @@ public class EtsyReceiptManagementService : IEtsyReceiptManagementService
             null,
             cancellationToken);
     }
+    /// <summary>
+    /// Executes the Get Shop Receipt Transactions By Listing operation.
+    /// </summary>
 
     public Task<ApiResponse<EtsyListResponse<ShopReceiptTransaction>>> GetShopReceiptTransactionsByListingAsync(
         string accessToken,
@@ -156,6 +183,9 @@ public class EtsyReceiptManagementService : IEtsyReceiptManagementService
             null,
             cancellationToken);
     }
+    /// <summary>
+    /// Executes the Get Shop Receipt Transactions By Receipt operation.
+    /// </summary>
 
     public Task<ApiResponse<EtsyListResponse<ShopReceiptTransaction>>> GetShopReceiptTransactionsByReceiptAsync(
         string accessToken,
@@ -175,6 +205,9 @@ public class EtsyReceiptManagementService : IEtsyReceiptManagementService
             null,
             cancellationToken);
     }
+    /// <summary>
+    /// Executes the Get Shop Receipt Transactions By Shop operation.
+    /// </summary>
 
     public Task<ApiResponse<EtsyListResponse<ShopReceiptTransaction>>> GetShopReceiptTransactionsByShopAsync(
         string accessToken,

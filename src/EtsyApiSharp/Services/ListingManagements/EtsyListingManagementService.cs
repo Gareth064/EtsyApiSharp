@@ -13,10 +13,16 @@ namespace EtsyApiSharp.Services.ListingManagements;
 /// </summary>
 public class EtsyListingManagementService : IEtsyListingManagementService
 {
+    /// <summary>
+    /// The Http Client Name value.
+    /// </summary>
     public const string HttpClientName = "EtsyApiSharp.Listings";
 
     private readonly string apiKey;
     private readonly IHttpClientFactory httpClientFactory;
+    /// <summary>
+    /// Initializes a new instance of the EtsyListingManagementService class.
+    /// </summary>
 
     public EtsyListingManagementService(
         IHttpClientFactory httpClientFactory,
@@ -34,6 +40,9 @@ public class EtsyListingManagementService : IEtsyListingManagementService
         this.httpClientFactory = httpClientFactory;
         apiKey = $"{clientId}:{sharedSecret}";
     }
+    /// <summary>
+    /// Executes the Find All Listings Active operation.
+    /// </summary>
 
     public Task<ApiResponse<EtsyListResponse<ShopListingWithAssociations>>> FindAllListingsActiveAsync(
         FindAllListingsActiveFilter? filter = null,
@@ -43,6 +52,9 @@ public class EtsyListingManagementService : IEtsyListingManagementService
         var query = CreateActiveListingsQuery(filter);
         return SendListAsync<ShopListingWithAssociations>(HttpMethod.Get, Url.ListingUrls.FindAllListingsActive(), query, null, cancellationToken);
     }
+    /// <summary>
+    /// Executes the Find All Active Listings By Shop operation.
+    /// </summary>
 
     public Task<ApiResponse<EtsyListResponse<ShopListingWithAssociations>>> FindAllActiveListingsByShopAsync(
         long shopId,
@@ -61,10 +73,16 @@ public class EtsyListingManagementService : IEtsyListingManagementService
 
         return SendListAsync<ShopListingWithAssociations>(HttpMethod.Get, Url.ListingUrls.FindAllActiveListingsByShop(shopId), query, null, cancellationToken);
     }
+    /// <summary>
+    /// Executes the Get Seller Taxonomy Nodes operation.
+    /// </summary>
 
     public Task<ApiResponse<EtsyListResponse<SellerTaxonomyNode>>> GetSellerTaxonomyNodesAsync(
         CancellationToken cancellationToken = default) =>
         SendListAsync<SellerTaxonomyNode>(HttpMethod.Get, Url.ListingUrls.GetSellerTaxonomyNodes(), null, null, cancellationToken);
+    /// <summary>
+    /// Executes the Get Properties By Taxonomy Id operation.
+    /// </summary>
 
     public Task<ApiResponse<EtsyListResponse<TaxonomyNodeProperty>>> GetPropertiesByTaxonomyIdAsync(
         long taxonomyId,
@@ -73,6 +91,9 @@ public class EtsyListingManagementService : IEtsyListingManagementService
         ValidateId(taxonomyId, nameof(taxonomyId));
         return SendListAsync<TaxonomyNodeProperty>(HttpMethod.Get, Url.ListingUrls.GetPropertiesByTaxonomyId(taxonomyId), null, null, cancellationToken);
     }
+    /// <summary>
+    /// Executes the Get Listings By Shop operation.
+    /// </summary>
 
     public Task<ApiResponse<EtsyListResponse<ShopListingWithAssociations>>> GetListingsByShopAsync(
         string accessToken,
@@ -96,6 +117,9 @@ public class EtsyListingManagementService : IEtsyListingManagementService
 
         return SendListAsync<ShopListingWithAssociations>(HttpMethod.Get, Url.ListingUrls.GetListingsByShop(shopId), query, accessToken, cancellationToken);
     }
+    /// <summary>
+    /// Executes the Get Listing operation.
+    /// </summary>
 
     public Task<ApiResponse<ShopListingWithAssociations>> GetListingAsync(
         long listingId,
@@ -112,6 +136,9 @@ public class EtsyListingManagementService : IEtsyListingManagementService
 
         return SendSingleAsync<ShopListingWithAssociations>(HttpMethod.Get, Url.ListingUrls.GetListing(listingId), query, null, cancellationToken);
     }
+    /// <summary>
+    /// Executes the Get Listings By Listing Ids operation.
+    /// </summary>
 
     public Task<ApiResponse<EtsyListResponse<ShopListingWithAssociations>>> GetListingsByListingIdsAsync(
         IReadOnlyCollection<long> listingIds,
@@ -133,6 +160,9 @@ public class EtsyListingManagementService : IEtsyListingManagementService
 
         return SendListAsync<ShopListingWithAssociations>(HttpMethod.Get, Url.ListingUrls.GetListingsByListingIds(), query, null, cancellationToken);
     }
+    /// <summary>
+    /// Executes the Get Featured Listings By Shop operation.
+    /// </summary>
 
     public Task<ApiResponse<EtsyListResponse<ShopListingWithAssociations>>> GetFeaturedListingsByShopAsync(
         long shopId,
@@ -146,6 +176,9 @@ public class EtsyListingManagementService : IEtsyListingManagementService
 
         return SendListAsync<ShopListingWithAssociations>(HttpMethod.Get, Url.ListingUrls.GetFeaturedListingsByShop(shopId), query, null, cancellationToken);
     }
+    /// <summary>
+    /// Executes the Get Listing Property operation.
+    /// </summary>
 
     public Task<ApiResponse<ListingPropertyValue>> GetListingPropertyAsync(
         long listingId,
@@ -156,6 +189,9 @@ public class EtsyListingManagementService : IEtsyListingManagementService
         ValidateId(propertyId, nameof(propertyId));
         return SendSingleAsync<ListingPropertyValue>(HttpMethod.Get, Url.ListingUrls.GetListingProperty(listingId, propertyId), null, null, cancellationToken);
     }
+    /// <summary>
+    /// Executes the Get Listing Properties operation.
+    /// </summary>
 
     public Task<ApiResponse<EtsyListResponse<ListingPropertyValue>>> GetListingPropertiesAsync(
         long shopId,
@@ -166,6 +202,9 @@ public class EtsyListingManagementService : IEtsyListingManagementService
         ValidateId(listingId, nameof(listingId));
         return SendListAsync<ListingPropertyValue>(HttpMethod.Get, Url.ListingUrls.GetListingProperties(shopId, listingId), null, null, cancellationToken);
     }
+    /// <summary>
+    /// Executes the Get Listings By Shop Receipt operation.
+    /// </summary>
 
     public Task<ApiResponse<EtsyListResponse<ShopListingWithAssociations>>> GetListingsByShopReceiptAsync(
         string accessToken,
@@ -183,6 +222,9 @@ public class EtsyListingManagementService : IEtsyListingManagementService
 
         return SendListAsync<ShopListingWithAssociations>(HttpMethod.Get, Url.ListingUrls.GetListingsByShopReceipt(shopId, receiptId), query, accessToken, cancellationToken);
     }
+    /// <summary>
+    /// Executes the Get Listings By Shop Section Id operation.
+    /// </summary>
 
     public Task<ApiResponse<EtsyListResponse<ShopListingWithAssociations>>> GetListingsByShopSectionIdAsync(
         long shopId,
@@ -204,6 +246,9 @@ public class EtsyListingManagementService : IEtsyListingManagementService
 
         return SendListAsync<ShopListingWithAssociations>(HttpMethod.Get, Url.ListingUrls.GetListingsByShopSectionId(shopId), query, null, cancellationToken);
     }
+    /// <summary>
+    /// Executes the Get Properties By Buyer Taxonomy Id operation.
+    /// </summary>
 
     public Task<ApiResponse<EtsyListResponse<BuyerTaxonomyNodeProperty>>> GetPropertiesByBuyerTaxonomyIdAsync(
         long taxonomyId,
@@ -212,10 +257,16 @@ public class EtsyListingManagementService : IEtsyListingManagementService
         ValidateId(taxonomyId, nameof(taxonomyId));
         return SendListAsync<BuyerTaxonomyNodeProperty>(HttpMethod.Get, Url.ListingUrls.GetPropertiesByBuyerTaxonomyId(taxonomyId), null, null, cancellationToken);
     }
+    /// <summary>
+    /// Executes the Get Buyer Taxonomy Nodes operation.
+    /// </summary>
 
     public Task<ApiResponse<EtsyListResponse<BuyerTaxonomyNode>>> GetBuyerTaxonomyNodesAsync(
         CancellationToken cancellationToken = default) =>
         SendListAsync<BuyerTaxonomyNode>(HttpMethod.Get, Url.ListingUrls.GetBuyerTaxonomyNodes(), null, null, cancellationToken);
+    /// <summary>
+    /// Executes the Get Listing Image operation.
+    /// </summary>
 
     public Task<ApiResponse<ListingImage>> GetListingImageAsync(
         long listingId,
@@ -226,6 +277,9 @@ public class EtsyListingManagementService : IEtsyListingManagementService
         ValidateId(listingImageId, nameof(listingImageId));
         return SendSingleAsync<ListingImage>(HttpMethod.Get, Url.ListingUrls.GetListingImage(listingId, listingImageId), null, null, cancellationToken);
     }
+    /// <summary>
+    /// Executes the Get Listing Images operation.
+    /// </summary>
 
     public Task<ApiResponse<EtsyListResponse<ListingImage>>> GetListingImagesAsync(
         long listingId,
@@ -234,6 +288,9 @@ public class EtsyListingManagementService : IEtsyListingManagementService
         ValidateId(listingId, nameof(listingId));
         return SendListAsync<ListingImage>(HttpMethod.Get, Url.ListingUrls.GetListingImages(listingId), null, null, cancellationToken);
     }
+    /// <summary>
+    /// Executes the Create Draft Listing operation.
+    /// </summary>
 
     public Task<ApiResponse<ShopListing>> CreateDraftListingAsync(string accessToken, long shopId, CreateDraftListingRequest listing, CancellationToken cancellationToken = default)
     {
@@ -244,6 +301,9 @@ public class EtsyListingManagementService : IEtsyListingManagementService
             throw new ArgumentException("Quantity, title, description, price, who made, when made, and taxonomy ID are required.", nameof(listing));
         return SendSingleAsync<ShopListing>(HttpMethod.Post, Url.ListingUrls.CreateDraftListing(shopId), null, accessToken, CreateFormContent(listing), cancellationToken);
     }
+    /// <summary>
+    /// Executes the Update Listing operation.
+    /// </summary>
 
     public Task<ApiResponse<ShopListing>> UpdateListingAsync(string accessToken, long shopId, long listingId, UpdateListingRequest listing, CancellationToken cancellationToken = default)
     {
@@ -253,9 +313,15 @@ public class EtsyListingManagementService : IEtsyListingManagementService
         ValidateUpdate(listing, nameof(listing));
         return SendSingleAsync<ShopListing>(HttpMethod.Patch, Url.ListingUrls.UpdateListing(shopId, listingId), null, accessToken, CreateFormContent(listing), cancellationToken);
     }
+    /// <summary>
+    /// Executes the Delete Listing operation.
+    /// </summary>
 
     public Task<ApiResponse<object>> DeleteListingAsync(string accessToken, long listingId, CancellationToken cancellationToken = default) =>
         SendDeleteAsync(accessToken, Url.ListingUrls.DeleteListing(listingId), nameof(listingId), listingId, cancellationToken);
+    /// <summary>
+    /// Executes the Get Listings By Shop Return Policy operation.
+    /// </summary>
 
     public Task<ApiResponse<EtsyListResponse<ShopListingWithAssociations>>> GetListingsByShopReturnPolicyAsync(string accessToken, long shopId, long returnPolicyId, bool? legacy = null, CancellationToken cancellationToken = default)
     {
@@ -266,6 +332,9 @@ public class EtsyListingManagementService : IEtsyListingManagementService
         AddBoolean(query, "legacy", legacy);
         return SendListAsync<ShopListingWithAssociations>(HttpMethod.Get, Url.ListingUrls.GetListingsByShopReturnPolicy(shopId, returnPolicyId), query, accessToken, cancellationToken);
     }
+    /// <summary>
+    /// Executes the Get Listings Shipping By Listing Ids operation.
+    /// </summary>
 
     public Task<ApiResponse<EtsyListResponse<ShopListingWithAssociations>>> GetListingsShippingByListingIdsAsync(string accessToken, IReadOnlyCollection<long> listingIds, CancellationToken cancellationToken = default)
     {
@@ -273,6 +342,9 @@ public class EtsyListingManagementService : IEtsyListingManagementService
         ValidateIds(listingIds, nameof(listingIds));
         return SendListAsync<ShopListingWithAssociations>(HttpMethod.Get, Url.ListingUrls.GetListingsShippingByListingIds(), CreateIdsQuery(listingIds), accessToken, cancellationToken);
     }
+    /// <summary>
+    /// Executes the Update Listing Property operation.
+    /// </summary>
 
     public Task<ApiResponse<ListingPropertyValue>> UpdateListingPropertyAsync(string accessToken, long shopId, long listingId, long propertyId, UpdateListingPropertyRequest property, CancellationToken cancellationToken = default)
     {
@@ -285,6 +357,9 @@ public class EtsyListingManagementService : IEtsyListingManagementService
             throw new ArgumentException("At least one property value ID and value are required.", nameof(property));
         return SendSingleAsync<ListingPropertyValue>(HttpMethod.Put, Url.ListingUrls.UpdateListingProperty(shopId, listingId, propertyId), null, accessToken, CreateFormContent(property), cancellationToken);
     }
+    /// <summary>
+    /// Executes the Delete Listing Property operation.
+    /// </summary>
 
     public Task<ApiResponse<object>> DeleteListingPropertyAsync(string accessToken, long shopId, long listingId, long propertyId, CancellationToken cancellationToken = default)
     {
@@ -293,6 +368,9 @@ public class EtsyListingManagementService : IEtsyListingManagementService
         ValidateId(listingId, nameof(listingId));
         return SendDeleteAsync(accessToken, Url.ListingUrls.UpdateListingProperty(shopId, listingId, propertyId), nameof(propertyId), propertyId, cancellationToken);
     }
+    /// <summary>
+    /// Executes the Get All Listing Files operation.
+    /// </summary>
 
     public Task<ApiResponse<EtsyListResponse<ShopListingFile>>> GetAllListingFilesAsync(string accessToken, long shopId, long listingId, CancellationToken cancellationToken = default)
     {
@@ -301,6 +379,9 @@ public class EtsyListingManagementService : IEtsyListingManagementService
         ValidateId(listingId, nameof(listingId));
         return SendListAsync<ShopListingFile>(HttpMethod.Get, Url.ListingUrls.GetAllListingFiles(shopId, listingId), null, accessToken, cancellationToken);
     }
+    /// <summary>
+    /// Executes the Get Listing File operation.
+    /// </summary>
 
     public Task<ApiResponse<ShopListingFile>> GetListingFileAsync(string accessToken, long shopId, long listingId, long listingFileId, CancellationToken cancellationToken = default)
     {
@@ -310,6 +391,9 @@ public class EtsyListingManagementService : IEtsyListingManagementService
         ValidateId(listingFileId, nameof(listingFileId));
         return SendSingleAsync<ShopListingFile>(HttpMethod.Get, Url.ListingUrls.GetListingFile(shopId, listingId, listingFileId), null, accessToken, cancellationToken);
     }
+    /// <summary>
+    /// Executes the Upload Listing File operation.
+    /// </summary>
 
     public Task<ApiResponse<ShopListingFile>> UploadListingFileAsync(string accessToken, long shopId, long listingId, ListingFileUploadRequest file, CancellationToken cancellationToken = default)
     {
@@ -324,6 +408,9 @@ public class EtsyListingManagementService : IEtsyListingManagementService
         AddMultipartValue(content, "rank", file.Rank);
         return SendSingleAsync<ShopListingFile>(HttpMethod.Post, Url.ListingUrls.GetAllListingFiles(shopId, listingId), null, accessToken, content, cancellationToken);
     }
+    /// <summary>
+    /// Executes the Delete Listing File operation.
+    /// </summary>
 
     public Task<ApiResponse<object>> DeleteListingFileAsync(string accessToken, long shopId, long listingId, long listingFileId, CancellationToken cancellationToken = default)
     {
@@ -332,6 +419,9 @@ public class EtsyListingManagementService : IEtsyListingManagementService
         ValidateId(listingId, nameof(listingId));
         return SendDeleteAsync(accessToken, Url.ListingUrls.GetListingFile(shopId, listingId, listingFileId), nameof(listingFileId), listingFileId, cancellationToken);
     }
+    /// <summary>
+    /// Executes the Upload Listing Image operation.
+    /// </summary>
 
     public Task<ApiResponse<ListingImage>> UploadListingImageAsync(string accessToken, long shopId, long listingId, ListingImageUploadRequest image, CancellationToken cancellationToken = default)
     {
@@ -349,6 +439,9 @@ public class EtsyListingManagementService : IEtsyListingManagementService
         AddMultipartValue(content, "alt_text", image.AltText);
         return SendSingleAsync<ListingImage>(HttpMethod.Post, Url.ListingUrls.UploadListingImage(shopId, listingId), null, accessToken, content, cancellationToken);
     }
+    /// <summary>
+    /// Executes the Delete Listing Image operation.
+    /// </summary>
 
     public Task<ApiResponse<object>> DeleteListingImageAsync(string accessToken, long shopId, long listingId, long listingImageId, CancellationToken cancellationToken = default)
     {
@@ -357,6 +450,9 @@ public class EtsyListingManagementService : IEtsyListingManagementService
         ValidateId(listingId, nameof(listingId));
         return SendDeleteAsync(accessToken, Url.ListingUrls.DeleteListingImage(shopId, listingId, listingImageId), nameof(listingImageId), listingImageId, cancellationToken);
     }
+    /// <summary>
+    /// Executes the Get Listing Inventory operation.
+    /// </summary>
 
     public Task<ApiResponse<ListingInventoryWithAssociations>> GetListingInventoryAsync(string accessToken, long listingId, bool? showDeleted = null, IReadOnlyCollection<ListingInclude>? includes = null, CancellationToken cancellationToken = default)
     {
@@ -367,6 +463,9 @@ public class EtsyListingManagementService : IEtsyListingManagementService
         AddIncludes(query, includes);
         return SendSingleAsync<ListingInventoryWithAssociations>(HttpMethod.Get, Url.ListingUrls.GetListingInventory(listingId), query, accessToken, cancellationToken);
     }
+    /// <summary>
+    /// Executes the Get Listings Inventory By Listing Ids operation.
+    /// </summary>
 
     public Task<ApiResponse<EtsyListResponse<ShopListingWithAssociations>>> GetListingsInventoryByListingIdsAsync(string accessToken, IReadOnlyCollection<long> listingIds, CancellationToken cancellationToken = default)
     {
@@ -374,6 +473,9 @@ public class EtsyListingManagementService : IEtsyListingManagementService
         ValidateIds(listingIds, nameof(listingIds));
         return SendListAsync<ShopListingWithAssociations>(HttpMethod.Get, Url.ListingUrls.GetListingsInventoryByListingIds(), CreateIdsQuery(listingIds), accessToken, cancellationToken);
     }
+    /// <summary>
+    /// Executes the Update Listing Inventory operation.
+    /// </summary>
 
     public Task<ApiResponse<ListingInventory>> UpdateListingInventoryAsync(string accessToken, long listingId, UpdateListingInventoryRequest inventory, string? maxVariationsSupported = null, CancellationToken cancellationToken = default)
     {
@@ -388,6 +490,9 @@ public class EtsyListingManagementService : IEtsyListingManagementService
         AddString(query, "max_variations_supported", maxVariationsSupported);
         return SendSingleAsync<ListingInventory>(HttpMethod.Put, Url.ListingUrls.GetListingInventory(listingId), query, accessToken, HttpContentHelper.CreateJsonContent(inventory, true), cancellationToken);
     }
+    /// <summary>
+    /// Executes the Get Listing Offering operation.
+    /// </summary>
 
     public Task<ApiResponse<ListingInventoryProductOffering>> GetListingOfferingAsync(long listingId, long productId, long productOfferingId, bool? legacy = null, CancellationToken cancellationToken = default)
     {
@@ -398,6 +503,9 @@ public class EtsyListingManagementService : IEtsyListingManagementService
         AddBoolean(query, "legacy", legacy);
         return SendSingleAsync<ListingInventoryProductOffering>(HttpMethod.Get, Url.ListingUrls.GetListingOffering(listingId, productId, productOfferingId), query, null, cancellationToken);
     }
+    /// <summary>
+    /// Executes the Get Listing Product operation.
+    /// </summary>
 
     public Task<ApiResponse<ListingInventoryProduct>> GetListingProductAsync(string accessToken, long listingId, long productId, bool? legacy = null, CancellationToken cancellationToken = default)
     {
@@ -408,12 +516,18 @@ public class EtsyListingManagementService : IEtsyListingManagementService
         AddBoolean(query, "legacy", legacy);
         return SendSingleAsync<ListingInventoryProduct>(HttpMethod.Get, Url.ListingUrls.GetListingProduct(listingId, productId), query, accessToken, cancellationToken);
     }
+    /// <summary>
+    /// Executes the Get Listing Personalization operation.
+    /// </summary>
 
     public Task<ApiResponse<ListingPersonalization>> GetListingPersonalizationAsync(long listingId, CancellationToken cancellationToken = default)
     {
         ValidateId(listingId, nameof(listingId));
         return SendSingleAsync<ListingPersonalization>(HttpMethod.Get, Url.ListingUrls.GetListingPersonalization(listingId), null, null, cancellationToken);
     }
+    /// <summary>
+    /// Executes the Update Listing Personalization operation.
+    /// </summary>
 
     public Task<ApiResponse<ListingPersonalization>> UpdateListingPersonalizationAsync(string accessToken, long shopId, long listingId, ListingPersonalizationUpdateRequest personalization, bool? supportsMultiplePersonalizationQuestions = null, CancellationToken cancellationToken = default)
     {
@@ -427,6 +541,9 @@ public class EtsyListingManagementService : IEtsyListingManagementService
         AddBoolean(query, "supports_multiple_personalization_questions", supportsMultiplePersonalizationQuestions);
         return SendSingleAsync<ListingPersonalization>(HttpMethod.Put, Url.ListingUrls.UpdateListingPersonalization(shopId, listingId), query, accessToken, HttpContentHelper.CreateJsonContent(personalization, true), cancellationToken);
     }
+    /// <summary>
+    /// Executes the Delete Listing Personalization operation.
+    /// </summary>
 
     public Task<ApiResponse<object>> DeleteListingPersonalizationAsync(string accessToken, long shopId, long listingId, CancellationToken cancellationToken = default)
     {
@@ -434,6 +551,9 @@ public class EtsyListingManagementService : IEtsyListingManagementService
         ValidateId(shopId, nameof(shopId));
         return SendDeleteAsync(accessToken, Url.ListingUrls.UpdateListingPersonalization(shopId, listingId), nameof(listingId), listingId, cancellationToken);
     }
+    /// <summary>
+    /// Executes the Get Listing Translation operation.
+    /// </summary>
 
     public Task<ApiResponse<ListingTranslation>> GetListingTranslationAsync(long shopId, long listingId, string language, CancellationToken cancellationToken = default)
     {
@@ -442,12 +562,21 @@ public class EtsyListingManagementService : IEtsyListingManagementService
         ValidateLanguage(language);
         return SendSingleAsync<ListingTranslation>(HttpMethod.Get, Url.ListingUrls.GetListingTranslation(shopId, listingId, language), null, null, cancellationToken);
     }
+    /// <summary>
+    /// Executes the Create Listing Translation operation.
+    /// </summary>
 
     public Task<ApiResponse<ListingTranslation>> CreateListingTranslationAsync(string accessToken, long shopId, long listingId, string language, ListingTranslationRequest translation, CancellationToken cancellationToken = default) =>
         SendListingTranslationAsync(HttpMethod.Post, accessToken, shopId, listingId, language, translation, cancellationToken);
+    /// <summary>
+    /// Executes the Update Listing Translation operation.
+    /// </summary>
 
     public Task<ApiResponse<ListingTranslation>> UpdateListingTranslationAsync(string accessToken, long shopId, long listingId, string language, ListingTranslationRequest translation, CancellationToken cancellationToken = default) =>
         SendListingTranslationAsync(HttpMethod.Put, accessToken, shopId, listingId, language, translation, cancellationToken);
+    /// <summary>
+    /// Executes the Get Listing Variation Images operation.
+    /// </summary>
 
     public Task<ApiResponse<EtsyListResponse<ListingVariationImage>>> GetListingVariationImagesAsync(long shopId, long listingId, CancellationToken cancellationToken = default)
     {
@@ -455,6 +584,9 @@ public class EtsyListingManagementService : IEtsyListingManagementService
         ValidateId(listingId, nameof(listingId));
         return SendListAsync<ListingVariationImage>(HttpMethod.Get, Url.ListingUrls.GetListingVariationImages(shopId, listingId), null, null, cancellationToken);
     }
+    /// <summary>
+    /// Executes the Update Variation Images operation.
+    /// </summary>
 
     public Task<ApiResponse<EtsyListResponse<ListingVariationImage>>> UpdateVariationImagesAsync(string accessToken, long shopId, long listingId, IReadOnlyCollection<ListingVariationImage> variationImages, CancellationToken cancellationToken = default)
     {
@@ -467,6 +599,9 @@ public class EtsyListingManagementService : IEtsyListingManagementService
         var body = new { variation_images = variationImages };
         return SendListAsync<ListingVariationImage>(HttpMethod.Post, Url.ListingUrls.GetListingVariationImages(shopId, listingId), null, accessToken, HttpContentHelper.CreateJsonContent(body, true), cancellationToken);
     }
+    /// <summary>
+    /// Executes the Get Listing Video operation.
+    /// </summary>
 
     public Task<ApiResponse<ListingVideo>> GetListingVideoAsync(long listingId, long videoId, CancellationToken cancellationToken = default)
     {
@@ -474,12 +609,18 @@ public class EtsyListingManagementService : IEtsyListingManagementService
         ValidateId(videoId, nameof(videoId));
         return SendSingleAsync<ListingVideo>(HttpMethod.Get, Url.ListingUrls.GetListingVideo(listingId, videoId), null, null, cancellationToken);
     }
+    /// <summary>
+    /// Executes the Get Listing Videos operation.
+    /// </summary>
 
     public Task<ApiResponse<EtsyListResponse<ListingVideo>>> GetListingVideosAsync(long listingId, CancellationToken cancellationToken = default)
     {
         ValidateId(listingId, nameof(listingId));
         return SendListAsync<ListingVideo>(HttpMethod.Get, Url.ListingUrls.GetListingVideos(listingId), null, null, cancellationToken);
     }
+    /// <summary>
+    /// Executes the Upload Listing Video operation.
+    /// </summary>
 
     public Task<ApiResponse<ListingVideo>> UploadListingVideoAsync(string accessToken, long shopId, long listingId, ListingVideoUploadRequest video, CancellationToken cancellationToken = default)
     {
@@ -495,6 +636,9 @@ public class EtsyListingManagementService : IEtsyListingManagementService
             content.Add(new StreamContent(video.Video), "video", video.FileName ?? "video");
         return SendSingleAsync<ListingVideo>(HttpMethod.Post, Url.ListingUrls.UploadListingVideo(shopId, listingId), null, accessToken, content, cancellationToken);
     }
+    /// <summary>
+    /// Executes the Delete Listing Video operation.
+    /// </summary>
 
     public Task<ApiResponse<object>> DeleteListingVideoAsync(string accessToken, long shopId, long listingId, long videoId, CancellationToken cancellationToken = default)
     {

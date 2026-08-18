@@ -1,23 +1,31 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace EtsyApiSharp.Helpers.Converters;
+/// <summary>
+/// Represents Json Nullable Enum Int32 Converter.
+/// </summary>
 
 public class JsonNullableEnumInt32Converter<TEnum> : JsonConverter<TEnum>
 {
     private readonly bool _isNullable;
     private readonly Type _enumType;
+    /// <summary>
+    /// Initializes a new instance of the JsonNullableEnumInt32Converter class.
+    /// </summary>
 
     public JsonNullableEnumInt32Converter()
     {
         _isNullable = Nullable.GetUnderlyingType(typeof(TEnum)) != null;
 
-        // cache the underlying type
         _enumType = _isNullable ?
             Nullable.GetUnderlyingType(typeof(TEnum))! :
             typeof(TEnum);
     }
+    /// <summary>
+    /// Executes the Read operation.
+    /// </summary>
 
     public override TEnum Read(ref Utf8JsonReader reader,
         Type typeToConvert, JsonSerializerOptions options)
@@ -30,7 +38,6 @@ public class JsonNullableEnumInt32Converter<TEnum> : JsonConverter<TEnum>
             throw new InvalidEnumArgumentException(
                 $"A value must be provided for non-nullable enum property of type {typeof(TEnum).FullName}");
 
-        // for performance, parse with ignoreCase:false first.
         if (!Enum.TryParse(_enumType, value.ToString(), false, out var result)
             && !Enum.TryParse(_enumType, value.ToString(), true, out result))
         {
@@ -40,6 +47,9 @@ public class JsonNullableEnumInt32Converter<TEnum> : JsonConverter<TEnum>
 
         return (TEnum)result!;
     }
+    /// <summary>
+    /// Executes the Write operation.
+    /// </summary>
 
     public override void Write(Utf8JsonWriter writer,
         TEnum value, JsonSerializerOptions options)

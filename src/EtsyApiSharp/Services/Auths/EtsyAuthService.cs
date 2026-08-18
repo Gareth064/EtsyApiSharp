@@ -4,15 +4,24 @@ using System.Net;
 using System.Text.Json;
 
 namespace EtsyApiSharp.Services.Auths;
+/// <summary>
+/// Represents Etsy Auth Service.
+/// </summary>
 
 public class EtsyAuthService : IEtsyAuthService
 {
+    /// <summary>
+    /// The Http Client Name value.
+    /// </summary>
     public const string HttpClientName = "EtsyApiSharp.Auth";
 
     private readonly string clientId;
     private readonly string redirectUrl;
     private readonly IReadOnlyCollection<Scope> scopes;
     private readonly IHttpClientFactory httpClientFactory;
+    /// <summary>
+    /// Initializes a new instance of the EtsyAuthService class.
+    /// </summary>
 
     public EtsyAuthService(
         IHttpClientFactory httpClientFactory,
@@ -45,6 +54,9 @@ public class EtsyAuthService : IEtsyAuthService
         this.redirectUrl = redirectUrl;
         this.scopes = requestedScopes;
     }
+    /// <summary>
+    /// Executes the Build Authorization Url operation.
+    /// </summary>
 
     public string BuildAuthorizationUrl(string codeVerifier, string state)
     {
@@ -71,6 +83,9 @@ public class EtsyAuthService : IEtsyAuthService
 
         return $"{Url.BaseUrls.BaseAuthUrl}?{query}";
     }
+    /// <summary>
+    /// Executes the Get First Access Token operation.
+    /// </summary>
 
     public Task<EtsyTokenResponse> GetFirstAccessTokenAsync(
         string authCode,
@@ -93,6 +108,9 @@ public class EtsyAuthService : IEtsyAuthService
             },
             cancellationToken);
     }
+    /// <summary>
+    /// Executes the Get Refresh Access Token operation.
+    /// </summary>
 
     public Task<EtsyTokenResponse> GetRefreshAccessTokenAsync(
         string refreshToken,

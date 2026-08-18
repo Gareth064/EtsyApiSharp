@@ -1,6 +1,16 @@
 # Etsy Api Sharp
 EtsyApiSharp is a wrapper library for the Etsy v3 API
 
+## Installation
+
+Install the package from NuGet:
+
+```shell
+dotnet add package EtsyApiSharp
+```
+
+The package supports .NET 10. For an application that uses dependency injection, register only the Etsy services it needs as shown below.
+
 ## Features
 - Built on .NET 10
 - Services can be added individually and at different scopes in the DI framework. (Only register what you need)
@@ -262,4 +272,21 @@ var addresses = await userService.GetUserAddressesAsync(accessToken, cancellatio
 - [Etsy Open API documentation](https://developers.etsy.com/documentation/)
 - [Etsy Open API reference](https://developers.etsy.com/documentation/reference)
 - [Etsy Open API 3.0.0 specification](https://www.etsy.com/openapi/generated/oas/3.0.0.json)
+
+## Publishing a release
+
+The project is configured to produce both a `.nupkg` and a `.snupkg` symbol package. To build a release package locally, run:
+
+```shell
+dotnet pack src/EtsyApiSharp/EtsyApiSharp.csproj --configuration Release -p:Version=1.0.0 --output ./artifacts
+```
+
+After reviewing the artifacts, publish them with a NuGet API key. In PowerShell:
+
+```powershell
+dotnet nuget push ./artifacts/EtsyApiSharp.1.0.0.nupkg --api-key $env:NUGET_API_KEY --source https://api.nuget.org/v3/index.json
+dotnet nuget push ./artifacts/EtsyApiSharp.1.0.0.snupkg --api-key $env:NUGET_API_KEY --source https://api.nuget.org/v3/index.json
+```
+
+GitHub releases also publish automatically through the `Publish NuGet package` workflow. Store a NuGet.org API key in the repository's `NUGET_API_KEY` Actions secret, then create a release tagged `v<version>` (for example, `v1.0.0`).
 

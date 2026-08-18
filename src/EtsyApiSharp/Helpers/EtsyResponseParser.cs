@@ -6,6 +6,9 @@ namespace EtsyApiSharp.Helpers;
 
 internal static class EtsyResponseParser
 {
+    /// <summary>
+    /// Executes the Parse Response Of List operation.
+    /// </summary>
     public static async Task<ApiResponse<EtsyListResponse<T>>> ParseResponseOfList<T>(
         HttpResponseMessage response,
         CancellationToken cancellationToken = default)
@@ -25,6 +28,9 @@ internal static class EtsyResponseParser
         result.Message = ParseErrorMessage(response, bodyContent);
         return result;
     }
+    /// <summary>
+    /// Executes the Parse Response Of Single operation.
+    /// </summary>
 
     public static async Task<ApiResponse<T>> ParseResponseOfSingle<T>(
         HttpResponseMessage response,

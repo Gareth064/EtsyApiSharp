@@ -1,6 +1,9 @@
 using EtsyApiSharp.Models;
 
 namespace EtsyApiSharp.Services.Auths;
+/// <summary>
+/// Represents I Etsy Auth Service.
+/// </summary>
 
 public interface IEtsyAuthService
 {

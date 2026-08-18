@@ -1,10 +1,16 @@
-﻿using EtsyApiSharp.Helpers.Attributes;
+using EtsyApiSharp.Helpers.Attributes;
 using System.Reflection;
 
 namespace EtsyApiSharp.Helpers;
+/// <summary>
+/// Represents Enum Helper.
+/// </summary>
 
 public static class EnumHelper
 {
+    /// <summary>
+    /// Executes the Get String Value operation.
+    /// </summary>
     public static string GetStringValue(Enum value)
     {
         string? output = null;

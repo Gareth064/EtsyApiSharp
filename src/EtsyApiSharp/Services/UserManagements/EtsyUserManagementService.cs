@@ -10,10 +10,16 @@ namespace EtsyApiSharp.Services.UserManagements;
 /// <inheritdoc />
 public class EtsyUserManagementService : IEtsyUserManagementService
 {
+    /// <summary>
+    /// The Http Client Name value.
+    /// </summary>
     public const string HttpClientName = "EtsyApiSharp.Users";
 
     private readonly string apiKey;
     private readonly IHttpClientFactory httpClientFactory;
+    /// <summary>
+    /// Initializes a new instance of the EtsyUserManagementService class.
+    /// </summary>
 
     public EtsyUserManagementService(
         IHttpClientFactory httpClientFactory,
@@ -31,6 +37,9 @@ public class EtsyUserManagementService : IEtsyUserManagementService
         this.httpClientFactory = httpClientFactory;
         apiKey = $"{clientId}:{sharedSecret}";
     }
+    /// <summary>
+    /// Executes the Get User operation.
+    /// </summary>
 
     public Task<ApiResponse<User>> GetUserAsync(
         string accessToken,
@@ -43,6 +52,9 @@ public class EtsyUserManagementService : IEtsyUserManagementService
         ValidateAccessToken(accessToken);
         return GetAsync<User>(accessToken, Url.UserUrls.GetUser(userId), cancellationToken);
     }
+    /// <summary>
+    /// Executes the Get Me operation.
+    /// </summary>
 
     public Task<ApiResponse<Self>> GetMeAsync(
         string accessToken,
@@ -51,6 +63,9 @@ public class EtsyUserManagementService : IEtsyUserManagementService
         ValidateAccessToken(accessToken);
         return GetAsync<Self>(accessToken, Url.UserUrls.GetMe(), cancellationToken);
     }
+    /// <summary>
+    /// Executes the Get User Addresses operation.
+    /// </summary>
 
     public Task<ApiResponse<EtsyListResponse<UserAddress>>> GetUserAddressesAsync(
         string accessToken,
@@ -61,6 +76,9 @@ public class EtsyUserManagementService : IEtsyUserManagementService
         ValidatePagination(filter);
         return GetListAsync<UserAddress>(accessToken, Url.UserUrls.GetUserAddresses(), CreatePaginationQuery(filter), cancellationToken);
     }
+    /// <summary>
+    /// Executes the Get User Address operation.
+    /// </summary>
 
     public Task<ApiResponse<UserAddress>> GetUserAddressAsync(
         string accessToken,
@@ -71,6 +89,9 @@ public class EtsyUserManagementService : IEtsyUserManagementService
         ValidateId(userAddressId, nameof(userAddressId));
         return GetAsync<UserAddress>(accessToken, Url.UserUrls.GetUserAddress(userAddressId), cancellationToken);
     }
+    /// <summary>
+    /// Executes the Delete User Address operation.
+    /// </summary>
 
     public Task<ApiResponse<object>> DeleteUserAddressAsync(
         string accessToken,

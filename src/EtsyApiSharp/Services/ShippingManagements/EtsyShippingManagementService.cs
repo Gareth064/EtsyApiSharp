@@ -7,13 +7,22 @@ using System.Globalization;
 using System.Net.Http.Headers;
 
 namespace EtsyApiSharp.Services.ShippingManagements;
+/// <summary>
+/// Represents Etsy Shipping Management Service.
+/// </summary>
 
 public sealed class EtsyShippingManagementService : IEtsyShippingManagementService
 {
+    /// <summary>
+    /// The Http Client Name value.
+    /// </summary>
     public const string HttpClientName = "EtsyApiSharp.Shipping";
 
     private readonly string apiKey;
     private readonly IHttpClientFactory httpClientFactory;
+    /// <summary>
+    /// Initializes a new instance of the EtsyShippingManagementService class.
+    /// </summary>
 
     public EtsyShippingManagementService(IHttpClientFactory httpClientFactory, string clientId, string sharedSecret)
     {
@@ -26,12 +35,18 @@ public sealed class EtsyShippingManagementService : IEtsyShippingManagementServi
         this.httpClientFactory = httpClientFactory;
         apiKey = $"{clientId}:{sharedSecret}";
     }
+    /// <summary>
+    /// Executes the Get Shipping Carriers operation.
+    /// </summary>
 
     public Task<ApiResponse<EtsyListResponse<ShippingCarrier>>> GetShippingCarriersAsync(string originCountryIso, CancellationToken cancellationToken = default)
     {
         ValidateCountryIso(originCountryIso, nameof(originCountryIso));
         return SendListAsync<ShippingCarrier>(HttpMethod.Get, Url.ShippingUrls.GetShippingCarriers(), new Dictionary<string, string> { ["origin_country_iso"] = originCountryIso }, null, null, cancellationToken);
     }
+    /// <summary>
+    /// Executes the Create Shop Shipping Profile operation.
+    /// </summary>
 
     public Task<ApiResponse<ShopShippingProfile>> CreateShopShippingProfileAsync(string accessToken, long shopId, CreateShopShippingProfileRequest profile, CancellationToken cancellationToken = default)
     {
@@ -41,6 +56,9 @@ public sealed class EtsyShippingManagementService : IEtsyShippingManagementServi
         ValidateCreateProfile(profile);
         return SendAsync<ShopShippingProfile>(HttpMethod.Post, Url.ShippingUrls.GetShopShippingProfiles(shopId), null, accessToken, CreateProfileContent(profile), cancellationToken);
     }
+    /// <summary>
+    /// Executes the Get Shop Shipping Profiles operation.
+    /// </summary>
 
     public Task<ApiResponse<EtsyListResponse<ShopShippingProfile>>> GetShopShippingProfilesAsync(string accessToken, long shopId, CancellationToken cancellationToken = default)
     {
@@ -48,18 +66,27 @@ public sealed class EtsyShippingManagementService : IEtsyShippingManagementServi
         ValidateId(shopId, nameof(shopId));
         return SendListAsync<ShopShippingProfile>(HttpMethod.Get, Url.ShippingUrls.GetShopShippingProfiles(shopId), null, accessToken, null, cancellationToken);
     }
+    /// <summary>
+    /// Executes the Delete Shop Shipping Profile operation.
+    /// </summary>
 
     public Task<ApiResponse<object>> DeleteShopShippingProfileAsync(string accessToken, long shopId, long shippingProfileId, CancellationToken cancellationToken = default)
     {
         ValidateWriteIds(accessToken, shopId, shippingProfileId);
         return SendAsync<object>(HttpMethod.Delete, Url.ShippingUrls.GetShopShippingProfile(shopId, shippingProfileId), null, accessToken, null, cancellationToken);
     }
+    /// <summary>
+    /// Executes the Get Shop Shipping Profile operation.
+    /// </summary>
 
     public Task<ApiResponse<ShopShippingProfile>> GetShopShippingProfileAsync(string accessToken, long shopId, long shippingProfileId, CancellationToken cancellationToken = default)
     {
         ValidateReadIds(accessToken, shopId, shippingProfileId);
         return SendAsync<ShopShippingProfile>(HttpMethod.Get, Url.ShippingUrls.GetShopShippingProfile(shopId, shippingProfileId), null, accessToken, null, cancellationToken);
     }
+    /// <summary>
+    /// Executes the Update Shop Shipping Profile operation.
+    /// </summary>
 
     public Task<ApiResponse<ShopShippingProfile>> UpdateShopShippingProfileAsync(string accessToken, long shopId, long shippingProfileId, UpdateShopShippingProfileRequest profile, CancellationToken cancellationToken = default)
     {
@@ -68,6 +95,9 @@ public sealed class EtsyShippingManagementService : IEtsyShippingManagementServi
         ValidateUpdateProfile(profile);
         return SendAsync<ShopShippingProfile>(HttpMethod.Put, Url.ShippingUrls.GetShopShippingProfile(shopId, shippingProfileId), null, accessToken, CreateProfileContent(profile), cancellationToken);
     }
+    /// <summary>
+    /// Executes the Create Shop Shipping Profile Destination operation.
+    /// </summary>
 
     public Task<ApiResponse<ShopShippingProfileDestination>> CreateShopShippingProfileDestinationAsync(string accessToken, long shopId, long shippingProfileId, CreateShopShippingProfileDestinationRequest destination, CancellationToken cancellationToken = default)
     {
@@ -76,6 +106,9 @@ public sealed class EtsyShippingManagementService : IEtsyShippingManagementServi
         ValidateCreateDestination(destination);
         return SendAsync<ShopShippingProfileDestination>(HttpMethod.Post, Url.ShippingUrls.GetShopShippingProfileDestinations(shopId, shippingProfileId), null, accessToken, CreateDestinationContent(destination), cancellationToken);
     }
+    /// <summary>
+    /// Executes the Get Shop Shipping Profile Destinations operation.
+    /// </summary>
 
     public Task<ApiResponse<EtsyListResponse<ShopShippingProfileDestination>>> GetShopShippingProfileDestinationsAsync(string accessToken, long shopId, long shippingProfileId, GetShopShippingProfileDestinationsFilter? filter = null, CancellationToken cancellationToken = default)
     {
@@ -83,6 +116,9 @@ public sealed class EtsyShippingManagementService : IEtsyShippingManagementServi
         ValidatePagination(filter);
         return SendListAsync<ShopShippingProfileDestination>(HttpMethod.Get, Url.ShippingUrls.GetShopShippingProfileDestinations(shopId, shippingProfileId), CreatePaginationQuery(filter), accessToken, null, cancellationToken);
     }
+    /// <summary>
+    /// Executes the Delete Shop Shipping Profile Destination operation.
+    /// </summary>
 
     public Task<ApiResponse<object>> DeleteShopShippingProfileDestinationAsync(string accessToken, long shopId, long shippingProfileId, long shippingProfileDestinationId, CancellationToken cancellationToken = default)
     {
@@ -90,6 +126,9 @@ public sealed class EtsyShippingManagementService : IEtsyShippingManagementServi
         ValidateId(shippingProfileDestinationId, nameof(shippingProfileDestinationId));
         return SendAsync<object>(HttpMethod.Delete, Url.ShippingUrls.GetShopShippingProfileDestination(shopId, shippingProfileId, shippingProfileDestinationId), null, accessToken, null, cancellationToken);
     }
+    /// <summary>
+    /// Executes the Update Shop Shipping Profile Destination operation.
+    /// </summary>
 
     public Task<ApiResponse<ShopShippingProfileDestination>> UpdateShopShippingProfileDestinationAsync(string accessToken, long shopId, long shippingProfileId, long shippingProfileDestinationId, UpdateShopShippingProfileDestinationRequest destination, CancellationToken cancellationToken = default)
     {
@@ -99,6 +138,9 @@ public sealed class EtsyShippingManagementService : IEtsyShippingManagementServi
         ValidateUpdateDestination(destination);
         return SendAsync<ShopShippingProfileDestination>(HttpMethod.Put, Url.ShippingUrls.GetShopShippingProfileDestination(shopId, shippingProfileId, shippingProfileDestinationId), null, accessToken, CreateDestinationContent(destination), cancellationToken);
     }
+    /// <summary>
+    /// Executes the Create Shop Shipping Profile Upgrade operation.
+    /// </summary>
 
     public Task<ApiResponse<ShopShippingProfileUpgrade>> CreateShopShippingProfileUpgradeAsync(string accessToken, long shopId, long shippingProfileId, CreateShopShippingProfileUpgradeRequest upgrade, CancellationToken cancellationToken = default)
     {
@@ -107,12 +149,18 @@ public sealed class EtsyShippingManagementService : IEtsyShippingManagementServi
         ValidateCreateUpgrade(upgrade);
         return SendAsync<ShopShippingProfileUpgrade>(HttpMethod.Post, Url.ShippingUrls.GetShopShippingProfileUpgrades(shopId, shippingProfileId), null, accessToken, CreateUpgradeContent(upgrade), cancellationToken);
     }
+    /// <summary>
+    /// Executes the Get Shop Shipping Profile Upgrades operation.
+    /// </summary>
 
     public Task<ApiResponse<EtsyListResponse<ShopShippingProfileUpgrade>>> GetShopShippingProfileUpgradesAsync(string accessToken, long shopId, long shippingProfileId, CancellationToken cancellationToken = default)
     {
         ValidateReadIds(accessToken, shopId, shippingProfileId);
         return SendListAsync<ShopShippingProfileUpgrade>(HttpMethod.Get, Url.ShippingUrls.GetShopShippingProfileUpgrades(shopId, shippingProfileId), null, accessToken, null, cancellationToken);
     }
+    /// <summary>
+    /// Executes the Delete Shop Shipping Profile Upgrade operation.
+    /// </summary>
 
     public Task<ApiResponse<object>> DeleteShopShippingProfileUpgradeAsync(string accessToken, long shopId, long shippingProfileId, long upgradeId, CancellationToken cancellationToken = default)
     {
@@ -120,6 +168,9 @@ public sealed class EtsyShippingManagementService : IEtsyShippingManagementServi
         ValidateId(upgradeId, nameof(upgradeId));
         return SendAsync<object>(HttpMethod.Delete, Url.ShippingUrls.GetShopShippingProfileUpgrade(shopId, shippingProfileId, upgradeId), null, accessToken, null, cancellationToken);
     }
+    /// <summary>
+    /// Executes the Update Shop Shipping Profile Upgrade operation.
+    /// </summary>
 
     public Task<ApiResponse<ShopShippingProfileUpgrade>> UpdateShopShippingProfileUpgradeAsync(string accessToken, long shopId, long shippingProfileId, long upgradeId, UpdateShopShippingProfileUpgradeRequest upgrade, CancellationToken cancellationToken = default)
     {

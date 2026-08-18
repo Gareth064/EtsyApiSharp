@@ -1,10 +1,10 @@
 using System.Text.Json.Serialization;
 
 namespace EtsyApiSharp.Models;
-
 /// <summary>
-/// Represents a user's address.
+/// Represents User Address.
 /// </summary>
+
 public class UserAddress
 {
     /// <summary>

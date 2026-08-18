@@ -170,7 +170,7 @@ public class ShopReceiptTransaction
     public string? ShippingUpgrade { get; set; }
 
     /// <summary>
-    /// The date & time of the expected ship date, in epoch seconds.
+    /// The date &amp; time of the expected ship date, in epoch seconds.
     /// </summary>
     [JsonPropertyName("expected_ship_date")]
     public long? ExpectedShipDate { get; set; }

@@ -3,6 +3,9 @@ using EtsyApiSharp.Models.Common;
 using EtsyApiSharp.Models.Filters;
 
 namespace EtsyApiSharp.Services.UserManagements;
+/// <summary>
+/// Represents I Etsy User Management Service.
+/// </summary>
 
 public interface IEtsyUserManagementService
 {

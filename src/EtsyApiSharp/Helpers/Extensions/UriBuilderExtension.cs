@@ -1,7 +1,13 @@
-﻿namespace EtsyApiSharp.Helpers.Extensions;
+namespace EtsyApiSharp.Helpers.Extensions;
+/// <summary>
+/// Represents Uri Builder Extension.
+/// </summary>
 
 public static class UriBuilderExtension
 {
+    /// <summary>
+    /// Executes the Add Query Param operation.
+    /// </summary>
     public static UriBuilder AddQueryParam(this UriBuilder builder, string key, string value)
     {
         var queryToAppend = $"{key}={value}";

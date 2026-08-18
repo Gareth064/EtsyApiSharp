@@ -9,11 +9,17 @@ namespace EtsyApiSharp.Services.ReviewManagements;
 /// <inheritdoc />
 public class EtsyReviewManagementService : IEtsyReviewManagementService
 {
+    /// <summary>
+    /// The Http Client Name value.
+    /// </summary>
     public const string HttpClientName = "EtsyApiSharp.Reviews";
 
     private const long MinimumEtsyTimestamp = 946684800;
     private readonly string apiKey;
     private readonly IHttpClientFactory httpClientFactory;
+    /// <summary>
+    /// Initializes a new instance of the EtsyReviewManagementService class.
+    /// </summary>
 
     public EtsyReviewManagementService(IHttpClientFactory httpClientFactory, string clientId, string sharedSecret)
     {
@@ -26,6 +32,9 @@ public class EtsyReviewManagementService : IEtsyReviewManagementService
         this.httpClientFactory = httpClientFactory;
         apiKey = $"{clientId}:{sharedSecret}";
     }
+    /// <summary>
+    /// Executes the Get Reviews By Listing operation.
+    /// </summary>
 
     public Task<ApiResponse<EtsyListResponse<ListingReview>>> GetReviewsByListingAsync(
         long listingId,
@@ -35,6 +44,9 @@ public class EtsyReviewManagementService : IEtsyReviewManagementService
         ValidateId(listingId, nameof(listingId));
         return SendAsync<ListingReview>(Url.ReviewUrls.GetReviewsByListing(listingId), CreateQuery(filter), cancellationToken);
     }
+    /// <summary>
+    /// Executes the Get Reviews By Shop operation.
+    /// </summary>
 
     public Task<ApiResponse<EtsyListResponse<TransactionReview>>> GetReviewsByShopAsync(
         long shopId,

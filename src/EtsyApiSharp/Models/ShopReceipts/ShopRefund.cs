@@ -14,7 +14,7 @@ public class ShopRefund
     public Money Amount { get; set; }
 
     /// <summary>
-    /// The date & time of the refund, in epoch seconds.
+    /// The date &amp; time of the refund, in epoch seconds.
     /// </summary>
     [JsonPropertyName("created_timestamp")]
     public long CreatedTimestamp { get; set; }

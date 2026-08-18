@@ -6,14 +6,23 @@ using System.Globalization;
 using System.Net.Http.Headers;
 
 namespace EtsyApiSharp.Services.ShopPolicyManagements;
+/// <summary>
+/// Represents Etsy Shop Policy Management Service.
+/// </summary>
 
 public sealed class EtsyShopPolicyManagementService : IEtsyShopPolicyManagementService
 {
+    /// <summary>
+    /// The Http Client Name value.
+    /// </summary>
     public const string HttpClientName = "EtsyApiSharp.ShopPolicies";
 
     private static readonly HashSet<long> ValidReturnDeadlines = [7, 14, 21, 30, 45, 60, 90];
     private readonly string apiKey;
     private readonly IHttpClientFactory httpClientFactory;
+    /// <summary>
+    /// Initializes a new instance of the EtsyShopPolicyManagementService class.
+    /// </summary>
 
     public EtsyShopPolicyManagementService(IHttpClientFactory httpClientFactory, string clientId, string sharedSecret)
     {
@@ -26,6 +35,9 @@ public sealed class EtsyShopPolicyManagementService : IEtsyShopPolicyManagementS
         this.httpClientFactory = httpClientFactory;
         apiKey = $"{clientId}:{sharedSecret}";
     }
+    /// <summary>
+    /// Executes the Consolidate Shop Return Policies operation.
+    /// </summary>
 
     public Task<ApiResponse<ShopReturnPolicy>> ConsolidateShopReturnPoliciesAsync(string accessToken, long shopId, ConsolidateShopReturnPoliciesRequest request, CancellationToken cancellationToken = default)
     {
@@ -36,6 +48,9 @@ public sealed class EtsyShopPolicyManagementService : IEtsyShopPolicyManagementS
         ValidateId(request.DestinationReturnPolicyId, nameof(request.DestinationReturnPolicyId));
         return SendAsync<ShopReturnPolicy>(HttpMethod.Post, Url.ShopPolicyUrls.ConsolidateShopReturnPolicies(shopId), accessToken, CreateConsolidateContent(request), cancellationToken);
     }
+    /// <summary>
+    /// Executes the Create Shop Return Policy operation.
+    /// </summary>
 
     public Task<ApiResponse<ShopReturnPolicy>> CreateShopReturnPolicyAsync(string accessToken, long shopId, CreateShopReturnPolicyRequest policy, CancellationToken cancellationToken = default)
     {
@@ -45,18 +60,27 @@ public sealed class EtsyShopPolicyManagementService : IEtsyShopPolicyManagementS
         ValidateReturnDeadline(policy.ReturnDeadline, nameof(policy));
         return SendAsync<ShopReturnPolicy>(HttpMethod.Post, Url.ShopPolicyUrls.GetShopReturnPolicies(shopId), accessToken, CreateContent(policy.AcceptsReturns, policy.AcceptsExchanges, policy.ReturnDeadline), cancellationToken);
     }
+    /// <summary>
+    /// Executes the Get Shop Return Policies operation.
+    /// </summary>
 
     public Task<ApiResponse<EtsyListResponse<ShopReturnPolicy>>> GetShopReturnPoliciesAsync(long shopId, CancellationToken cancellationToken = default)
     {
         ValidateId(shopId, nameof(shopId));
         return SendListAsync<ShopReturnPolicy>(HttpMethod.Get, Url.ShopPolicyUrls.GetShopReturnPolicies(shopId), null, cancellationToken);
     }
+    /// <summary>
+    /// Executes the Delete Shop Return Policy operation.
+    /// </summary>
 
     public Task<ApiResponse<object>> DeleteShopReturnPolicyAsync(string accessToken, long shopId, long returnPolicyId, CancellationToken cancellationToken = default)
     {
         ValidateWriteIds(accessToken, shopId, returnPolicyId);
         return SendAsync<object>(HttpMethod.Delete, Url.ShopPolicyUrls.GetShopReturnPolicy(shopId, returnPolicyId), accessToken, null, cancellationToken);
     }
+    /// <summary>
+    /// Executes the Get Shop Return Policy operation.
+    /// </summary>
 
     public Task<ApiResponse<ShopReturnPolicy>> GetShopReturnPolicyAsync(long shopId, long returnPolicyId, CancellationToken cancellationToken = default)
     {
@@ -64,6 +88,9 @@ public sealed class EtsyShopPolicyManagementService : IEtsyShopPolicyManagementS
         ValidateId(returnPolicyId, nameof(returnPolicyId));
         return SendAsync<ShopReturnPolicy>(HttpMethod.Get, Url.ShopPolicyUrls.GetShopReturnPolicy(shopId, returnPolicyId), null, null, cancellationToken);
     }
+    /// <summary>
+    /// Executes the Update Shop Return Policy operation.
+    /// </summary>
 
     public Task<ApiResponse<ShopReturnPolicy>> UpdateShopReturnPolicyAsync(string accessToken, long shopId, long returnPolicyId, UpdateShopReturnPolicyRequest policy, CancellationToken cancellationToken = default)
     {

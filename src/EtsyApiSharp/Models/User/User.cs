@@ -1,10 +1,10 @@
 using System.Text.Json.Serialization;
 
 namespace EtsyApiSharp.Models;
-
 /// <summary>
-/// Represents a single user of the site
+/// Represents User.
 /// </summary>
+
 public class User
 {
     /// <summary>
