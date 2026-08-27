@@ -1,0 +1,137 @@
+name: Maintain Etsy OpenAPI compatibility
+
+on:
+  schedule:
+    # Every Monday at 08:17 UTC. The non-zero minute avoids peak-hour queues.
+    - cron: "17 8 * * 1"
+  workflow_dispatch:
+
+concurrency:
+  group: etsy-openapi-maintenance
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+env:
+  SPEC_URL: https://www.etsy.com/openapi/generated/oas/3.0.0.json
+  SPEC_PATH: openapi/etsy-openapi-3.0.0.json
+
+jobs:
+  update:
+    name: Update SDK when the Etsy specification changes
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Check out dev
+        uses: actions/checkout@v5
+        with:
+          ref: dev
+          fetch-depth: 0
+
+      - name: Download and compare the specification
+        id: spec
+        shell: bash
+        run: |
+          set -euo pipefail
+          candidate="$(mktemp)"
+          curl --fail --location --retry 3 --retry-all-errors \
+            --silent --show-error "$SPEC_URL" --output "$candidate"
+          jq --exit-status \
+            '.openapi | strings | startswith("3.")' "$candidate" >/dev/null
+
+          if cmp --silent "$SPEC_PATH" "$candidate"; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "The checked-in Etsy OpenAPI snapshot is current."
+          else
+            mv "$candidate" "$SPEC_PATH"
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "Etsy published a changed OpenAPI specification."
+          fi
+
+      - name: Set up .NET
+        if: steps.spec.outputs.changed == 'true'
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore dependencies
+        if: steps.spec.outputs.changed == 'true'
+        run: dotnet restore src/EtsyApiSharp.sln
+
+      - name: Update the SDK for the new specification
+        if: steps.spec.outputs.changed == 'true'
+        uses: openai/codex-action@v1
+        with:
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          sandbox: workspace-write
+          prompt: |
+            Etsy has changed its official OpenAPI specification. The newly
+            downloaded specification is at openapi/etsy-openapi-3.0.0.json and
+            its changes from the previous snapshot are visible with git diff.
+
+            Review AGENTS.md and treat the new specification as the source of
+            truth. Update this .NET SDK so every affected route, parameter,
+            payload, response model, authentication scope, validation rule,
+            cancellation path, dependency-injection registration, and relevant
+            non-destructive Blazor demo remains compatible. Add or update
+            focused mocked xUnit tests for all affected behavior. Do not alter
+            the downloaded specification, create commits, push branches, or
+            open a pull request. Leave all implementation and test changes in
+            the working tree for the remaining workflow steps.
+
+      - name: Verify the downloaded snapshot was preserved
+        if: steps.spec.outputs.changed == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          candidate="$(mktemp)"
+          curl --fail --location --retry 3 --retry-all-errors \
+            --silent --show-error "$SPEC_URL" --output "$candidate"
+          cmp "$SPEC_PATH" "$candidate"
+
+      - name: Build
+        if: steps.spec.outputs.changed == 'true'
+        run: dotnet build src/EtsyApiSharp.sln --no-restore
+
+      - name: Test
+        if: steps.spec.outputs.changed == 'true'
+        run: dotnet test src/EtsyApiSharp.sln --no-build --no-restore
+
+      - name: Verify formatting
+        if: steps.spec.outputs.changed == 'true'
+        run: dotnet format src/EtsyApiSharp.sln --verify-no-changes --no-restore
+
+      - name: Commit and push the compatible SDK update
+        if: steps.spec.outputs.changed == 'true'
+        env:
+          BRANCH_NAME: automation/etsy-openapi-${{ github.run_id }}-${{ github.run_attempt }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --check
+          git switch --create "$BRANCH_NAME"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add --all
+          git diff --cached --quiet && {
+            echo "The specification changed but no changes are staged." >&2
+            exit 1
+          }
+          git commit -m "Update SDK for Etsy OpenAPI changes"
+          git push --set-upstream origin "$BRANCH_NAME"
+
+      - name: Open pull request against dev
+        if: steps.spec.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BRANCH_NAME: automation/etsy-openapi-${{ github.run_id }}-${{ github.run_attempt }}
+        shell: bash
+        run: |
+          gh pr create \
+            --base dev \
+            --head "$BRANCH_NAME" \
+            --title "Update SDK for Etsy OpenAPI changes" \
+            --body $'## Summary\n\n- Refresh the checked-in Etsy OpenAPI snapshot.\n- Update affected SDK, demo, and test code for the specification diff.\n\n## Validation\n\n- `dotnet build src/EtsyApiSharp.sln --no-restore`\n- `dotnet test src/EtsyApiSharp.sln --no-build --no-restore`\n- `dotnet format src/EtsyApiSharp.sln --verify-no-changes --no-restore`\n\n## API compatibility\n\nReview the specification and implementation diff for the exact compatibility impact. This pull request was generated automatically and requires manual review.'
