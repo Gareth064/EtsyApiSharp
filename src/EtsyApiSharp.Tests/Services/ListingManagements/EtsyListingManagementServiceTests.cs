@@ -313,13 +313,60 @@ public class EtsyListingManagementServiceTests
 
         Assert.Equal("show_deleted=false&includes=inventory", requests.Dequeue().RequestUri?.Query.TrimStart('?'));
         Assert.Equal("/v3/application/listings/batch/inventory", requests.Dequeue().RequestUri?.AbsolutePath);
-        Assert.Equal(HttpMethod.Put, requests.Peek().Method);
-        Assert.Equal("application/json", requests.Dequeue().Content?.Headers.ContentType?.MediaType);
+        var updateInventoryRequest = requests.Dequeue();
+        Assert.Equal(HttpMethod.Put, updateInventoryRequest.Method);
+        Assert.Equal("max_variations_supported=3", updateInventoryRequest.RequestUri?.Query.TrimStart('?'));
+        Assert.Equal("application/json", updateInventoryRequest.Content?.Headers.ContentType?.MediaType);
         Assert.Equal("legacy=true", requests.Dequeue().RequestUri?.Query.TrimStart('?'));
         Assert.Equal("/v3/application/listings/20/inventory/products/30", requests.Dequeue().RequestUri?.AbsolutePath);
         Assert.Null(requests.Dequeue().Headers.Authorization);
         Assert.Equal("application/json", requests.Dequeue().Content?.Headers.ContentType?.MediaType);
         Assert.Equal(HttpMethod.Delete, requests.Dequeue().Method);
+    }
+
+    [Fact]
+    public async Task GetListingInventoryAsync_ThreeVariations_ParsesInt64PropertyAssociations()
+    {
+        var handler = new StubHttpMessageHandler(request =>
+        {
+            Assert.Equal("Bearer", request.Headers.Authorization?.Scheme);
+            Assert.Equal("https://openapi.etsy.com/v3/application/listings/20/inventory", request.RequestUri?.AbsoluteUri);
+            return Task.FromResult(JsonResponse(
+                HttpStatusCode.OK,
+                "{\"products\":[{\"property_values\":[{\"property_id\":52047899318},{\"property_id\":200},{\"property_id\":52047899002}]}],\"price_on_property\":[52047899318,200,52047899002],\"quantity_on_property\":[52047899318],\"sku_on_property\":[52047899002],\"readiness_state_on_property\":[52047899318]}"));
+        });
+        var service = CreateService(new StubHttpClientFactory(handler));
+
+        var result = await service.GetListingInventoryAsync("123.token", 20);
+
+        Assert.True(result.Success);
+        Assert.Equal(3, result.Data?.Products.Single().PropertyValues.Count);
+        Assert.Equal(52047899318L, result.Data?.PriceOnProperty.First());
+        Assert.Equal(52047899318L, result.Data?.QuantityOnProperty.Single());
+        Assert.Equal(52047899002L, result.Data?.SkuOnProperty.Single());
+        Assert.Equal(52047899318L, result.Data?.ReadinessStateOnProperty.Single());
+    }
+
+    [Fact]
+    public async Task UpdateListingInventoryAsync_ThreeVariations_ParsesInt64PropertyAssociations()
+    {
+        var handler = new StubHttpMessageHandler(_ => Task.FromResult(JsonResponse(
+            HttpStatusCode.OK,
+            "{\"products\":[{\"property_values\":[{\"property_id\":52047899318},{\"property_id\":200},{\"property_id\":52047899002}]}],\"price_on_property\":[52047899318],\"quantity_on_property\":[200],\"sku_on_property\":[52047899002],\"readiness_state_on_property\":[52047899318]}")));
+        var service = CreateService(new StubHttpClientFactory(handler));
+        var inventory = new UpdateListingInventoryRequest
+        {
+            Products = new[] { new ListingInventoryProduct { Offerings = new List<ListingInventoryProductOffering>() } }
+        };
+
+        var result = await service.UpdateListingInventoryAsync("123.token", 20, inventory, "3");
+
+        Assert.True(result.Success);
+        Assert.Equal(3, result.Data?.Products.Single().PropertyValues.Count);
+        Assert.Equal(52047899318L, result.Data?.PriceOnProperty.Single());
+        Assert.Equal(200L, result.Data?.QuantityOnProperty.Single());
+        Assert.Equal(52047899002L, result.Data?.SkuOnProperty.Single());
+        Assert.Equal(52047899318L, result.Data?.ReadinessStateOnProperty.Single());
     }
 
     [Fact]
