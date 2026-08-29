@@ -8,14 +8,14 @@ namespace EtsyApiSharp.Models;
 public class BuyerTaxonomyPropertyValue
 {
     /// <summary>
-    /// The numeric ID of this property value.
+    /// Gets or sets the Value Id.
     /// </summary>
     [JsonPropertyName("value_id")]
     public long? ValueId { get; set; }
-
     /// <summary>
-    /// The name string of this property value.
+    /// Gets or sets the Name.
     /// </summary>
+
     [JsonPropertyName("name")]
     public string Name { get; set; }
 

@@ -1,4 +1,4 @@
-﻿@page "/services/receipt"
+@page "/services/receipt"
 @using BlazorTestApp.Components
 @using BlazorTestApp.Data
 @using EtsyApiSharp.Models.Filters
@@ -6,110 +6,75 @@
 @using System.Text.Json
 @inject IEtsyReceiptManagementService ReceiptService
 
-<ServiceTemplate ServiceTitle="Receipt Services" ShowResultsPane="true" ResultsToDisplay=@resultToDisplay>
-    <input @bind="recieptId" />
-    <button @onclick="GetReciept">Get Reciept</button>
-    <button @onclick="GetRecieptTransactionsByRecieptId">Get Transactions by Reciept Id</button>
+<ServiceTemplate ServiceTitle="Receipt Services" ShowResultsPane="true" ResultsToDisplay="@resultToDisplay">
+    <input @bind="shopId" placeholder="Shop ID (defaults to authorised shop)" />
+    <button @onclick="GetReceiptsAsync">Shop receipts (OAuth)</button>
+    <button @onclick="GetTransactionsByShopAsync">Shop transactions (OAuth)</button>
     <br />
+    <input @bind="receiptId" placeholder="Receipt ID" />
+    <button @onclick="GetReceiptAsync">Get receipt (OAuth)</button>
+    <button @onclick="GetTransactionsByReceiptAsync">Receipt transactions (OAuth)</button>
     <br />
-    <button @onclick="GetReciepts">Get Reciepts</button>
+    <input @bind="listingId" placeholder="Listing ID" />
+    <button @onclick="GetTransactionsByListingAsync">Listing transactions (OAuth)</button>
     <br />
-    <br />
-    <input @bind="listingId" />
-    <button @onclick="GetRecieptTransactionsByListingId">Get Transactions by Listing Id</button>
-    <br />
-    <br />
-    <input @bind="transactionId" />
-    <button @onclick="GetTransaction">Get Transaction by Id</button>
-    <br />
-    <br />
-    <button @onclick="GetTransactionsByShop">Get Transactions by Shop</button>
+    <input @bind="transactionId" placeholder="Transaction ID" />
+    <button @onclick="GetTransactionAsync">Get transaction (OAuth)</button>
+    <p>All eight Receipt Management operations are available through the typed service. This harness intentionally exposes only the six non-destructive retrieval operations; receipt updates and shipment creation require deliberate request payloads in application code.</p>
 </ServiceTemplate>
 
 @code {
-    string resultToDisplay = "";
-    //string recieptId = "2323578867"; //lavendereight
-    string recieptId = "2256218026"; //templaterunner
-                                     //string listingId = "672800727"; //lavendereight
-    string listingId = "867662080"; //templaterunner
-                                    //string transactionId = "2808047732"; //lavendereight
-    string transactionId = "2721211423"; //templaterunner
+    private string resultToDisplay = string.Empty;
+    private string shopId = string.Empty;
+    private string receiptId = string.Empty;
+    private string listingId = string.Empty;
+    private string transactionId = string.Empty;
 
-    private async Task GetReciept()
+    private async Task GetReceiptAsync() => await DisplayAsync(ReceiptService.GetShopReceiptAsync(
+        AppState.TokenResponse, GetShopId(), GetRequiredId(receiptId, "receipt ID")));
+
+    private async Task GetReceiptsAsync() => await DisplayAsync(ReceiptService.GetShopReceiptsAsync(
+        AppState.TokenResponse, GetShopId(), new GetShopReceiptsFilter { Limit = 10 }));
+
+    private async Task GetTransactionsByListingAsync() => await DisplayAsync(ReceiptService.GetShopReceiptTransactionsByListingAsync(
+        AppState.TokenResponse,
+        GetShopId(),
+        GetRequiredId(listingId, "listing ID"),
+        new GetShopReceiptTransactionsByListingFilter { Limit = 10 }));
+
+    private async Task GetTransactionsByReceiptAsync() => await DisplayAsync(ReceiptService.GetShopReceiptTransactionsByReceiptAsync(
+        AppState.TokenResponse, GetShopId(), GetRequiredId(receiptId, "receipt ID")));
+
+    private async Task GetTransactionAsync() => await DisplayAsync(ReceiptService.GetShopReceiptTransactionAsync(
+        AppState.TokenResponse, GetShopId(), GetRequiredId(transactionId, "transaction ID")));
+
+    private async Task GetTransactionsByShopAsync() => await DisplayAsync(ReceiptService.GetShopReceiptTransactionsByShopAsync(
+        AppState.TokenResponse, GetShopId(), new GetShopReceiptTransactionsByShopFilter { Limit = 10 }));
+
+    private long GetShopId() => string.IsNullOrWhiteSpace(shopId)
+        ? AppState.ShopId
+        : GetRequiredId(shopId, "shop ID");
+
+    private static long GetRequiredId(string value, string name) => long.TryParse(value, out var id) && id > 0
+        ? id
+        : throw new InvalidOperationException($"A positive {name} is required.");
+
+    private async Task DisplayAsync<T>(Task<T> operation)
     {
-        var result = await ReceiptService.GetShopReceiptAsync(
-            AppState.TokenResponse,
-            AppState.ShopId, Convert.ToInt64(recieptId));
-
-        DisplayResultsOnScreen(result);
-    }
-
-    private async Task GetReciepts()
-    {
-        var paramss = new GetShopReceiptsFilter();
-
-        paramss.MinLastModified=1681292115;
-        paramss.WasPaid = true;
-        paramss.WasCancelled = false;
-
-        var result = await ReceiptService.GetShopReceiptsAsync(
-            AppState.TokenResponse,
-            AppState.ShopId,
-            paramss);
-
-        DisplayResultsOnScreen(result);
-    }
-
-    private async Task GetRecieptTransactionsByListingId()
-    {
-        var result = await ReceiptService.GetShopReceiptTransactionsByListingAsync(
-            apiToken: AppState.TokenResponse,
-            shopId: AppState.ShopId,
-            listingId: Convert.ToInt64(listingId),
-            new GetShopReceiptTransactionsByListingFilter());
-
-        DisplayResultsOnScreen(result);
-    }
-
-    private async Task GetRecieptTransactionsByRecieptId()
-    {
-        var result = await ReceiptService.GetShopReceiptTransactionsByReceiptAsync(
-            apiToken: AppState.TokenResponse,
-            shopId: AppState.ShopId,
-            receiptid: Convert.ToInt64(recieptId));
-
-        DisplayResultsOnScreen(result);
-    }
-
-    private async Task GetTransaction()
-    {
-        var result = await ReceiptService.GetShopReceiptTransactionAsync(
-            apiToken: AppState.TokenResponse,
-            shopId: AppState.ShopId, 
-            transactionId: Convert.ToInt64(transactionId));
-
-        DisplayResultsOnScreen(result);
-    }
-
-    private async Task GetTransactionsByShop()
-    {
-        var paramss = new GetShopReceiptTransactionsByShopFilter();
-
-        var result = await ReceiptService.GetShopReceiptTransactionsByShopAsync(
-            AppState.TokenResponse,
-            AppState.ShopId, paramss);
-
-        DisplayResultsOnScreen(result);
+        try
+        {
+            DisplayResultsOnScreen(await operation);
+        }
+        catch (Exception exception)
+        {
+            resultToDisplay = exception.Message;
+        }
     }
 
     private void DisplayResultsOnScreen<T>(T result)
     {
-        var tempString = JsonSerializer.Serialize(result);
-        var jDoc = JsonDocument.Parse(tempString);
-
-        resultToDisplay = JsonSerializer.Serialize(jDoc,
-            new JsonSerializerOptions { WriteIndented = true });
-
-        Console.WriteLine(resultToDisplay);
+        var json = JsonSerializer.Serialize(result);
+        using var document = JsonDocument.Parse(json);
+        resultToDisplay = JsonSerializer.Serialize(document, new JsonSerializerOptions { WriteIndented = true });
     }
 }

@@ -1,12 +1,28 @@
-﻿namespace EtsyApiSharp.Models.Listings.Enums;
+namespace EtsyApiSharp.Models.Listings.Enums;
+/// <summary>
+/// Represents Listing Include.
+/// </summary>
 
 public enum ListingInclude
 {
+    /// <summary>
+    /// Represents the Shipping option.
+    /// </summary>
     Shipping,
+    /// <summary>
+    /// Represents the Images option.
+    /// </summary>
     Images,
+    /// <summary>
+    /// Represents the Shop option.
+    /// </summary>
     Shop,
+    /// <summary>
+    /// Represents the User option.
+    /// </summary>
     User,
-    // TODO: Bug inlcluding translation in listing call https://github.com/etsy/open-api/issues/517
-    // Translations, 
+    /// <summary>
+    /// Represents the Inventory option.
+    /// </summary>
     Inventory
 }

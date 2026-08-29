@@ -1,10 +1,10 @@
 using System.Text.Json.Serialization;
 
 namespace EtsyApiSharp.Models;
-
 /// <summary>
-/// Represents a refund, which applies to a prior Etsy payment. All monetary amounts are in USD pennies unless otherwise specified.
+/// Represents Payment Adjustment.
 /// </summary>
+
 public class PaymentAdjustment
 {
     /// <summary>
@@ -23,7 +23,7 @@ public class PaymentAdjustment
     /// The status string of the payment adjustment.
     /// </summary>
     [JsonPropertyName("status")]
-    public string Status { get; set; }
+    public string? Status { get; set; }
 
     /// <summary>
     /// When true, the payment adjustment was or is likely to complete successfully.
@@ -41,42 +41,60 @@ public class PaymentAdjustment
     /// A human-readable string describing the reason for the refund.
     /// </summary>
     [JsonPropertyName("reason_code")]
-    public string ReasonCode { get; set; }
+    public string? ReasonCode { get; set; }
 
     /// <summary>
     /// The total numeric amount of the refund in the payment currency.
     /// </summary>
     [JsonPropertyName("total_adjustment_amount")]
-    public int? TotalAdjustmentAmount { get; set; }
+    public long? TotalAdjustmentAmount { get; set; }
 
     /// <summary>
     /// The numeric amount of the refund in the shop currency.
     /// </summary>
     [JsonPropertyName("shop_total_adjustment_amount")]
-    public int? ShopTotalAdjustmentAmount { get; set; }
+    public long? ShopTotalAdjustmentAmount { get; set; }
 
     /// <summary>
     /// The numeric amount of the refund in the buyer currency.
     /// </summary>
     [JsonPropertyName("buyer_total_adjustment_amount")]
-    public int? BuyerTotalAdjustmentAmount { get; set; }
+    public long? BuyerTotalAdjustmentAmount { get; set; }
 
     /// <summary>
     /// The numeric amount of card processing fees associated with a payment adjustment.
     /// </summary>
     [JsonPropertyName("total_fee_adjustment_amount")]
-    public int? TotalFeeAdjustmentAmount { get; set; }
+    public long? TotalFeeAdjustmentAmount { get; set; }
 
     /// <summary>
     /// The transaction\'s creation date and time, in epoch seconds.
     /// </summary>
     [JsonPropertyName("create_timestamp")]
-    public int CreateTimestamp { get; set; }
+    public long CreateTimestamp { get; set; }
+
+    /// <summary>
+    /// The transaction's creation date and time, in epoch seconds.
+    /// </summary>
+    [JsonPropertyName("created_timestamp")]
+    public long CreatedTimestamp { get; set; }
 
     /// <summary>
     /// The date and time of the last change to the payment adjustment in epoch seconds.
     /// </summary>
     [JsonPropertyName("update_timestamp")]
-    public int UpdateTimestamp { get; set; }
+    public long UpdateTimestamp { get; set; }
+
+    /// <summary>
+    /// The update date and time of the payment adjustment, in epoch seconds.
+    /// </summary>
+    [JsonPropertyName("updated_timestamp")]
+    public long UpdatedTimestamp { get; set; }
+
+    /// <summary>
+    /// Payment-adjustment line items, when supplied by Etsy.
+    /// </summary>
+    [JsonPropertyName("payment_adjustment_items")]
+    public List<PaymentAdjustmentItem>? PaymentAdjustmentItems { get; set; }
 
 }

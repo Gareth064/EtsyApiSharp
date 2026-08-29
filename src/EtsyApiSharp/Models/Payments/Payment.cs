@@ -1,10 +1,10 @@
 using System.Text.Json.Serialization;
 
 namespace EtsyApiSharp.Models;
-
 /// <summary>
-/// Represents a payment made with Etsy Payments. All monetary amounts are in USD pennies unless otherwise specified.
+/// Represents Payment.
 /// </summary>
+
 public class Payment
 {
     /// <summary>
@@ -53,37 +53,37 @@ public class Payment
     /// The total gross value of the payment posted once the purchase ships. This is equal to the `amount_gross` UNLESS the seller issues a refund prior to shipping. We consider "shipping" to the event which "posts" to the ledger. Therefore, if the seller refunds first, we reduce the `amount_gross` first and post then that amount. The seller never sees the refunded amount in their ledger. This is equal to the "Credit" amount in the ledger entry.
     /// </summary>
     [JsonPropertyName("posted_gross")]
-    public Money PostedGross { get; set; }
+    public Money? PostedGross { get; set; }
 
     /// <summary>
     /// The total value of the fees posted once the purchase ships. Etsy refunds a proportional amount of the fees when a seller refunds a buyer. When the seller issues a refund prior to shipping, the posted amount is less then the original.
     /// </summary>
     [JsonPropertyName("posted_fees")]
-    public Money PostedFees { get; set; }
+    public Money? PostedFees { get; set; }
 
     /// <summary>
     /// The total value of the payment at the time of posting, less fees. (`posted_gross` - `posted_fees`)
     /// </summary>
     [JsonPropertyName("posted_net")]
-    public Money PostedNet { get; set; }
+    public Money? PostedNet { get; set; }
 
     /// <summary>
     /// The gross payment amount after the seller refunds a payment, partially or fully.
     /// </summary>
     [JsonPropertyName("adjusted_gross")]
-    public Money AdjustedGross { get; set; }
+    public Money? AdjustedGross { get; set; }
 
     /// <summary>
     /// The new fee amount after a seller refunds a payment, partially or fully.
     /// </summary>
     [JsonPropertyName("adjusted_fees")]
-    public Money AdjustedFees { get; set; }
+    public Money? AdjustedFees { get; set; }
 
     /// <summary>
     /// The total value of the payment after refunds, less fees (`adjusted_gross` - `adjusted_fees`).
     /// </summary>
     [JsonPropertyName("adjusted_net")]
-    public Money AdjustedNet { get; set; }
+    public Money? AdjustedNet { get; set; }
 
     /// <summary>
     /// The ISO (alphabetic) code string for the payment's currency.
@@ -95,13 +95,13 @@ public class Payment
     /// The ISO (alphabetic) code for the shop's currency. The shop displays all prices in this currency by default.
     /// </summary>
     [JsonPropertyName("shop_currency")]
-    public string ShopCurrency { get; set; }
+    public string? ShopCurrency { get; set; }
 
     /// <summary>
     /// The currency string of the buyer.
     /// </summary>
     [JsonPropertyName("buyer_currency")]
-    public string BuyerCurrency { get; set; }
+    public string? BuyerCurrency { get; set; }
 
     /// <summary>
     /// The numeric ID of the user to which the seller ships the order.
@@ -131,24 +131,36 @@ public class Payment
     /// The transaction\'s shipping date and time, in epoch seconds.
     /// </summary>
     [JsonPropertyName("shipped_timestamp")]
-    public int? ShippedTimestamp { get; set; }
+    public long? ShippedTimestamp { get; set; }
 
     /// <summary>
     /// The transaction\'s creation date and time, in epoch seconds.
     /// </summary>
     [JsonPropertyName("create_timestamp")]
-    public int CreateTimestamp { get; set; }
+    public long CreateTimestamp { get; set; }
+
+    /// <summary>
+    /// The transaction's creation date and time, in epoch seconds.
+    /// </summary>
+    [JsonPropertyName("created_timestamp")]
+    public long CreatedTimestamp { get; set; }
 
     /// <summary>
     /// The date and time of the last change to the payment adjustment in epoch seconds.
     /// </summary>
     [JsonPropertyName("update_timestamp")]
-    public int UpdateTimestamp { get; set; }
+    public long UpdateTimestamp { get; set; }
+
+    /// <summary>
+    /// The update date and time of the payment adjustment, in epoch seconds.
+    /// </summary>
+    [JsonPropertyName("updated_timestamp")]
+    public long UpdatedTimestamp { get; set; }
 
     /// <summary>
     /// List of refund objects on an Etsy Payments transaction. All monetary amounts are in USD pennies unless otherwise specified.
     /// </summary>
     [JsonPropertyName("payment_adjustments")]
-    public List<PaymentAdjustment> PaymentAdjustments { get; set; }
+    public List<PaymentAdjustment>? PaymentAdjustments { get; set; }
 
 }

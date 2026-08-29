@@ -1,23 +1,56 @@
-﻿<hr />
-<h3>@ServiceTitle</h3>
-<br />
-<div style="display:grid; grid-template-columns: 1fr 2fr;">
-    <div style="grid-column: 1; width: 300px">
-        @ChildContent
-    </div>
-    <div style="grid-column: 2; width: 300px">
+@inject BlazorTestApp.Data.RuntimeEtsySettings EtsySettings
+
+<section class="service-workspace">
+    <header class="service-heading">
+        <p class="eyebrow">Etsy Open API</p>
+        <h1>@ServiceTitle</h1>
+        <p>Explore read-only endpoints in a focused, seller-friendly test workspace.</p>
+    </header>
+
+    <div class="service-grid @(ShowResultsPane ? string.Empty : "single-column")">
+        <section class="workspace-card endpoint-card">
+            <div class="card-heading">
+                <span class="card-icon">↗</span>
+                <div>
+                    <h2>Run an endpoint</h2>
+                    <p>Add an identifier where needed, then select an action.</p>
+                </div>
+            </div>
+            <div class="endpoint-actions">
+                @if (EtsySettings.IsConfigured)
+                {
+                    @ChildContent
+                }
+                else
+                {
+                    <div class="configuration-required">
+                        <strong>Connect your Etsy app first</strong>
+                        <p>Enter your API keystring and shared secret in Settings before running endpoints.</p>
+                        <NavLink class="settings-link" href="settings">Open settings</NavLink>
+                    </div>
+                }
+            </div>
+        </section>
+
         @if (ShowResultsPane)
         {
-        <textarea rows=20 cols=125 readonly="readonly" style="font-size: small" @bind=@ResultsToDisplay />
+            <section class="workspace-card response-card">
+                <div class="card-heading">
+                    <span class="card-icon response-icon">{ }</span>
+                    <div>
+                        <h2>Response</h2>
+                        <p>Formatted JSON from the latest request.</p>
+                    </div>
+                </div>
+                <textarea aria-label="API response" readonly @bind="ResultsToDisplay" placeholder="Your response will appear here."></textarea>
+            </section>
         }
     </div>
-</div>
-<hr />
+</section>
 
 @code {
-    [Parameter] public string ServiceTitle { get; set; }
-    [Parameter] public RenderFragment ChildContent { get; set; }
+    [Parameter] public string ServiceTitle { get; set; } = string.Empty;
+    [Parameter] public RenderFragment? ChildContent { get; set; }
     [Parameter] public bool ShowResultsPane { get; set; }
     [Parameter] public string? ResultsToDisplay { get; set; }
-
 }

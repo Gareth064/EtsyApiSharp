@@ -1,0 +1,57 @@
+@page "/services/user"
+@using BlazorTestApp.Components
+@using BlazorTestApp.Data
+@using EtsyApiSharp.Models.Filters
+@using EtsyApiSharp.Services.UserManagements
+@using System.Text.Json
+@inject IEtsyUserManagementService UserService
+
+<ServiceTemplate ServiceTitle="User Services" ShowResultsPane="true" ResultsToDisplay="@resultToDisplay">
+    <button @onclick="GetMeAsync">My user and shop IDs (OAuth)</button>
+    <br />
+    <input @bind="userId" placeholder="User ID" />
+    <button @onclick="GetUserAsync">Get user profile (OAuth)</button>
+    <br />
+    <button @onclick="GetUserAddressesAsync">My addresses (OAuth)</button>
+    <br />
+    <input @bind="userAddressId" placeholder="User address ID" />
+    <button @onclick="GetUserAddressAsync">Get address (OAuth)</button>
+    <p>All four buttons are non-destructive reads. <code>GetMeAsync</code> requires <code>shops_r</code>; <code>GetUserAsync</code> requires <code>email_r</code> and is limited to the authorised user or linked buyers; address reads require <code>address_r</code>. Address deletion is available through the typed service but intentionally has no live harness button.</p>
+</ServiceTemplate>
+
+@code {
+    private string resultToDisplay = string.Empty;
+    private string userId = string.Empty;
+    private string userAddressId = string.Empty;
+
+    private async Task GetMeAsync() => await DisplayAsync(UserService.GetMeAsync(AppState.TokenResponse));
+
+    private async Task GetUserAsync() => await DisplayAsync(UserService.GetUserAsync(
+        AppState.TokenResponse,
+        GetRequiredId(userId, "user ID")));
+
+    private async Task GetUserAddressesAsync() => await DisplayAsync(UserService.GetUserAddressesAsync(
+        AppState.TokenResponse,
+        new GetUserAddressesFilter { Limit = 10 }));
+
+    private async Task GetUserAddressAsync() => await DisplayAsync(UserService.GetUserAddressAsync(
+        AppState.TokenResponse,
+        GetRequiredId(userAddressId, "user address ID")));
+
+    private static long GetRequiredId(string value, string name) => long.TryParse(value, out var id) && id > 0
+        ? id
+        : throw new InvalidOperationException($"A positive {name} is required.");
+
+    private async Task DisplayAsync<T>(Task<T> operation)
+    {
+        try { DisplayResultsOnScreen(await operation); }
+        catch (Exception exception) { resultToDisplay = exception.Message; }
+    }
+
+    private void DisplayResultsOnScreen<T>(T result)
+    {
+        var json = JsonSerializer.Serialize(result);
+        using var document = JsonDocument.Parse(json);
+        resultToDisplay = JsonSerializer.Serialize(document, new JsonSerializerOptions { WriteIndented = true });
+    }
+}

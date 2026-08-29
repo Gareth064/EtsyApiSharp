@@ -31,4 +31,10 @@ public class TransactionVariation
     [JsonPropertyName("formatted_value")]
     public string FormattedValue { get; set; }
 
+    /// <summary>
+    /// The ID of the original personalization question, when this entry represents a personalization.
+    /// </summary>
+    [JsonPropertyName("question_id")]
+    public long? QuestionId { get; set; }
+
 }

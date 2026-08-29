@@ -3,10 +3,10 @@ using EtsyApiSharp.Models.ShopShippings.Enums;
 using System.Text.Json.Serialization;
 
 namespace EtsyApiSharp.Models;
-
 /// <summary>
-/// Represents a profile used to set a listing's shipping information. Please note that it's not possible to create calculated shipping templates via the API. However, you can associate calculated shipping profiles created from Shop Manager with listings using the API.
+/// Represents Shop Shipping Profile.
 /// </summary>
+
 public class ShopShippingProfile
 {
     /// <summary>
@@ -74,6 +74,9 @@ public class ShopShippingProfile
     /// </summary>
     [JsonPropertyName("origin_postal_code")]
     public string OriginPostalCode { get; set; }
+    /// <summary>
+    /// Gets or sets the Profile Type.
+    /// </summary>
 
     [JsonConverter(typeof(JsonNullableEnumStringConverter<ShippingProfileType>))]
     [JsonPropertyName("profile_type")]

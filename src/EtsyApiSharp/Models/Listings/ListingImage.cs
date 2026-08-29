@@ -62,7 +62,7 @@ public class ListingImage
     public int? Brightness { get; set; }
 
     /// <summary>
-    /// When true, the image is in black & white.
+    /// When true, the image is in black &amp; white.
     /// </summary>
     [JsonPropertyName("is_black_and_white")]
     public bool? IsBlackAndWhite { get; set; }

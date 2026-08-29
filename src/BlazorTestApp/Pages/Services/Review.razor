@@ -1,0 +1,51 @@
+@page "/services/review"
+@using BlazorTestApp.Components
+@using BlazorTestApp.Data
+@using EtsyApiSharp.Models.Filters
+@using EtsyApiSharp.Services.ReviewManagements
+@using System.Text.Json
+@inject IEtsyReviewManagementService ReviewService
+
+<ServiceTemplate ServiceTitle="Review Services" ShowResultsPane="true" ResultsToDisplay="@resultToDisplay">
+    <input @bind="shopId" placeholder="Shop ID (defaults to authorised shop)" />
+    <button @onclick="GetReviewsByShopAsync">Shop reviews</button>
+    <br />
+    <input @bind="listingId" placeholder="Listing ID" />
+    <button @onclick="GetReviewsByListingAsync">Listing reviews</button>
+    <p>Both Review Management operations are public, non-destructive reads. They require only the Etsy API key and support pagination and optional creation-date filtering.</p>
+</ServiceTemplate>
+
+@code {
+    private string resultToDisplay = string.Empty;
+    private string shopId = string.Empty;
+    private string listingId = string.Empty;
+
+    private async Task GetReviewsByShopAsync() => await DisplayAsync(ReviewService.GetReviewsByShopAsync(
+        GetShopId(),
+        new GetReviewsFilter { Limit = 10 }));
+
+    private async Task GetReviewsByListingAsync() => await DisplayAsync(ReviewService.GetReviewsByListingAsync(
+        GetRequiredId(listingId, "listing ID"),
+        new GetReviewsFilter { Limit = 10 }));
+
+    private long GetShopId() => string.IsNullOrWhiteSpace(shopId)
+        ? AppState.ShopId
+        : GetRequiredId(shopId, "shop ID");
+
+    private static long GetRequiredId(string value, string name) => long.TryParse(value, out var id) && id > 0
+        ? id
+        : throw new InvalidOperationException($"A positive {name} is required.");
+
+    private async Task DisplayAsync<T>(Task<T> operation)
+    {
+        try { DisplayResultsOnScreen(await operation); }
+        catch (Exception exception) { resultToDisplay = exception.Message; }
+    }
+
+    private void DisplayResultsOnScreen<T>(T result)
+    {
+        var json = JsonSerializer.Serialize(result);
+        using var document = JsonDocument.Parse(json);
+        resultToDisplay = JsonSerializer.Serialize(document, new JsonSerializerOptions { WriteIndented = true });
+    }
+}

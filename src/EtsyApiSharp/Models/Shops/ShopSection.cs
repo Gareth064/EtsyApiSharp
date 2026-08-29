@@ -17,13 +17,13 @@ public class ShopSection
     /// The title string for a shop section.
     /// </summary>
     [JsonPropertyName("title")]
-    public string Title { get; set; }
+    public string? Title { get; set; }
 
     /// <summary>
     /// The positive non-zero numeric position of this section in the section display order for a shop, with rank 1 sections appearing first.
     /// </summary>
     [JsonPropertyName("rank")]
-    public int Rank { get; set; }
+    public long Rank { get; set; }
 
     /// <summary>
     /// The numeric ID of the [user](/documentation/reference#tag/User) who owns this shop section.
@@ -35,6 +35,6 @@ public class ShopSection
     /// The number of active listings in one section of a specific Etsy shop.
     /// </summary>
     [JsonPropertyName("active_listing_count")]
-    public int ActiveListingCount { get; set; }
+    public long ActiveListingCount { get; set; }
 
 }

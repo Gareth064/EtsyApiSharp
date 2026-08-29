@@ -1,10 +1,10 @@
 using System.Text.Json.Serialization;
 
 namespace EtsyApiSharp.Models;
-
 /// <summary>
-/// Represents the translation data for a Listing.
+/// Represents Listing Translation.
 /// </summary>
+
 public class ListingTranslation
 {
     /// <summary>

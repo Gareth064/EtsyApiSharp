@@ -14,10 +14,10 @@ public class ShopReceipt
     public long ReceiptId { get; set; }
 
     /// <summary>
-    /// The numeric value for the Etsy channel that serviced the purchase: 0 for Etsy.com, 1 for a Pattern shop.
+    /// The numeric value for the Etsy channel that serviced the purchase: 0 or 5 for Etsy.com, 1 for a Pattern shop.
     /// </summary>
     [JsonPropertyName("receipt_type")]
-    public int ReceiptType { get; set; }
+    public long ReceiptType { get; set; }
 
     /// <summary>
     /// The numeric ID for the [user](/documentation/reference#tag/User) (seller) fulfilling the purchase.
@@ -29,7 +29,7 @@ public class ShopReceipt
     /// The email address string for the seller of the listing.
     /// </summary>
     [JsonPropertyName("seller_email")]
-    public string SellerEmail { get; set; }
+    public string? SellerEmail { get; set; }
 
     /// <summary>
     /// The numeric ID for the [user](/documentation/reference#tag/User) making the purchase.
@@ -41,7 +41,7 @@ public class ShopReceipt
     /// The email address string for the buyer of the listing.
     /// </summary>
     [JsonPropertyName("buyer_email")]
-    public string BuyerEmail { get; set; }
+    public string? BuyerEmail { get; set; }
 
     /// <summary>
     /// The name string for the recipient in the shipping address.
@@ -53,31 +53,31 @@ public class ShopReceipt
     /// The first address line string for the recipient in the shipping address.
     /// </summary>
     [JsonPropertyName("first_line")]
-    public string FirstLine { get; set; }
+    public string? FirstLine { get; set; }
 
     /// <summary>
     /// The optional second address line string for the recipient in the shipping address.
     /// </summary>
     [JsonPropertyName("second_line")]
-    public string SecondLine { get; set; }
+    public string? SecondLine { get; set; }
 
     /// <summary>
     /// The city string for the recipient in the shipping address.
     /// </summary>
     [JsonPropertyName("city")]
-    public string City { get; set; }
+    public string? City { get; set; }
 
     /// <summary>
     /// The state string for the recipient in the shipping address.
     /// </summary>
     [JsonPropertyName("state")]
-    public string State { get; set; }
+    public string? State { get; set; }
 
     /// <summary>
     /// The zip code string (not necessarily a number) for the recipient in the shipping address.
     /// </summary>
     [JsonPropertyName("zip")]
-    public string Zip { get; set; }
+    public string? Zip { get; set; }
 
     /// <summary>
     /// The current order status string. One of: `Open`, `Paid`, `Completed`, `Payment Processing`.
@@ -89,13 +89,13 @@ public class ShopReceipt
     /// The formatted shipping address string for the recipient in the shipping address.
     /// </summary>
     [JsonPropertyName("formatted_address")]
-    public string FormattedAddress { get; set; }
+    public string? FormattedAddress { get; set; }
 
     /// <summary>
     /// The ISO-3166 alpha-2 country code string for the recipient in the shipping address.
     /// </summary>
     [JsonPropertyName("country_iso")]
-    public string CountryIso { get; set; }
+    public string? CountryIso { get; set; }
 
     /// <summary>
     /// The payment method string identifying purchaser's payment method, which must be one of: \'cc\' (credit card), \'paypal\', \'check\', \'mo\' (money order), \'bt\' (bank transfer), \'other\', \'ideal\', \'sofort\', \'apple_pay\', \'google\', \'android_pay\', \'google_pay\', \'klarna\', \'k_pay_in_4\' (klarna), \'k_pay_in_3\' (klarna), or \'k_financing\' (klarna).
@@ -107,25 +107,25 @@ public class ShopReceipt
     /// The email address string for the email address to which to send payment confirmation
     /// </summary>
     [JsonPropertyName("payment_email")]
-    public string PaymentEmail { get; set; }
+    public string? PaymentEmail { get; set; }
 
     /// <summary>
     /// An optional message string from the seller.
     /// </summary>
     [JsonPropertyName("message_from_seller")]
-    public string MessageFromSeller { get; set; }
+    public string? MessageFromSeller { get; set; }
 
     /// <summary>
     /// An optional message string from the buyer.
     /// </summary>
     [JsonPropertyName("message_from_buyer")]
-    public string MessageFromBuyer { get; set; }
+    public string? MessageFromBuyer { get; set; }
 
     /// <summary>
     /// The machine-generated acknowledgement string from the payment system.
     /// </summary>
     [JsonPropertyName("message_from_payment")]
-    public string MessageFromPayment { get; set; }
+    public string? MessageFromPayment { get; set; }
 
     /// <summary>
     /// When true, buyer paid for this purchase.
@@ -143,25 +143,25 @@ public class ShopReceipt
     /// The receipt\'s creation time, in epoch seconds.
     /// </summary>
     [JsonPropertyName("create_timestamp")]
-    public int CreateTimestamp { get; set; }
+    public long CreateTimestamp { get; set; }
 
     /// <summary>
     /// The receipt\'s creation time, in epoch seconds.
     /// </summary>
     [JsonPropertyName("created_timestamp")]
-    public int CreatedTimestamp { get; set; }
+    public long CreatedTimestamp { get; set; }
 
     /// <summary>
     /// The time of the last update to the receipt, in epoch seconds.
     /// </summary>
     [JsonPropertyName("update_timestamp")]
-    public int UpdateTimestamp { get; set; }
+    public long UpdateTimestamp { get; set; }
 
     /// <summary>
     /// The time of the last update to the receipt, in epoch seconds.
     /// </summary>
     [JsonPropertyName("updated_timestamp")]
-    public int UpdatedTimestamp { get; set; }
+    public long UpdatedTimestamp { get; set; }
 
     /// <summary>
     /// When true, the buyer indicated this purchase is a gift.
@@ -174,6 +174,12 @@ public class ShopReceipt
     /// </summary>
     [JsonPropertyName("gift_message")]
     public string GiftMessage { get; set; }
+
+    /// <summary>
+    /// The name of the person who sent the gift.
+    /// </summary>
+    [JsonPropertyName("gift_sender")]
+    public string GiftSender { get; set; }
 
     /// <summary>
     /// A number equal to the total_price minus the coupon discount plus tax and shipping costs.

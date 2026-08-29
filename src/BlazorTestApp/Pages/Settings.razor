@@ -1,0 +1,195 @@
+@page "/settings"
+@using BlazorTestApp.Data
+@inject RuntimeEtsySettings EtsySettings
+@inject ShopWorkspaceState ShopWorkspace
+@inject IJSRuntime JSRuntime
+
+<PageTitle>Settings · Etsy API Workspace</PageTitle>
+
+<section class="settings-page">
+    <header class="service-heading">
+        <p class="eyebrow">Workspace settings</p>
+        <h1>Connect your Etsy app.</h1>
+        <p>Credentials are kept in memory for this running test app only. They are not read from or saved to app settings.</p>
+    </header>
+
+    <section class="workspace-card settings-card">
+        <div class="card-heading">
+            <span class="card-icon">⚙</span>
+            <div>
+                <h2>Etsy API credentials</h2>
+                <p>Use the keystring and shared secret from your Etsy developer app.</p>
+            </div>
+        </div>
+
+        <EditForm Model="settingsForm" OnSubmit="Save">
+            <div class="settings-fields">
+                <label>
+                    <span>API keystring</span>
+                    <InputText @bind-Value="settingsForm.ClientId" autocomplete="off" placeholder="Your Etsy API keystring" />
+                </label>
+                <label>
+                    <span>Shared secret</span>
+                    <InputText @bind-Value="settingsForm.SharedSecret" type="password" autocomplete="new-password" placeholder="Your Etsy shared secret" />
+                </label>
+            </div>
+
+            @if (!string.IsNullOrWhiteSpace(message))
+            {
+                <p class="settings-message" role="status">@message</p>
+            }
+
+            <div class="settings-actions">
+                <button type="submit">Save credentials</button>
+                @if (EtsySettings.IsConfigured)
+                {
+                    <button type="button" class="secondary-action" @onclick="Clear">Clear credentials</button>
+                }
+            </div>
+        </EditForm>
+
+        <div class="runtime-note">
+            <span class="status-dot @(EtsySettings.IsConfigured ? "is-ready" : string.Empty)"></span>
+            <span>@(EtsySettings.IsConfigured ? "Credentials are available for this app session." : "No credentials are currently loaded.")</span>
+        </div>
+    </section>
+
+    <section class="workspace-card shop-settings-card">
+        <div class="card-heading">
+            <span class="card-icon">⌂</span>
+            <div>
+                <h2>Shops in this workspace</h2>
+                <p>Add the shops you want available from the Active shop picker.</p>
+            </div>
+        </div>
+
+        <EditForm Model="shopForm" OnSubmit="AddShop">
+            <div class="shop-form-fields">
+                <label>
+                    <span>Shop name</span>
+                    <input @bind="shopForm.Name" @bind:event="oninput" autocomplete="off" placeholder="For example, Lavender Eight" />
+                </label>
+                <label>
+                    <span>Shop ID</span>
+                    <input @bind="shopForm.Id" @bind:event="oninput" inputmode="numeric" autocomplete="off" placeholder="For example, 10919014" />
+                </label>
+                <button type="submit">Add shop</button>
+            </div>
+        </EditForm>
+
+        @if (!string.IsNullOrWhiteSpace(shopMessage))
+        {
+            <p class="settings-message" role="status">@shopMessage</p>
+        }
+
+        @if (ShopWorkspace.Shops.Count == 0)
+        {
+            <p class="empty-shop-list">No shops added yet. Add a shop to make it available in the header.</p>
+        }
+        else
+        {
+            <ul class="shop-list">
+                @foreach (var shop in ShopWorkspace.Shops)
+                {
+                    <li @key="shop.Id">
+                        <div>
+                            <strong>@shop.Name</strong>
+                            <span>Shop ID: @shop.Id</span>
+                        </div>
+                        <button type="button" class="remove-shop" @onclick="() => RemoveShop(shop)">Remove</button>
+                    </li>
+                }
+            </ul>
+        }
+    </section>
+</section>
+
+@implements IDisposable
+
+@code {
+    private readonly SettingsForm settingsForm = new();
+    private readonly ShopForm shopForm = new();
+    private string? message;
+    private string? shopMessage;
+
+    protected override void OnInitialized()
+    {
+        settingsForm.ClientId = EtsySettings.ClientId;
+        ShopWorkspace.Changed += OnShopsChanged;
+    }
+
+    private void OnShopsChanged()
+    {
+        _ = InvokeAsync(StateHasChanged);
+    }
+
+    private void Save(EditContext _)
+    {
+        try
+        {
+            EtsySettings.Configure(settingsForm.ClientId, settingsForm.SharedSecret);
+            AppState.TokenResponse = string.Empty;
+            AppState.AuthorizationCode = string.Empty;
+            settingsForm.SharedSecret = string.Empty;
+            message = "Credentials saved for this running app. Connect with Etsy to start a new session.";
+        }
+        catch (ArgumentException exception)
+        {
+            message = exception.Message;
+        }
+    }
+
+    private void Clear()
+    {
+        EtsySettings.Clear();
+        AppState.TokenResponse = string.Empty;
+        AppState.AuthorizationCode = string.Empty;
+        settingsForm.ClientId = string.Empty;
+        settingsForm.SharedSecret = string.Empty;
+        message = "Credentials cleared from this running app.";
+    }
+
+    private async Task AddShop(EditContext _)
+    {
+        try
+        {
+            if (!long.TryParse(shopForm.Id, out var shopId))
+                throw new ArgumentException("A positive shop ID is required.");
+
+            await ShopWorkspace.AddShopAsync(JSRuntime, shopId, shopForm.Name);
+            shopForm.Name = string.Empty;
+            shopForm.Id = string.Empty;
+            shopMessage = "Shop added to the Active shop picker.";
+        }
+        catch (ArgumentException exception)
+        {
+            shopMessage = exception.Message;
+        }
+    }
+
+    private async Task RemoveShop(RuntimeShop shop)
+    {
+        await ShopWorkspace.RemoveShopAsync(JSRuntime, shop.Id);
+        if (AppState.ShopId == shop.Id)
+            AppState.ShopId = 0;
+
+        shopMessage = $"{shop.Name} was removed from this workspace.";
+    }
+
+    private sealed class SettingsForm
+    {
+        public string ClientId { get; set; } = string.Empty;
+        public string SharedSecret { get; set; } = string.Empty;
+    }
+
+    private sealed class ShopForm
+    {
+        public string Name { get; set; } = string.Empty;
+        public string Id { get; set; } = string.Empty;
+    }
+
+    public void Dispose()
+    {
+        ShopWorkspace.Changed -= OnShopsChanged;
+    }
+}

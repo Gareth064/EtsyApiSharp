@@ -12,10 +12,10 @@ public class ListingVariationImage
     /// </summary>
     [JsonPropertyName("property_id")]
     public long PropertyId { get; set; }
-
     /// <summary>
-    /// The numeric ID of the Value.
+    /// Gets or sets the Value Id.
     /// </summary>
+
     [JsonPropertyName("value_id")]
     public long ValueId { get; set; }
 

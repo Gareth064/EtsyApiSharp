@@ -1,0 +1,50 @@
+@page "/services/shipping"
+@using BlazorTestApp.Components
+@using BlazorTestApp.Data
+@using EtsyApiSharp.Models.Filters
+@using EtsyApiSharp.Services.ShippingManagements
+@using System.Text.Json
+@inject IEtsyShippingManagementService ShippingService
+
+<ServiceTemplate ServiceTitle="Shipping Services" ShowResultsPane="true" ResultsToDisplay="@resultToDisplay">
+    <input @bind="originCountryIso" placeholder="Origin country ISO (e.g. GB)" />
+    <button @onclick="GetShippingCarriersAsync">Shipping carriers</button>
+    <br />
+    <input @bind="shopId" placeholder="Shop ID (defaults to authorised shop)" />
+    <button @onclick="GetShippingProfilesAsync">Shipping profiles (OAuth)</button>
+    <br />
+    <input @bind="shippingProfileId" placeholder="Shipping profile ID" />
+    <button @onclick="GetShippingProfileAsync">Get shipping profile (OAuth)</button>
+    <button @onclick="GetDestinationsAsync">Profile destinations (OAuth)</button>
+    <button @onclick="GetUpgradesAsync">Profile upgrades (OAuth)</button>
+    <p>All 14 Shipping Management operations are available through the typed service. This harness exposes the five non-destructive reads; profile, destination, and upgrade writes require deliberate request payloads in application code.</p>
+</ServiceTemplate>
+
+@code {
+    private string resultToDisplay = string.Empty;
+    private string originCountryIso = "GB";
+    private string shopId = string.Empty;
+    private string shippingProfileId = string.Empty;
+
+    private async Task GetShippingCarriersAsync() => await DisplayAsync(ShippingService.GetShippingCarriersAsync(originCountryIso));
+    private async Task GetShippingProfilesAsync() => await DisplayAsync(ShippingService.GetShopShippingProfilesAsync(AppState.TokenResponse, GetShopId()));
+    private async Task GetShippingProfileAsync() => await DisplayAsync(ShippingService.GetShopShippingProfileAsync(AppState.TokenResponse, GetShopId(), GetRequiredId(shippingProfileId, "shipping profile ID")));
+    private async Task GetDestinationsAsync() => await DisplayAsync(ShippingService.GetShopShippingProfileDestinationsAsync(AppState.TokenResponse, GetShopId(), GetRequiredId(shippingProfileId, "shipping profile ID"), new GetShopShippingProfileDestinationsFilter { Limit = 10 }));
+    private async Task GetUpgradesAsync() => await DisplayAsync(ShippingService.GetShopShippingProfileUpgradesAsync(AppState.TokenResponse, GetShopId(), GetRequiredId(shippingProfileId, "shipping profile ID")));
+
+    private long GetShopId() => string.IsNullOrWhiteSpace(shopId) ? AppState.ShopId : GetRequiredId(shopId, "shop ID");
+    private static long GetRequiredId(string value, string name) => long.TryParse(value, out var id) && id > 0 ? id : throw new InvalidOperationException($"A positive {name} is required.");
+
+    private async Task DisplayAsync<T>(Task<T> operation)
+    {
+        try { DisplayResultsOnScreen(await operation); }
+        catch (Exception exception) { resultToDisplay = exception.Message; }
+    }
+
+    private void DisplayResultsOnScreen<T>(T result)
+    {
+        var json = JsonSerializer.Serialize(result);
+        using var document = JsonDocument.Parse(json);
+        resultToDisplay = JsonSerializer.Serialize(document, new JsonSerializerOptions { WriteIndented = true });
+    }
+}

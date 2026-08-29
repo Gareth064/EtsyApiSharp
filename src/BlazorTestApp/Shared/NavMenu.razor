@@ -1,32 +1,75 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">BlazorTestApp</a>
-        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-    </div>
+<div class="nav-brand-row">
+    <NavLink class="brand" href="" Match="NavLinkMatch.All">
+        <span class="brand-mark">E</span>
+        <span>
+            <strong>Etsy</strong>
+            <small>Developer tools</small>
+        </span>
+    </NavLink>
+    <button title="Toggle navigation" class="navbar-toggler" @onclick="ToggleNavMenu" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+    </button>
 </div>
 
-<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
+<div class="@NavMenuCssClass nav-menu" @onclick="ToggleNavMenu">
+    <nav>
+        <p class="nav-section-label">Workspace</p>
+        <div class="nav-item">
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
+                <span class="nav-icon">⌂</span> Home
             </NavLink>
         </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="services/receipt">
-                <span class="oi oi-dollar" aria-hidden="true"></span> Receipt Services
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
+
+        <p class="nav-section-label">Shop management</p>
+        <div class="nav-item">
             <NavLink class="nav-link" href="services/listing">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Listing Services
+                <span class="nav-icon">▧</span> Listings
             </NavLink>
         </div>
-        <div class="nav-item px-3">
+        <div class="nav-item">
             <NavLink class="nav-link" href="services/shop">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Shop Services
+                <span class="nav-icon">⌂</span> Shop
+            </NavLink>
+        </div>
+        <div class="nav-item">
+            <NavLink class="nav-link" href="services/shop-policy">
+                <span class="nav-icon">Policies</span> Shop policies
+            </NavLink>
+        </div>
+        <div class="nav-item">
+            <NavLink class="nav-link" href="services/shipping">
+                <span class="nav-icon">⌁</span> Shipping
+            </NavLink>
+        </div>
+
+        <p class="nav-section-label">Orders &amp; finance</p>
+        <div class="nav-item">
+            <NavLink class="nav-link" href="services/receipt">
+                <span class="nav-icon">▤</span> Receipts
+            </NavLink>
+        </div>
+        <div class="nav-item">
+            <NavLink class="nav-link" href="services/payment">
+                <span class="nav-icon">◫</span> Payments
+            </NavLink>
+        </div>
+        <div class="nav-item">
+            <NavLink class="nav-link" href="services/review">
+                <span class="nav-icon">★</span> Reviews
+            </NavLink>
+        </div>
+
+        <p class="nav-section-label">Account</p>
+        <div class="nav-item">
+            <NavLink class="nav-link" href="services/user">
+                <span class="nav-icon">●</span> User
+            </NavLink>
+        </div>
+
+        <p class="nav-section-label">Workspace</p>
+        <div class="nav-item">
+            <NavLink class="nav-link" href="settings">
+                <span class="nav-icon">⚙</span> Settings
             </NavLink>
         </div>
     </nav>

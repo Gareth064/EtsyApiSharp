@@ -1,10 +1,10 @@
 using System.Text.Json.Serialization;
 
 namespace EtsyApiSharp.Models;
-
 /// <summary>
-/// Represents a shipping destination assigned to a shipping profile.
+/// Represents Shop Shipping Profile Destination.
 /// </summary>
+
 public class ShopShippingProfileDestination
 {
     /// <summary>

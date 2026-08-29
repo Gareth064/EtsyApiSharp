@@ -17,7 +17,7 @@ public class ShopReceiptShipment
     /// The time at which Etsy notified the buyer of the shipment event, in epoch seconds.
     /// </summary>
     [JsonPropertyName("shipment_notification_timestamp")]
-    public int ShipmentNotificationTimestamp { get; set; }
+    public long ShipmentNotificationTimestamp { get; set; }
 
     /// <summary>
     /// The name string for the carrier/company responsible for delivering the shipment.
