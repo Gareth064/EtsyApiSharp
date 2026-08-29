@@ -3,7 +3,7 @@
 [![Release and publish NuGet package](https://github.com/Gareth064/EtsyApiSharp/actions/workflows/publish-nuget.yml/badge.svg?branch=main)](https://github.com/Gareth064/EtsyApiSharp/actions/workflows/publish-nuget.yml)
 [![NuGet](https://img.shields.io/nuget/v/EtsyApiSharp?logo=nuget)](https://www.nuget.org/packages/EtsyApiSharp/)
 [![.NET](https://img.shields.io/badge/.NET-10.0-512BD4?logo=dotnet&logoColor=white)](https://dotnet.microsoft.com/)
-[![License](https://img.shields.io/github/license/Gareth064/EtsyApiSharp)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 EtsyApiSharp is a wrapper library for the Etsy v3 API
 
