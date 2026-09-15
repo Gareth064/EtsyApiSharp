@@ -88,22 +88,6 @@ public class UpdateListingRequest
     /// </summary>
     public int? FeaturedRank { get; set; }
     /// <summary>
-    /// Gets or sets the Is Personalizable.
-    /// </summary>
-    public bool? IsPersonalizable { get; set; }
-    /// <summary>
-    /// Gets or sets the Personalization Is Required.
-    /// </summary>
-    public bool? PersonalizationIsRequired { get; set; }
-    /// <summary>
-    /// Gets or sets the Personalization Char Count Max.
-    /// </summary>
-    public int? PersonalizationCharCountMax { get; set; }
-    /// <summary>
-    /// Gets or sets the Personalization Instructions.
-    /// </summary>
-    public string? PersonalizationInstructions { get; set; }
-    /// <summary>
     /// Gets or sets the State.
     /// </summary>
     public ListingState? State { get; set; }

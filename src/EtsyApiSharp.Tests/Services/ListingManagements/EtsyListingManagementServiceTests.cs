@@ -67,16 +67,16 @@ public class EtsyListingManagementServiceTests
     }
 
     [Fact]
-    public async Task GetListingsByShopAsync_AuthenticatedRequest_SendsListingScopeBearerToken()
+    public async Task GetListingsByShopAsync_RemovedState_SendsListingScopeBearerTokenAndParsesResponse()
     {
         var handler = new StubHttpMessageHandler(request =>
         {
             Assert.Equal("Bearer", request.Headers.Authorization?.Scheme);
             Assert.Equal("123.access-token", request.Headers.Authorization?.Parameter);
             Assert.Equal(
-                "https://openapi.etsy.com/v3/application/shops/123/listings?limit=10&state=draft&sort_on=updated&sort_order=asc&includes=images",
+                "https://openapi.etsy.com/v3/application/shops/123/listings?limit=10&state=removed&sort_on=updated&sort_order=asc&includes=images",
                 request.RequestUri?.AbsoluteUri);
-            return Task.FromResult(JsonResponse(HttpStatusCode.OK, "{\"count\":0,\"results\":[]}"));
+            return Task.FromResult(JsonResponse(HttpStatusCode.OK, "{\"count\":1,\"results\":[{\"listing_id\":456,\"state\":\"removed\"}]}"));
         });
         var factory = new StubHttpClientFactory(handler);
         var service = CreateService(factory);
@@ -85,10 +85,11 @@ public class EtsyListingManagementServiceTests
             "123.access-token",
             123,
             new[] { ListingInclude.Images },
-            new GetListingsByShopFilter { Limit = 10, State = ListingState.draft, SortOn = ListingSortOn.updated, SortOrder = ListingSortOrder.asc });
+            new GetListingsByShopFilter { Limit = 10, State = ListingState.removed, SortOn = ListingSortOn.updated, SortOrder = ListingSortOrder.asc });
 
         Assert.Equal(EtsyListingManagementService.HttpClientName, factory.RequestedName);
         Assert.True(result.Success);
+        Assert.Equal(ListingState.removed, result.Data?.Results.Single().State);
     }
 
     [Fact]
@@ -257,6 +258,24 @@ public class EtsyListingManagementServiceTests
         Assert.Equal(HttpMethod.Delete, requests.Dequeue().Method);
         Assert.Equal("legacy=true", requests.Dequeue().RequestUri?.Query.TrimStart('?'));
         Assert.Equal("listing_ids=20%2C21", requests.Dequeue().RequestUri?.Query.TrimStart('?'));
+    }
+
+    [Fact]
+    public void ListingRequests_RemovedPersonalizationFields_AreNotExposed()
+    {
+        var removedProperties = new[]
+        {
+            "IsPersonalizable",
+            "PersonalizationIsRequired",
+            "PersonalizationCharCountMax",
+            "PersonalizationInstructions"
+        };
+
+        foreach (var property in removedProperties)
+        {
+            Assert.Null(typeof(CreateDraftListingRequest).GetProperty(property));
+            Assert.Null(typeof(UpdateListingRequest).GetProperty(property));
+        }
     }
 
     [Fact]
