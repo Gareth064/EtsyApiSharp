@@ -605,6 +605,7 @@
                                 "inactive",
                                 "sold_out",
                                 "draft",
+                                "removed",
                                 "expired"
                             ],
                             "default": "active"
@@ -12380,6 +12381,7 @@
                             "inactive",
                             "sold_out",
                             "draft",
+                            "removed",
                             "expired"
                         ]
                     },
@@ -12827,6 +12829,7 @@
                             "inactive",
                             "sold_out",
                             "draft",
+                            "removed",
                             "expired"
                         ]
                     },
