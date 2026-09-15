@@ -260,6 +260,24 @@ public class EtsyListingManagementServiceTests
     }
 
     [Fact]
+    public void ListingRequests_RemovedPersonalizationFields_AreNotExposed()
+    {
+        var removedProperties = new[]
+        {
+            "IsPersonalizable",
+            "PersonalizationIsRequired",
+            "PersonalizationCharCountMax",
+            "PersonalizationInstructions"
+        };
+
+        foreach (var property in removedProperties)
+        {
+            Assert.Null(typeof(CreateDraftListingRequest).GetProperty(property));
+            Assert.Null(typeof(UpdateListingRequest).GetProperty(property));
+        }
+    }
+
+    [Fact]
     public async Task ListingFileAndImageMethods_ValidRequests_UseAuthenticatedRoutesAndMultipartUploads()
     {
         var requests = new Queue<HttpRequestMessage>();
