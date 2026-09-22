@@ -1,20 +1,20 @@
-name: Publish NuGet package
+name: Release and publish NuGet package
 
 on:
-  release:
-    types: [published]
+  push:
+    branches: [main]
   workflow_dispatch:
-    inputs:
-      version:
-        description: NuGet package version to publish (for example, 1.0.0)
-        required: true
-        type: string
 
 permissions:
-  contents: read
+  contents: write
+  id-token: write
+
+concurrency:
+  group: nuget-release-main
+  cancel-in-progress: false
 
 jobs:
-  publish:
+  release:
     runs-on: ubuntu-latest
     steps:
       - name: Check out source
@@ -27,12 +27,29 @@ jobs:
         with:
           dotnet-version: 10.0.x
 
-      - name: Determine package version
+      - name: Determine next package version
         id: version
         shell: bash
         run: |
-          version="${{ inputs.version || github.event.release.tag_name }}"
-          version="${version#v}"
+          set -euo pipefail
+          latest_tag="$(git tag --list 'v[0-9]*' --sort=-version:refname | head -n 1)"
+
+          if [ -z "$latest_tag" ]; then
+            version="$(sed -n 's|.*<Version>\([^<]*\)</Version>.*|\1|p' src/EtsyApiSharp/EtsyApiSharp.csproj | head -n 1)"
+            if [ -z "$version" ]; then
+              echo "Unable to determine the initial package version." >&2
+              exit 1
+            fi
+          else
+            version="${latest_tag#v}"
+            IFS='.' read -r major minor patch <<< "$version"
+            if ! [[ "$major" =~ ^[0-9]+$ && "$minor" =~ ^[0-9]+$ && "$patch" =~ ^[0-9]+$ ]]; then
+              echo "Latest release tag '$latest_tag' is not a stable MAJOR.MINOR.PATCH version." >&2
+              exit 1
+            fi
+            version="$major.$minor.$((patch + 1))"
+          fi
+
           echo "value=$version" >> "$GITHUB_OUTPUT"
 
       - name: Test
@@ -41,8 +58,20 @@ jobs:
       - name: Pack
         run: dotnet pack src/EtsyApiSharp/EtsyApiSharp.csproj --configuration Release -p:Version=${{ steps.version.outputs.value }} --output ./artifacts
 
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.version.outputs.value }}
+        run: gh release create "v$VERSION" --target "$GITHUB_SHA" --title "v$VERSION" --generate-notes
+
+      - name: Authenticate with NuGet
+        id: nuget-login
+        uses: NuGet/login@v1
+        with:
+          user: Gareth064
+
       - name: Publish package
-        run: dotnet nuget push './artifacts/*.nupkg' --api-key '${{ secrets.NUGET_API_KEY }}' --source https://api.nuget.org/v3/index.json --skip-duplicate
+        run: dotnet nuget push './artifacts/*.nupkg' --api-key '${{ steps.nuget-login.outputs.NUGET_API_KEY }}' --source https://api.nuget.org/v3/index.json --skip-duplicate
 
       - name: Publish symbols
-        run: dotnet nuget push './artifacts/*.snupkg' --api-key '${{ secrets.NUGET_API_KEY }}' --source https://api.nuget.org/v3/index.json --skip-duplicate
+        run: dotnet nuget push './artifacts/*.snupkg' --api-key '${{ steps.nuget-login.outputs.NUGET_API_KEY }}' --source https://api.nuget.org/v3/index.json --skip-duplicate
