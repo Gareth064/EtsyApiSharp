@@ -299,4 +299,52 @@ public class ShopListing
     [JsonPropertyName("taxonomy_id")]
     public long? TaxonomyId { get; set; }
 
+    /// <summary>
+    /// Brand or trademark name for the EU commercial guarantee label.
+    /// </summary>
+    [JsonPropertyName("ecgt_garan_brand")]
+    public string? EcgtGaranBrand { get; set; }
+
+    /// <summary>
+    /// Duration of the commercial guarantee in whole years.
+    /// </summary>
+    [JsonPropertyName("ecgt_garan_years")]
+    public long? EcgtGaranYears { get; set; }
+
+    /// <summary>
+    /// Product model or reference number for the EU commercial guarantee label.
+    /// </summary>
+    [JsonPropertyName("ecgt_garan_model")]
+    public string? EcgtGaranModel { get; set; }
+
+    /// <summary>
+    /// Free-text details of the commercial guarantee.
+    /// </summary>
+    [JsonPropertyName("ecgt_garan_guarantee_details")]
+    public string? EcgtGaranGuaranteeDetails { get; set; }
+
+    /// <summary>
+    /// Free-text details of any additional commercial guarantee or warranty.
+    /// </summary>
+    [JsonPropertyName("ecgt_other_commercial_guarantee_details")]
+    public string? EcgtOtherCommercialGuaranteeDetails { get; set; }
+
+    /// <summary>
+    /// After-sales service, repairability, or eco-friendly delivery information.
+    /// </summary>
+    [JsonPropertyName("ecgt_after_sales_service_info")]
+    public string? EcgtAfterSalesServiceInfo { get; set; }
+
+    /// <summary>
+    /// Software update availability and duration for digital or software listings.
+    /// </summary>
+    [JsonPropertyName("ecgt_software_update_details")]
+    public string? EcgtSoftwareUpdateDetails { get; set; }
+
+    /// <summary>
+    /// Whether all commercial guarantee fields are filled.
+    /// </summary>
+    [JsonPropertyName("ecgt_commercial_guarantee_enabled")]
+    public bool? EcgtCommercialGuaranteeEnabled { get; set; }
+
 }
