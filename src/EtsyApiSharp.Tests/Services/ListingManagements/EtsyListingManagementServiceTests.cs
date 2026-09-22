@@ -67,6 +67,40 @@ public class EtsyListingManagementServiceTests
     }
 
     [Fact]
+    public async Task ListingResponses_EcgtFields_ParseAcrossListingModels()
+    {
+        const string ecgtFields = "\"ecgt_garan_brand\":\"Example brand\",\"ecgt_garan_years\":3,\"ecgt_garan_model\":\"Model 1\",\"ecgt_garan_guarantee_details\":\"Three-year guarantee\",\"ecgt_other_commercial_guarantee_details\":\"Additional warranty\",\"ecgt_after_sales_service_info\":\"Repair service\",\"ecgt_software_update_details\":\"Updates for three years\",\"ecgt_commercial_guarantee_enabled\":true";
+        var handler = new StubHttpMessageHandler(request =>
+        {
+            if (request.Method == HttpMethod.Get)
+            {
+                Assert.Null(request.Headers.Authorization);
+                return Task.FromResult(JsonResponse(HttpStatusCode.OK, $"{{\"listing_id\":456,{ecgtFields}}}"));
+            }
+
+            Assert.Equal(HttpMethod.Post, request.Method);
+            Assert.Equal("Bearer", request.Headers.Authorization?.Scheme);
+            return Task.FromResult(JsonResponse(HttpStatusCode.OK, $"{{\"listing_id\":789,{ecgtFields}}}"));
+        });
+        var service = CreateService(new StubHttpClientFactory(handler));
+
+        var listingWithAssociations = await service.GetListingAsync(456);
+        var listing = await service.CreateDraftListingAsync("123.access-token", 123, new CreateDraftListingRequest
+        {
+            Quantity = 1,
+            Title = "Example title",
+            Description = "Example description",
+            Price = 10.5M,
+            WhoMade = ListingWhoMade.i_did,
+            WhenMade = "made_to_order",
+            TaxonomyId = 123
+        });
+
+        AssertEcgtFields(listingWithAssociations.Data);
+        AssertEcgtFields(listing.Data);
+    }
+
+    [Fact]
     public async Task GetListingsByShopAsync_RemovedState_SendsListingScopeBearerTokenAndParsesResponse()
     {
         var handler = new StubHttpMessageHandler(request =>
@@ -430,6 +464,32 @@ public class EtsyListingManagementServiceTests
     {
         Content = new StringContent(body, Encoding.UTF8, "application/json")
     };
+
+    private static void AssertEcgtFields(ShopListing? listing)
+    {
+        Assert.NotNull(listing);
+        Assert.Equal("Example brand", listing.EcgtGaranBrand);
+        Assert.Equal(3, listing.EcgtGaranYears);
+        Assert.Equal("Model 1", listing.EcgtGaranModel);
+        Assert.Equal("Three-year guarantee", listing.EcgtGaranGuaranteeDetails);
+        Assert.Equal("Additional warranty", listing.EcgtOtherCommercialGuaranteeDetails);
+        Assert.Equal("Repair service", listing.EcgtAfterSalesServiceInfo);
+        Assert.Equal("Updates for three years", listing.EcgtSoftwareUpdateDetails);
+        Assert.True(listing.EcgtCommercialGuaranteeEnabled);
+    }
+
+    private static void AssertEcgtFields(ShopListingWithAssociations? listing)
+    {
+        Assert.NotNull(listing);
+        Assert.Equal("Example brand", listing.EcgtGaranBrand);
+        Assert.Equal(3, listing.EcgtGaranYears);
+        Assert.Equal("Model 1", listing.EcgtGaranModel);
+        Assert.Equal("Three-year guarantee", listing.EcgtGaranGuaranteeDetails);
+        Assert.Equal("Additional warranty", listing.EcgtOtherCommercialGuaranteeDetails);
+        Assert.Equal("Repair service", listing.EcgtAfterSalesServiceInfo);
+        Assert.Equal("Updates for three years", listing.EcgtSoftwareUpdateDetails);
+        Assert.True(listing.EcgtCommercialGuaranteeEnabled);
+    }
 
     private sealed class StubHttpClientFactory : IHttpClientFactory
     {
