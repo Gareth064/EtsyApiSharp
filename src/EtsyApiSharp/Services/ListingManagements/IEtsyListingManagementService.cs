@@ -191,6 +191,10 @@ public interface IEtsyListingManagementService
     /// </summary>
     Task<ApiResponse<ListingVideo>> UploadListingVideoAsync(string accessToken, long shopId, long listingId, ListingVideoUploadRequest video, CancellationToken cancellationToken = default);
     /// <summary>
+    /// Executes the Upload Listing Video operation with the multi-video option.
+    /// </summary>
+    Task<ApiResponse<ListingVideo>> UploadListingVideoAsync(string accessToken, long shopId, long listingId, ListingVideoUploadRequest video, bool? isMultiVideo, CancellationToken cancellationToken = default);
+    /// <summary>
     /// Executes the Delete Listing Video operation.
     /// </summary>
     Task<ApiResponse<object>> DeleteListingVideoAsync(string accessToken, long shopId, long listingId, long videoId, CancellationToken cancellationToken = default);
