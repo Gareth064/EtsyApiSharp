@@ -454,6 +454,33 @@ public class EtsyListingManagementServiceTests
         Assert.Equal(HttpMethod.Delete, requests.Dequeue().Method);
     }
 
+    [Fact]
+    public async Task UploadListingVideoAsync_MultiVideoOption_UsesQueryAndListingWriteAuthentication()
+    {
+        var handler = new StubHttpMessageHandler(request =>
+        {
+            Assert.Equal(HttpMethod.Post, request.Method);
+            Assert.Equal("Bearer", request.Headers.Authorization?.Scheme);
+            Assert.Equal("123.token", request.Headers.Authorization?.Parameter);
+            Assert.Equal(
+                "https://openapi.etsy.com/v3/application/shops/10/listings/20/videos?is_multi_video=true",
+                request.RequestUri?.AbsoluteUri);
+            Assert.Equal("multipart/form-data", request.Content?.Headers.ContentType?.MediaType);
+            return Task.FromResult(JsonResponse(HttpStatusCode.OK, "{\"video_id\":30}"));
+        });
+        var service = CreateService(new StubHttpClientFactory(handler));
+
+        var result = await service.UploadListingVideoAsync(
+            "123.token",
+            10,
+            20,
+            new ListingVideoUploadRequest { VideoId = 30 },
+            isMultiVideo: true);
+
+        Assert.True(result.Success);
+        Assert.Equal(30, result.Data?.VideoId);
+    }
+
     private static EtsyListingManagementService CreateService(IHttpClientFactory? factory = null) => new(
         factory ?? new StubHttpClientFactory(new StubHttpMessageHandler(
             _ => throw new InvalidOperationException("No HTTP request was expected."))),
