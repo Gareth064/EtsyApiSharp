@@ -622,7 +622,14 @@ public class EtsyListingManagementService : IEtsyListingManagementService
     /// Executes the Upload Listing Video operation.
     /// </summary>
 
-    public Task<ApiResponse<ListingVideo>> UploadListingVideoAsync(string accessToken, long shopId, long listingId, ListingVideoUploadRequest video, CancellationToken cancellationToken = default)
+    public Task<ApiResponse<ListingVideo>> UploadListingVideoAsync(string accessToken, long shopId, long listingId, ListingVideoUploadRequest video, CancellationToken cancellationToken = default) =>
+        UploadListingVideoAsync(accessToken, shopId, listingId, video, null, cancellationToken);
+
+    /// <summary>
+    /// Executes the Upload Listing Video operation with the multi-video option.
+    /// </summary>
+
+    public Task<ApiResponse<ListingVideo>> UploadListingVideoAsync(string accessToken, long shopId, long listingId, ListingVideoUploadRequest video, bool? isMultiVideo, CancellationToken cancellationToken = default)
     {
         ValidateAccessToken(accessToken);
         ValidateId(shopId, nameof(shopId));
@@ -634,7 +641,9 @@ public class EtsyListingManagementService : IEtsyListingManagementService
         AddMultipartValue(content, "video_id", video.VideoId);
         if (video.Video is not null)
             content.Add(new StreamContent(video.Video), "video", video.FileName ?? "video");
-        return SendSingleAsync<ListingVideo>(HttpMethod.Post, Url.ListingUrls.UploadListingVideo(shopId, listingId), null, accessToken, content, cancellationToken);
+        var query = new Dictionary<string, string>();
+        AddBoolean(query, "is_multi_video", isMultiVideo);
+        return SendSingleAsync<ListingVideo>(HttpMethod.Post, Url.ListingUrls.UploadListingVideo(shopId, listingId), query, accessToken, content, cancellationToken);
     }
     /// <summary>
     /// Executes the Delete Listing Video operation.
