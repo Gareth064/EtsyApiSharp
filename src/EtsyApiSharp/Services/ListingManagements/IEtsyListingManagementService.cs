@@ -27,6 +27,10 @@ public interface IEtsyListingManagementService
     /// </summary>
     Task<ApiResponse<EtsyListResponse<TaxonomyNodeProperty>>> GetPropertiesByTaxonomyIdAsync(long taxonomyId, CancellationToken cancellationToken = default);
     /// <summary>
+    /// Executes the Get Properties By Taxonomy Id operation with optional capability filters.
+    /// </summary>
+    Task<ApiResponse<EtsyListResponse<TaxonomyNodeProperty>>> GetPropertiesByTaxonomyIdAsync(long taxonomyId, GetPropertiesByTaxonomyIdFilter? filter, CancellationToken cancellationToken = default);
+    /// <summary>
     /// Executes the Get Listings By Shop operation.
     /// </summary>
     Task<ApiResponse<EtsyListResponse<ShopListingWithAssociations>>> GetListingsByShopAsync(string accessToken, long shopId, IReadOnlyCollection<ListingInclude>? includes = null, GetListingsByShopFilter? filter = null, CancellationToken cancellationToken = default);

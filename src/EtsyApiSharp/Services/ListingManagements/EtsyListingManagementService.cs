@@ -86,10 +86,22 @@ public class EtsyListingManagementService : IEtsyListingManagementService
 
     public Task<ApiResponse<EtsyListResponse<TaxonomyNodeProperty>>> GetPropertiesByTaxonomyIdAsync(
         long taxonomyId,
+        CancellationToken cancellationToken = default) =>
+        GetPropertiesByTaxonomyIdAsync(taxonomyId, null, cancellationToken);
+
+    /// <summary>
+    /// Executes the Get Properties By Taxonomy Id operation with optional capability filters.
+    /// </summary>
+    public Task<ApiResponse<EtsyListResponse<TaxonomyNodeProperty>>> GetPropertiesByTaxonomyIdAsync(
+        long taxonomyId,
+        GetPropertiesByTaxonomyIdFilter? filter,
         CancellationToken cancellationToken = default)
     {
         ValidateId(taxonomyId, nameof(taxonomyId));
-        return SendListAsync<TaxonomyNodeProperty>(HttpMethod.Get, Url.ListingUrls.GetPropertiesByTaxonomyId(taxonomyId), null, null, cancellationToken);
+        var query = new Dictionary<string, string>();
+        AddBoolean(query, "supports_variations", filter?.SupportsVariations);
+        AddBoolean(query, "supports_attributes", filter?.SupportsAttributes);
+        return SendListAsync<TaxonomyNodeProperty>(HttpMethod.Get, Url.ListingUrls.GetPropertiesByTaxonomyId(taxonomyId), query, null, cancellationToken);
     }
     /// <summary>
     /// Executes the Get Listings By Shop operation.
