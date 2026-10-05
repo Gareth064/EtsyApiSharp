@@ -34,6 +34,8 @@
     <button @onclick="GetListingsByListingIdsAsync">Listings by IDs</button>
     <br />
     <input @bind="taxonomyId" placeholder="Taxonomy ID" />
+    <input @bind="supportsVariations" placeholder="Supports variations (true/false)" />
+    <input @bind="supportsAttributes" placeholder="Supports attributes (true/false)" />
     <button @onclick="GetSellerTaxonomyNodesAsync">Seller taxonomy</button>
     <button @onclick="GetSellerTaxonomyPropertiesAsync">Seller taxonomy properties</button>
     <button @onclick="GetBuyerTaxonomyNodesAsync">Buyer taxonomy</button>
@@ -77,6 +79,8 @@
     private string shopId = string.Empty;
     private string sectionIds = string.Empty;
     private string taxonomyId = string.Empty;
+    private string supportsVariations = string.Empty;
+    private string supportsAttributes = string.Empty;
     private string returnPolicyId = string.Empty;
     private string listingFileId = string.Empty;
     private string productId = string.Empty;
@@ -131,7 +135,12 @@
     private async Task GetSellerTaxonomyNodesAsync() => await DisplayAsync(ListingService.GetSellerTaxonomyNodesAsync());
 
     private async Task GetSellerTaxonomyPropertiesAsync() => await DisplayAsync(ListingService.GetPropertiesByTaxonomyIdAsync(
-        GetRequiredId(taxonomyId, "taxonomy ID")));
+        GetRequiredId(taxonomyId, "taxonomy ID"),
+        new GetPropertiesByTaxonomyIdFilter
+        {
+            SupportsVariations = GetOptionalBoolean(supportsVariations, "supports variations"),
+            SupportsAttributes = GetOptionalBoolean(supportsAttributes, "supports attributes")
+        }));
 
     private async Task GetBuyerTaxonomyNodesAsync() => await DisplayAsync(ListingService.GetBuyerTaxonomyNodesAsync());
 
@@ -188,6 +197,12 @@
     private string GetRequiredLanguage() => string.IsNullOrWhiteSpace(language)
         ? throw new InvalidOperationException("A language is required.")
         : language;
+
+    private static bool? GetOptionalBoolean(string value, string name) => string.IsNullOrWhiteSpace(value)
+        ? null
+        : bool.TryParse(value, out var parsedValue)
+            ? parsedValue
+            : throw new InvalidOperationException($"A true or false {name} value is required.");
 
     private static IReadOnlyCollection<long> GetRequiredIds(string value, string name)
     {
