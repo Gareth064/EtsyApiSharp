@@ -176,6 +176,58 @@ public class EtsyListingManagementServiceTests
     }
 
     [Fact]
+    public async Task GetPropertiesByTaxonomyIdAsync_CapabilityFilters_UsesPublicRouteAndEncodesFilters()
+    {
+        var handler = new StubHttpMessageHandler(request =>
+        {
+            Assert.Equal(HttpMethod.Get, request.Method);
+            Assert.Null(request.Headers.Authorization);
+            Assert.Equal("client-id:shared-secret", request.Headers.GetValues("x-api-key").Single());
+            Assert.Equal(
+                "https://openapi.etsy.com/v3/application/seller-taxonomy/nodes/123/properties?supports_variations=true&supports_attributes=false",
+                request.RequestUri?.AbsoluteUri);
+            return Task.FromResult(JsonResponse(HttpStatusCode.OK, "{\"count\":0,\"results\":[]}"));
+        });
+        var service = CreateService(new StubHttpClientFactory(handler));
+
+        var result = await service.GetPropertiesByTaxonomyIdAsync(123, new GetPropertiesByTaxonomyIdFilter
+        {
+            SupportsVariations = true,
+            SupportsAttributes = false
+        });
+
+        Assert.True(result.Success);
+    }
+
+    [Fact]
+    public async Task GetPropertiesByTaxonomyIdAsync_CapabilityFiltersWithInvalidTaxonomyId_ThrowsArgumentOutOfRangeException()
+    {
+        var service = CreateService();
+
+        await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => service.GetPropertiesByTaxonomyIdAsync(
+            0,
+            new GetPropertiesByTaxonomyIdFilter { SupportsVariations = true }));
+    }
+
+    [Fact]
+    public async Task GetPropertiesByTaxonomyIdAsync_CapabilityFilters_PropagatesCancellation()
+    {
+        var handler = new StubHttpMessageHandler(async (_, cancellationToken) =>
+        {
+            await Task.Delay(Timeout.InfiniteTimeSpan, cancellationToken);
+            throw new InvalidOperationException("The cancelled request unexpectedly completed.");
+        });
+        var service = CreateService(new StubHttpClientFactory(handler));
+        using var cancellationSource = new CancellationTokenSource();
+        cancellationSource.Cancel();
+
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => service.GetPropertiesByTaxonomyIdAsync(
+            123,
+            new GetPropertiesByTaxonomyIdFilter { SupportsAttributes = true },
+            cancellationSource.Token));
+    }
+
+    [Fact]
     public async Task GetListingsByListingIdsAsync_Options_UsesCurrentQueryParameters()
     {
         var handler = new StubHttpMessageHandler(request =>

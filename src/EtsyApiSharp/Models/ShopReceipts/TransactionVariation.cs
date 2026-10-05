@@ -37,4 +37,10 @@ public class TransactionVariation
     [JsonPropertyName("question_id")]
     public long? QuestionId { get; set; }
 
+    /// <summary>
+    /// MIME type of an uploaded personalization file. Null for non-upload questions.
+    /// </summary>
+    [JsonPropertyName("mime_type")]
+    public string? MimeType { get; set; }
+
 }

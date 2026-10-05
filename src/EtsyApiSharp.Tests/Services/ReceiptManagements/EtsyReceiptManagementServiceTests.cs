@@ -46,6 +46,20 @@ public class EtsyReceiptManagementServiceTests
     }
 
     [Fact]
+    public async Task GetShopReceiptAsync_UploadedPersonalizationVariation_ParsesMimeType()
+    {
+        var handler = new StubHttpMessageHandler(_ => Task.FromResult(JsonResponse(
+            HttpStatusCode.OK,
+            "{\"receipt_id\":456,\"transactions\":[{\"variations\":[{\"mime_type\":\"application/pdf\"}]}]}")));
+        var service = CreateService(new StubHttpClientFactory(handler));
+
+        var result = await service.GetShopReceiptAsync("123.access-token", 123, 456);
+
+        Assert.True(result.Success);
+        Assert.Equal("application/pdf", result.Data?.Transactions.Single().Variations.Single().MimeType);
+    }
+
+    [Fact]
     public async Task GetShopReceiptsAsync_PopulatedFilter_SendsEverySupportedQueryParameter()
     {
         var handler = new StubHttpMessageHandler(request =>
