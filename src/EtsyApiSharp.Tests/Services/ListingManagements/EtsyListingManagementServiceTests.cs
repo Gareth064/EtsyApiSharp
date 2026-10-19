@@ -347,7 +347,7 @@ public class EtsyListingManagementServiceTests
     }
 
     [Fact]
-    public void ListingRequests_RemovedPersonalizationFields_AreNotExposed()
+    public void ListingRequests_RemovedFields_AreNotExposed()
     {
         var removedProperties = new[]
         {
@@ -362,6 +362,8 @@ public class EtsyListingManagementServiceTests
             Assert.Null(typeof(CreateDraftListingRequest).GetProperty(property));
             Assert.Null(typeof(UpdateListingRequest).GetProperty(property));
         }
+
+        Assert.Null(typeof(UpdateListingRequest).GetProperty("FeaturedRank"));
     }
 
     [Fact]
@@ -472,6 +474,66 @@ public class EtsyListingManagementServiceTests
         Assert.Equal(200L, result.Data?.QuantityOnProperty.Single());
         Assert.Equal(52047899002L, result.Data?.SkuOnProperty.Single());
         Assert.Equal(52047899318L, result.Data?.ReadinessStateOnProperty.Single());
+    }
+
+    [Fact]
+    public async Task UpdateListingInventoryAsync_ScaleValidationOption_UsesQueryAuthenticationAndParsesResponse()
+    {
+        var handler = new StubHttpMessageHandler(request =>
+        {
+            Assert.Equal(HttpMethod.Put, request.Method);
+            Assert.Equal("Bearer", request.Headers.Authorization?.Scheme);
+            Assert.Equal("123.token", request.Headers.Authorization?.Parameter);
+            Assert.Equal("client-id:shared-secret", request.Headers.GetValues("x-api-key").Single());
+            Assert.Equal(
+                "https://openapi.etsy.com/v3/application/listings/20/inventory?max_variations_supported=3&enable_scale_validation=true",
+                request.RequestUri?.AbsoluteUri);
+            return Task.FromResult(JsonResponse(HttpStatusCode.OK, "{\"products\":[]}"));
+        });
+        var service = CreateService(new StubHttpClientFactory(handler));
+        var inventory = new UpdateListingInventoryRequest { Products = new[] { new ListingInventoryProduct() } };
+
+        var result = await service.UpdateListingInventoryAsync(
+            "123.token",
+            20,
+            inventory,
+            enableScaleValidation: true,
+            maxVariationsSupported: "3");
+
+        Assert.True(result.Success);
+        Assert.Empty(result.Data?.Products ?? new List<ListingInventoryProduct>());
+    }
+
+    [Fact]
+    public async Task UpdateListingInventoryAsync_EmptyProducts_ThrowsArgumentException()
+    {
+        var service = CreateService();
+
+        await Assert.ThrowsAsync<ArgumentException>(() => service.UpdateListingInventoryAsync(
+            "123.token",
+            20,
+            new UpdateListingInventoryRequest(),
+            enableScaleValidation: true));
+    }
+
+    [Fact]
+    public async Task UpdateListingInventoryAsync_ScaleValidationOption_CancelledRequest_PropagatesCancellation()
+    {
+        var handler = new StubHttpMessageHandler(async (_, cancellationToken) =>
+        {
+            await Task.Delay(Timeout.InfiniteTimeSpan, cancellationToken);
+            throw new InvalidOperationException("The cancelled request unexpectedly completed.");
+        });
+        var service = CreateService(new StubHttpClientFactory(handler));
+        using var cancellationSource = new CancellationTokenSource();
+        cancellationSource.Cancel();
+
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => service.UpdateListingInventoryAsync(
+            "123.token",
+            20,
+            new UpdateListingInventoryRequest { Products = new[] { new ListingInventoryProduct() } },
+            enableScaleValidation: true,
+            cancellationToken: cancellationSource.Token));
     }
 
     [Fact]
