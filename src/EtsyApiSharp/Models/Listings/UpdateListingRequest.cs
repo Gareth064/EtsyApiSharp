@@ -84,10 +84,6 @@ public class UpdateListingRequest
     /// </summary>
     public string? WhenMade { get; set; }
     /// <summary>
-    /// Gets or sets the Featured Rank.
-    /// </summary>
-    public int? FeaturedRank { get; set; }
-    /// <summary>
     /// Gets or sets the State.
     /// </summary>
     public ListingState? State { get; set; }
