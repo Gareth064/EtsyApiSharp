@@ -489,7 +489,14 @@ public class EtsyListingManagementService : IEtsyListingManagementService
     /// Executes the Update Listing Inventory operation.
     /// </summary>
 
-    public Task<ApiResponse<ListingInventory>> UpdateListingInventoryAsync(string accessToken, long listingId, UpdateListingInventoryRequest inventory, string? maxVariationsSupported = null, CancellationToken cancellationToken = default)
+    public Task<ApiResponse<ListingInventory>> UpdateListingInventoryAsync(string accessToken, long listingId, UpdateListingInventoryRequest inventory, string? maxVariationsSupported = null, CancellationToken cancellationToken = default) =>
+        UpdateListingInventoryAsync(accessToken, listingId, inventory, null, maxVariationsSupported, cancellationToken);
+
+    /// <summary>
+    /// Executes the Update Listing Inventory operation with temporary scale validation.
+    /// </summary>
+
+    public Task<ApiResponse<ListingInventory>> UpdateListingInventoryAsync(string accessToken, long listingId, UpdateListingInventoryRequest inventory, bool? enableScaleValidation, string? maxVariationsSupported = null, CancellationToken cancellationToken = default)
     {
         ValidateAccessToken(accessToken);
         ValidateId(listingId, nameof(listingId));
@@ -500,6 +507,7 @@ public class EtsyListingManagementService : IEtsyListingManagementService
             throw new ArgumentException("The maximum variations value must be '2' or '3'.", nameof(maxVariationsSupported));
         var query = new Dictionary<string, string>();
         AddString(query, "max_variations_supported", maxVariationsSupported);
+        AddBoolean(query, "enable_scale_validation", enableScaleValidation);
         return SendSingleAsync<ListingInventory>(HttpMethod.Put, Url.ListingUrls.GetListingInventory(listingId), query, accessToken, HttpContentHelper.CreateJsonContent(inventory, true), cancellationToken);
     }
     /// <summary>
