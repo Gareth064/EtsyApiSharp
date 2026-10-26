@@ -41,12 +41,4 @@ public interface IEtsyUserManagementService
         long userAddressId,
         CancellationToken cancellationToken = default);
 
-    /// <summary>
-    /// Deletes one of the authenticated user's shipping addresses. Etsy currently declares the
-    /// <c>address_r</c> OAuth scope for this operation.
-    /// </summary>
-    Task<ApiResponse<object>> DeleteUserAddressAsync(
-        string accessToken,
-        long userAddressId,
-        CancellationToken cancellationToken = default);
 }

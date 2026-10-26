@@ -569,7 +569,7 @@ public class EtsyListingManagementServiceTests
     }
 
     [Fact]
-    public async Task UploadListingVideoAsync_MultiVideoOption_UsesQueryAndListingWriteAuthentication()
+    public async Task UploadListingVideoAsync_UsesSingleVideoRouteAndParsesRateLimitResponse()
     {
         var handler = new StubHttpMessageHandler(request =>
         {
@@ -577,10 +577,10 @@ public class EtsyListingManagementServiceTests
             Assert.Equal("Bearer", request.Headers.Authorization?.Scheme);
             Assert.Equal("123.token", request.Headers.Authorization?.Parameter);
             Assert.Equal(
-                "https://openapi.etsy.com/v3/application/shops/10/listings/20/videos?is_multi_video=true",
+                "https://openapi.etsy.com/v3/application/shops/10/listings/20/videos",
                 request.RequestUri?.AbsoluteUri);
             Assert.Equal("multipart/form-data", request.Content?.Headers.ContentType?.MediaType);
-            return Task.FromResult(JsonResponse(HttpStatusCode.OK, "{\"video_id\":30}"));
+            return Task.FromResult(JsonResponse(HttpStatusCode.TooManyRequests, "{\"error\":\"Daily upload limit exceeded\"}"));
         });
         var service = CreateService(new StubHttpClientFactory(handler));
 
@@ -588,11 +588,11 @@ public class EtsyListingManagementServiceTests
             "123.token",
             10,
             20,
-            new ListingVideoUploadRequest { VideoId = 30 },
-            isMultiVideo: true);
+            new ListingVideoUploadRequest { VideoId = 30 });
 
-        Assert.True(result.Success);
-        Assert.Equal(30, result.Data?.VideoId);
+        Assert.False(result.Success);
+        Assert.Equal(429, result.ResponseCode);
+        Assert.Equal("Daily upload limit exceeded", result.Message);
     }
 
     private static EtsyListingManagementService CreateService(IHttpClientFactory? factory = null) => new(
