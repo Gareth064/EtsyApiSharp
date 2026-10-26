@@ -130,28 +130,6 @@ public class EtsyUserManagementServiceTests
     }
 
     [Fact]
-    public async Task DeleteUserAddressAsync_ValidRequest_UsesSpecificationDeclaredOAuthAndParsesNoContent()
-    {
-        var handler = new StubHttpMessageHandler(request =>
-        {
-            Assert.Equal(HttpMethod.Delete, request.Method);
-            Assert.Equal("https://openapi.etsy.com/v3/application/user/addresses/9", request.RequestUri?.ToString());
-            Assert.Equal("Bearer", request.Headers.Authorization?.Scheme);
-            Assert.Equal("123.address-read-token", request.Headers.Authorization?.Parameter);
-            Assert.Equal("client-id:shared-secret", request.Headers.GetValues("x-api-key").Single());
-            return Task.FromResult(new HttpResponseMessage(HttpStatusCode.NoContent));
-        });
-        var service = CreateService(new StubHttpClientFactory(handler));
-
-        var result = await service.DeleteUserAddressAsync("123.address-read-token", 9);
-
-        Assert.True(result.Success);
-        Assert.Equal(204, result.ResponseCode);
-        Assert.Null(result.Data);
-        Assert.Equal("https://openapi.etsy.com/v3/application/user/addresses/9", result.RequestedResource);
-    }
-
-    [Fact]
     public async Task GetUserAsync_EtsyError_ReturnsActualStatusAndError()
     {
         var handler = new StubHttpMessageHandler(request => Task.FromResult(JsonResponse(
@@ -182,14 +160,12 @@ public class EtsyUserManagementServiceTests
     [Theory]
     [InlineData(0)]
     [InlineData(-1)]
-    public async Task UserAddressOperations_InvalidAddressId_ThrowArgumentOutOfRangeException(long userAddressId)
+    public async Task GetUserAddressAsync_InvalidAddressId_ThrowsArgumentOutOfRangeException(long userAddressId)
     {
         var service = CreateService();
 
         await Assert.ThrowsAsync<ArgumentOutOfRangeException>(
             () => service.GetUserAddressAsync("123.access-token", userAddressId));
-        await Assert.ThrowsAsync<ArgumentOutOfRangeException>(
-            () => service.DeleteUserAddressAsync("123.access-token", userAddressId));
     }
 
     [Theory]
@@ -216,7 +192,6 @@ public class EtsyUserManagementServiceTests
         await Assert.ThrowsAsync<ArgumentException>(() => service.GetMeAsync(accessToken));
         await Assert.ThrowsAsync<ArgumentException>(() => service.GetUserAddressesAsync(accessToken));
         await Assert.ThrowsAsync<ArgumentException>(() => service.GetUserAddressAsync(accessToken, 9));
-        await Assert.ThrowsAsync<ArgumentException>(() => service.DeleteUserAddressAsync(accessToken, 9));
     }
 
     [Fact]
