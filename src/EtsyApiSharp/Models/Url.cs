@@ -456,6 +456,19 @@ public class Url
             $"/v3/application/shops/{shopId}/sections/{shopSectionId}";
     }
     /// <summary>
+    /// Represents Shop Economic Operator URLs.
+    /// </summary>
+    public static class ShopEconomicOperatorUrls
+    {
+        /// <summary>Executes collection operations for shop economic operators.</summary>
+        public static string GetShopEconomicOperators(long shopId) =>
+            $"/v3/application/shops/{shopId}/economic-operators";
+
+        /// <summary>Executes an operation for one shop economic operator.</summary>
+        public static string GetShopEconomicOperator(long shopId, long economicOperatorId) =>
+            $"/v3/application/shops/{shopId}/economic-operators/{economicOperatorId}";
+    }
+    /// <summary>
     /// Represents User Urls.
     /// </summary>
 
