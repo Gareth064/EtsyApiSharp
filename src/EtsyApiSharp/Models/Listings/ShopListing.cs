@@ -347,4 +347,30 @@ public class ShopListing
     [JsonPropertyName("ecgt_commercial_guarantee_enabled")]
     public bool? EcgtCommercialGuaranteeEnabled { get; set; }
 
+    /// <summary>The GPSR manufacturer economic operator ID.</summary>
+    [JsonPropertyName("gpsr_manufacturer_id")]
+    public long? GpsrManufacturerId { get; set; }
+
+    /// <summary>Identifies the source of the GPSR manufacturer details.</summary>
+    [JsonConverter(typeof(JsonNullableEnumStringConverter<GpsrEconomicOperatorType>))]
+    [JsonPropertyName("gpsr_manufacturer_type")]
+    public GpsrEconomicOperatorType? GpsrManufacturerType { get; set; }
+
+    /// <summary>The GPSR EU responsible-person economic operator ID.</summary>
+    [JsonPropertyName("gpsr_responsible_person_id")]
+    public long? GpsrResponsiblePersonId { get; set; }
+
+    /// <summary>Identifies the source of the GPSR EU responsible-person details.</summary>
+    [JsonConverter(typeof(JsonNullableEnumStringConverter<GpsrEconomicOperatorType>))]
+    [JsonPropertyName("gpsr_responsible_person_type")]
+    public GpsrEconomicOperatorType? GpsrResponsiblePersonType { get; set; }
+
+    /// <summary>GPSR safety warnings shown to buyers.</summary>
+    [JsonPropertyName("gpsr_safety_warnings")]
+    public string? GpsrSafetyWarnings { get; set; }
+
+    /// <summary>The GPSR serial, batch, or lot identifier.</summary>
+    [JsonPropertyName("gpsr_serial_number")]
+    public string? GpsrSerialNumber { get; set; }
+
 }
