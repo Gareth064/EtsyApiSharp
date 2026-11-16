@@ -50,11 +50,9 @@
     <button @onclick="GetListingFileAsync">Listing file (OAuth)</button>
     <br />
     <input @bind="productId" placeholder="Product ID" />
-    <input @bind="offeringId" placeholder="Offering ID" />
     <button @onclick="GetListingInventoryAsync">Listing inventory (OAuth)</button>
     <button @onclick="GetListingsInventoryByIdsAsync">Inventory by listing IDs (OAuth)</button>
     <button @onclick="GetListingProductAsync">Listing product (OAuth)</button>
-    <button @onclick="GetListingOfferingAsync">Listing offering</button>
     <br />
     <input @bind="language" placeholder="Language (for example, fr)" />
     <button @onclick="GetListingPersonalizationAsync">Listing personalization</button>
@@ -84,7 +82,6 @@
     private string returnPolicyId = string.Empty;
     private string listingFileId = string.Empty;
     private string productId = string.Empty;
-    private string offeringId = string.Empty;
     private string language = "en";
     private string videoId = string.Empty;
 
@@ -167,9 +164,6 @@
 
     private async Task GetListingProductAsync() => await DisplayAsync(ListingService.GetListingProductAsync(
         AppState.TokenResponse, GetRequiredId(listingId, "listing ID"), GetRequiredId(productId, "product ID")));
-
-    private async Task GetListingOfferingAsync() => await DisplayAsync(ListingService.GetListingOfferingAsync(
-        GetRequiredId(listingId, "listing ID"), GetRequiredId(productId, "product ID"), GetRequiredId(offeringId, "offering ID")));
 
     private async Task GetListingPersonalizationAsync() => await DisplayAsync(ListingService.GetListingPersonalizationAsync(
         GetRequiredId(listingId, "listing ID")));
