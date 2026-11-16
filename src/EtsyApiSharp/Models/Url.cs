@@ -347,12 +347,6 @@ public class Url
         public static string GetListingsInventoryByListingIds() =>
             "/v3/application/listings/batch/inventory";
         /// <summary>
-        /// Executes the Get Listing Offering operation.
-        /// </summary>
-
-        public static string GetListingOffering(long listingId, long productId, long offeringId) =>
-            $"/v3/application/listings/{listingId}/products/{productId}/offerings/{offeringId}";
-        /// <summary>
         /// Executes the Get Listing Product operation.
         /// </summary>
 
@@ -454,6 +448,19 @@ public class Url
 
         public static string GetShopSection(long shopId, long shopSectionId) =>
             $"/v3/application/shops/{shopId}/sections/{shopSectionId}";
+    }
+    /// <summary>
+    /// Represents Shop Economic Operator URLs.
+    /// </summary>
+    public static class ShopEconomicOperatorUrls
+    {
+        /// <summary>Executes collection operations for shop economic operators.</summary>
+        public static string GetShopEconomicOperators(long shopId) =>
+            $"/v3/application/shops/{shopId}/economic-operators";
+
+        /// <summary>Executes an operation for one shop economic operator.</summary>
+        public static string GetShopEconomicOperator(long shopId, long economicOperatorId) =>
+            $"/v3/application/shops/{shopId}/economic-operators/{economicOperatorId}";
     }
     /// <summary>
     /// Represents User Urls.
