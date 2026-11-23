@@ -14255,7 +14255,7 @@
                     },
                     "digital_sale_message": {
                         "type": "string",
-                        "description": "A message string sent to users who purchase a digital item from this shop.",
+                        "description": "A message string sent to users who purchase a digital item from this shop. Only returned to the shop owner; it is null for any other caller.",
                         "nullable": true
                     },
                     "update_date": {
