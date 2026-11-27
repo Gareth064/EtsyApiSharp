@@ -513,19 +513,6 @@ public class EtsyListingManagementService : IEtsyListingManagementService
         return SendSingleAsync<ListingInventory>(HttpMethod.Put, Url.ListingUrls.GetListingInventory(listingId), query, accessToken, HttpContentHelper.CreateJsonContent(inventory, true), cancellationToken);
     }
     /// <summary>
-    /// Executes the Get Listing Offering operation.
-    /// </summary>
-
-    public Task<ApiResponse<ListingInventoryProductOffering>> GetListingOfferingAsync(long listingId, long productId, long productOfferingId, bool? legacy = null, CancellationToken cancellationToken = default)
-    {
-        ValidateId(listingId, nameof(listingId));
-        ValidateId(productId, nameof(productId));
-        ValidateId(productOfferingId, nameof(productOfferingId));
-        var query = new Dictionary<string, string>();
-        AddBoolean(query, "legacy", legacy);
-        return SendSingleAsync<ListingInventoryProductOffering>(HttpMethod.Get, Url.ListingUrls.GetListingOffering(listingId, productId, productOfferingId), query, null, cancellationToken);
-    }
-    /// <summary>
     /// Executes the Get Listing Product operation.
     /// </summary>
 

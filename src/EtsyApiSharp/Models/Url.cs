@@ -347,12 +347,6 @@ public class Url
         public static string GetListingsInventoryByListingIds() =>
             "/v3/application/listings/batch/inventory";
         /// <summary>
-        /// Executes the Get Listing Offering operation.
-        /// </summary>
-
-        public static string GetListingOffering(long listingId, long productId, long offeringId) =>
-            $"/v3/application/listings/{listingId}/products/{productId}/offerings/{offeringId}";
-        /// <summary>
         /// Executes the Get Listing Product operation.
         /// </summary>
 

@@ -147,10 +147,6 @@ public interface IEtsyListingManagementService
     /// </summary>
     Task<ApiResponse<ListingInventory>> UpdateListingInventoryAsync(string accessToken, long listingId, UpdateListingInventoryRequest inventory, bool? enableScaleValidation, string? maxVariationsSupported = null, CancellationToken cancellationToken = default);
     /// <summary>
-    /// Executes the Get Listing Offering operation.
-    /// </summary>
-    Task<ApiResponse<ListingInventoryProductOffering>> GetListingOfferingAsync(long listingId, long productId, long productOfferingId, bool? legacy = null, CancellationToken cancellationToken = default);
-    /// <summary>
     /// Executes the Get Listing Product operation.
     /// </summary>
     Task<ApiResponse<ListingInventoryProduct>> GetListingProductAsync(string accessToken, long listingId, long productId, bool? legacy = null, CancellationToken cancellationToken = default);
