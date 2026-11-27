@@ -89,20 +89,6 @@ public class EtsyUserManagementService : IEtsyUserManagementService
         ValidateId(userAddressId, nameof(userAddressId));
         return GetAsync<UserAddress>(accessToken, Url.UserUrls.GetUserAddress(userAddressId), cancellationToken);
     }
-    /// <summary>
-    /// Executes the Delete User Address operation.
-    /// </summary>
-
-    public Task<ApiResponse<object>> DeleteUserAddressAsync(
-        string accessToken,
-        long userAddressId,
-        CancellationToken cancellationToken = default)
-    {
-        ValidateAccessToken(accessToken);
-        ValidateId(userAddressId, nameof(userAddressId));
-        return SendAsync<object>(HttpMethod.Delete, accessToken, Url.UserUrls.GetUserAddress(userAddressId), null, cancellationToken);
-    }
-
     private Task<ApiResponse<T>> GetAsync<T>(
         string accessToken,
         string relativeUrl,

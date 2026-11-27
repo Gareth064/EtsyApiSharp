@@ -311,6 +311,7 @@ public class EtsyListingManagementService : IEtsyListingManagementService
         ArgumentNullException.ThrowIfNull(listing);
         if (listing.Quantity < 1 || listing.Price <= 0 || listing.TaxonomyId < 1 || string.IsNullOrWhiteSpace(listing.Title) || string.IsNullOrWhiteSpace(listing.Description) || string.IsNullOrWhiteSpace(listing.WhenMade))
             throw new ArgumentException("Quantity, title, description, price, who made, when made, and taxonomy ID are required.", nameof(listing));
+        ValidateGpsrEconomicOperators(listing.GpsrManufacturerId, listing.GpsrManufacturerType, listing.GpsrResponsiblePersonId, listing.GpsrResponsiblePersonType, nameof(listing));
         return SendSingleAsync<ShopListing>(HttpMethod.Post, Url.ListingUrls.CreateDraftListing(shopId), null, accessToken, CreateFormContent(listing), cancellationToken);
     }
     /// <summary>
@@ -323,6 +324,7 @@ public class EtsyListingManagementService : IEtsyListingManagementService
         ValidateId(shopId, nameof(shopId));
         ValidateId(listingId, nameof(listingId));
         ValidateUpdate(listing, nameof(listing));
+        ValidateGpsrEconomicOperators(listing.GpsrManufacturerId, listing.GpsrManufacturerType, listing.GpsrResponsiblePersonId, listing.GpsrResponsiblePersonType, nameof(listing));
         return SendSingleAsync<ShopListing>(HttpMethod.Patch, Url.ListingUrls.UpdateListing(shopId, listingId), null, accessToken, CreateFormContent(listing), cancellationToken);
     }
     /// <summary>
@@ -511,19 +513,6 @@ public class EtsyListingManagementService : IEtsyListingManagementService
         return SendSingleAsync<ListingInventory>(HttpMethod.Put, Url.ListingUrls.GetListingInventory(listingId), query, accessToken, HttpContentHelper.CreateJsonContent(inventory, true), cancellationToken);
     }
     /// <summary>
-    /// Executes the Get Listing Offering operation.
-    /// </summary>
-
-    public Task<ApiResponse<ListingInventoryProductOffering>> GetListingOfferingAsync(long listingId, long productId, long productOfferingId, bool? legacy = null, CancellationToken cancellationToken = default)
-    {
-        ValidateId(listingId, nameof(listingId));
-        ValidateId(productId, nameof(productId));
-        ValidateId(productOfferingId, nameof(productOfferingId));
-        var query = new Dictionary<string, string>();
-        AddBoolean(query, "legacy", legacy);
-        return SendSingleAsync<ListingInventoryProductOffering>(HttpMethod.Get, Url.ListingUrls.GetListingOffering(listingId, productId, productOfferingId), query, null, cancellationToken);
-    }
-    /// <summary>
     /// Executes the Get Listing Product operation.
     /// </summary>
 
@@ -642,14 +631,7 @@ public class EtsyListingManagementService : IEtsyListingManagementService
     /// Executes the Upload Listing Video operation.
     /// </summary>
 
-    public Task<ApiResponse<ListingVideo>> UploadListingVideoAsync(string accessToken, long shopId, long listingId, ListingVideoUploadRequest video, CancellationToken cancellationToken = default) =>
-        UploadListingVideoAsync(accessToken, shopId, listingId, video, null, cancellationToken);
-
-    /// <summary>
-    /// Executes the Upload Listing Video operation with the multi-video option.
-    /// </summary>
-
-    public Task<ApiResponse<ListingVideo>> UploadListingVideoAsync(string accessToken, long shopId, long listingId, ListingVideoUploadRequest video, bool? isMultiVideo, CancellationToken cancellationToken = default)
+    public Task<ApiResponse<ListingVideo>> UploadListingVideoAsync(string accessToken, long shopId, long listingId, ListingVideoUploadRequest video, CancellationToken cancellationToken = default)
     {
         ValidateAccessToken(accessToken);
         ValidateId(shopId, nameof(shopId));
@@ -661,9 +643,7 @@ public class EtsyListingManagementService : IEtsyListingManagementService
         AddMultipartValue(content, "video_id", video.VideoId);
         if (video.Video is not null)
             content.Add(new StreamContent(video.Video), "video", video.FileName ?? "video");
-        var query = new Dictionary<string, string>();
-        AddBoolean(query, "is_multi_video", isMultiVideo);
-        return SendSingleAsync<ListingVideo>(HttpMethod.Post, Url.ListingUrls.UploadListingVideo(shopId, listingId), query, accessToken, content, cancellationToken);
+        return SendSingleAsync<ListingVideo>(HttpMethod.Post, Url.ListingUrls.UploadListingVideo(shopId, listingId), null, accessToken, content, cancellationToken);
     }
     /// <summary>
     /// Executes the Delete Listing Video operation.
@@ -870,6 +850,33 @@ public class EtsyListingManagementService : IEtsyListingManagementService
         ArgumentNullException.ThrowIfNull(update);
         if (update.GetType().GetProperties().All(property => property.GetValue(update) is null))
             throw new ArgumentException("At least one value must be supplied.", parameterName);
+    }
+
+    private static void ValidateGpsrEconomicOperators(
+        long? manufacturerId,
+        GpsrEconomicOperatorType? manufacturerType,
+        long? responsiblePersonId,
+        GpsrEconomicOperatorType? responsiblePersonType,
+        string parameterName)
+    {
+        ValidateGpsrEconomicOperator(manufacturerId, manufacturerType, "manufacturer", parameterName);
+        ValidateGpsrEconomicOperator(responsiblePersonId, responsiblePersonType, "responsible person", parameterName);
+    }
+
+    private static void ValidateGpsrEconomicOperator(
+        long? operatorId,
+        GpsrEconomicOperatorType? operatorType,
+        string role,
+        string parameterName)
+    {
+        if (operatorId is <= 0)
+            throw new ArgumentOutOfRangeException(parameterName, $"The GPSR {role} economic operator ID must be greater than zero.");
+
+        if (operatorType == GpsrEconomicOperatorType.economic_operator && operatorId is null)
+            throw new ArgumentException($"A GPSR {role} economic operator ID is required when its type is economic_operator.", parameterName);
+
+        if (operatorType == GpsrEconomicOperatorType.seller && operatorId is not null)
+            throw new ArgumentException($"A GPSR {role} economic operator ID is only valid when its type is economic_operator.", parameterName);
     }
 
     private static void ValidateUpload(Stream? stream, string? fileName, string parameterName)

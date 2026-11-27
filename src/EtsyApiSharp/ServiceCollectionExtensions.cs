@@ -5,6 +5,7 @@ using EtsyApiSharp.Services.PaymentManagements;
 using EtsyApiSharp.Services.ReceiptManagements;
 using EtsyApiSharp.Services.ReviewManagements;
 using EtsyApiSharp.Services.ShopManagements;
+using EtsyApiSharp.Services.ShopEconomicOperatorManagements;
 using EtsyApiSharp.Services.ShopPolicyManagements;
 using EtsyApiSharp.Services.ShippingManagements;
 using EtsyApiSharp.Services.UserManagements;
@@ -199,6 +200,33 @@ public static class ServiceCollectionExtensions
     {
         services.AddHttpClient(EtsyShopManagementService.HttpClientName);
         return services.AddSingleton<IEtsyShopManagementService, EtsyShopManagementService>(provider => new EtsyShopManagementService(
+            provider.GetRequiredService<IHttpClientFactory>(), clientId, sharedSecret));
+    }
+    /// <summary>
+    /// Registers Etsy Shop Economic Operator management with scoped lifetime.
+    /// </summary>
+    public static IServiceCollection AddEtsyShopEconomicOperatorManagementServiceScoped(this IServiceCollection services, string clientId, string sharedSecret)
+    {
+        services.AddHttpClient(EtsyShopEconomicOperatorManagementService.HttpClientName);
+        return services.AddScoped<IEtsyShopEconomicOperatorManagementService, EtsyShopEconomicOperatorManagementService>(provider => new EtsyShopEconomicOperatorManagementService(
+            provider.GetRequiredService<IHttpClientFactory>(), clientId, sharedSecret));
+    }
+    /// <summary>
+    /// Registers Etsy Shop Economic Operator management with transient lifetime.
+    /// </summary>
+    public static IServiceCollection AddEtsyShopEconomicOperatorManagementServiceTransient(this IServiceCollection services, string clientId, string sharedSecret)
+    {
+        services.AddHttpClient(EtsyShopEconomicOperatorManagementService.HttpClientName);
+        return services.AddTransient<IEtsyShopEconomicOperatorManagementService, EtsyShopEconomicOperatorManagementService>(provider => new EtsyShopEconomicOperatorManagementService(
+            provider.GetRequiredService<IHttpClientFactory>(), clientId, sharedSecret));
+    }
+    /// <summary>
+    /// Registers Etsy Shop Economic Operator management with singleton lifetime.
+    /// </summary>
+    public static IServiceCollection AddEtsyShopEconomicOperatorManagementServiceSingleton(this IServiceCollection services, string clientId, string sharedSecret)
+    {
+        services.AddHttpClient(EtsyShopEconomicOperatorManagementService.HttpClientName);
+        return services.AddSingleton<IEtsyShopEconomicOperatorManagementService, EtsyShopEconomicOperatorManagementService>(provider => new EtsyShopEconomicOperatorManagementService(
             provider.GetRequiredService<IHttpClientFactory>(), clientId, sharedSecret));
     }
     /// <summary>
