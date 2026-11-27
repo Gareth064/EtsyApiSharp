@@ -12,6 +12,14 @@ namespace EtsyApiSharp.Tests.Services.ListingManagements;
 public class EtsyListingManagementServiceTests
 {
     [Fact]
+    public void WithdrawnListingOfferingOperation_NoLongerExposed()
+    {
+        Assert.DoesNotContain(typeof(IEtsyListingManagementService).GetMethods(), method => method.Name == "GetListingOfferingAsync");
+        Assert.DoesNotContain(typeof(EtsyListingManagementService).GetMethods(), method => method.Name == "GetListingOfferingAsync");
+        Assert.DoesNotContain(typeof(Url.ListingUrls).GetMethods(), method => method.Name == "GetListingOffering");
+    }
+
+    [Fact]
     public async Task FindAllListingsActiveAsync_Filter_UsesPublicEndpointAndEncodesAllSupportedFilters()
     {
         var handler = new StubHttpMessageHandler(request =>
@@ -98,6 +106,51 @@ public class EtsyListingManagementServiceTests
 
         AssertEcgtFields(listingWithAssociations.Data);
         AssertEcgtFields(listing.Data);
+    }
+
+    [Fact]
+    public async Task ListingGpsrFields_SerializeParseAndValidateEconomicOperators()
+    {
+        const string gpsrFields = "\"gpsr_manufacturer_id\":17,\"gpsr_manufacturer_type\":\"economic_operator\",\"gpsr_responsible_person_id\":18,\"gpsr_responsible_person_type\":\"seller\",\"gpsr_safety_warnings\":\"Keep away from heat\",\"gpsr_serial_number\":\"LOT-42\"";
+        var handler = new StubHttpMessageHandler(async request =>
+        {
+            if (request.Method == HttpMethod.Post)
+            {
+                var body = await request.Content!.ReadAsStringAsync();
+                Assert.Contains("gpsr_manufacturer_id=17", body);
+                Assert.Contains("gpsr_manufacturer_type=economic_operator", body);
+                Assert.Contains("gpsr_safety_warnings=Keep+away+from+heat", body);
+            }
+
+            return JsonResponse(HttpStatusCode.OK, $"{{\"listing_id\":456,{gpsrFields}}}");
+        });
+        var service = CreateService(new StubHttpClientFactory(handler));
+        var request = new CreateDraftListingRequest
+        {
+            Quantity = 1,
+            Title = "Example title",
+            Description = "Example description",
+            Price = 10.5M,
+            WhoMade = ListingWhoMade.i_did,
+            WhenMade = "made_to_order",
+            TaxonomyId = 123,
+            GpsrManufacturerId = 17,
+            GpsrManufacturerType = GpsrEconomicOperatorType.economic_operator,
+            GpsrResponsiblePersonType = GpsrEconomicOperatorType.seller,
+            GpsrSafetyWarnings = "Keep away from heat",
+            GpsrSerialNumber = "LOT-42"
+        };
+
+        var created = await service.CreateDraftListingAsync("123.access-token", 123, request);
+        var retrieved = await service.GetListingAsync(456);
+
+        Assert.Equal(17, created.Data?.GpsrManufacturerId);
+        Assert.Equal(GpsrEconomicOperatorType.economic_operator, created.Data?.GpsrManufacturerType);
+        Assert.Equal("LOT-42", retrieved.Data?.GpsrSerialNumber);
+        await Assert.ThrowsAsync<ArgumentException>(() => service.UpdateListingAsync("123.access-token", 123, 456, new UpdateListingRequest
+        {
+            GpsrManufacturerType = GpsrEconomicOperatorType.economic_operator
+        }));
     }
 
     [Fact]
@@ -412,7 +465,6 @@ public class EtsyListingManagementServiceTests
         await service.GetListingInventoryAsync("123.token", 20, showDeleted: false, includes: new[] { ListingInclude.Inventory });
         await service.GetListingsInventoryByListingIdsAsync("123.token", new long[] { 20, 21 });
         await service.UpdateListingInventoryAsync("123.token", 20, inventory, "3");
-        await service.GetListingOfferingAsync(20, 30, 40, legacy: true);
         await service.GetListingProductAsync("123.token", 20, 30);
         await service.GetListingPersonalizationAsync(20);
         await service.UpdateListingPersonalizationAsync("123.token", 10, 20, personalization, true);
@@ -424,7 +476,6 @@ public class EtsyListingManagementServiceTests
         Assert.Equal(HttpMethod.Put, updateInventoryRequest.Method);
         Assert.Equal("max_variations_supported=3", updateInventoryRequest.RequestUri?.Query.TrimStart('?'));
         Assert.Equal("application/json", updateInventoryRequest.Content?.Headers.ContentType?.MediaType);
-        Assert.Equal("legacy=true", requests.Dequeue().RequestUri?.Query.TrimStart('?'));
         Assert.Equal("/v3/application/listings/20/inventory/products/30", requests.Dequeue().RequestUri?.AbsolutePath);
         Assert.Null(requests.Dequeue().Headers.Authorization);
         Assert.Equal("application/json", requests.Dequeue().Content?.Headers.ContentType?.MediaType);

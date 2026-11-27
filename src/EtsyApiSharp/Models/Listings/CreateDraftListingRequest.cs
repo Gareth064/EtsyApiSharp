@@ -123,4 +123,16 @@ public class CreateDraftListingRequest
     /// Gets or sets the Type.
     /// </summary>
     public ListingType? Type { get; set; }
+    /// <summary>Gets or sets the GPSR manufacturer economic operator ID.</summary>
+    public long? GpsrManufacturerId { get; set; }
+    /// <summary>Gets or sets who provides the GPSR manufacturer details.</summary>
+    public GpsrEconomicOperatorType? GpsrManufacturerType { get; set; }
+    /// <summary>Gets or sets the GPSR EU responsible person economic operator ID.</summary>
+    public long? GpsrResponsiblePersonId { get; set; }
+    /// <summary>Gets or sets who provides the GPSR EU responsible person details.</summary>
+    public GpsrEconomicOperatorType? GpsrResponsiblePersonType { get; set; }
+    /// <summary>Gets or sets GPSR safety warnings shown to buyers.</summary>
+    public string? GpsrSafetyWarnings { get; set; }
+    /// <summary>Gets or sets the GPSR serial, batch, or lot identifier.</summary>
+    public string? GpsrSerialNumber { get; set; }
 }
